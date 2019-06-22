@@ -1,0 +1,160 @@
+@import "../../common/media";
+
+#pane {
+  display: flex;
+  flex-direction: column;
+}
+
+#pane-search {
+  background: transparent;
+  border-color: #303030;
+  border-style: solid;
+  border-width: 0 0 3px 0;
+  color: #d0d0d0;
+  display: block;
+  font-size: 15px;
+  margin: 12px auto 2px 12px;
+  padding: 8px 11px;
+  transition: 0.4s;
+}
+
+#pane-search:focus {
+  background: rgba(72, 72, 72, 0.4);
+  border-color: gray;
+}
+
+#pane-body {
+  overflow: auto;
+}
+
+#pane-list {
+  margin: 0;
+  padding: 0;
+}
+
+.pane-entry[data-active="true"] {
+  color: #ff9933;
+}
+
+.pane-entry[data-hidden="true"] {
+  display: none;
+}
+
+@include media("<desktop") {
+  #pane {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+
+    max-height: 250px;
+
+    background: #222;
+    border-top: 3px solid #ff9900;
+  }
+
+  #app[data-mobile-hidden="true"] #pane {
+    display: none;
+  }
+
+  #pane-search {
+    margin: 0;
+    width: 100%;
+    padding: 12px;
+
+    flex: 0 0 auto;
+  }
+
+  #pane-search::-webkit-input-placeholder {
+    color: rgba(180, 180, 180, 0.25);
+  }
+  #pane-search::-moz-placeholder {
+    color: rgba(180, 180, 180, 0.25);
+  }
+  #pane-search:-moz-placeholder {
+    color: rgba(180, 180, 180, 0.25);
+  }
+  #pane-search:-ms-input-placeholder {
+    color: rgba(180, 180, 180, 0.25);
+  }
+
+  #pane-search:focus::-webkit-input-placeholder {
+    color: transparent;
+  }
+  #pane-search:focus::-moz-placeholder {
+    color: transparent;
+  }
+  #pane-search:focus:-moz-placeholder {
+    color: transparent;
+  }
+  #pane-search:focus:-ms-input-placeholder {
+    color: transparent;
+  }
+
+  #pane-body {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .pane-entry {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
+
+@include media(">=desktop") {
+  #pane {
+    background: #222;
+    flex: 0 0 auto;
+    width: 250px;
+    min-height: calc(100% - 75px);
+  }
+
+  #pane-search {
+    flex: 0 0 auto;
+    width: 87%;
+  }
+
+  #pane-search::-webkit-input-placeholder {
+    color: transparent;
+  }
+  #pane-search::-moz-placeholder {
+    color: transparent;
+  }
+  #pane-search:-moz-placeholder {
+    color: transparent;
+  }
+  #pane-search:-ms-input-placeholder {
+    color: transparent;
+  }
+
+  #pane-body {
+    flex-grow: 1;
+  }
+
+  #pane-list {
+    padding-bottom: 70px; /* Allow room for player */
+  }
+
+
+  #pane-list::before {
+    content: attr(data-type);
+    text-transform: capitalize;
+    display: block;
+    margin: 22px 16px;
+    border-left: 5px solid rgba(72, 72, 72, 0.1);
+    padding: 12px;
+    font-size: 20px;
+    font-weight: lighter;
+  }
+
+  .pane-entry {
+    cursor: pointer;
+    font-size: 14px;
+    padding: 12px 12px 12px 20px;
+  }
+
+  .pane-entry:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}

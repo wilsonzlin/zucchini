@@ -1,0 +1,39 @@
+{
+  "include": [
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    "allowJs": false,
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    "declaration": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "lib": [
+      "es5",
+      "es6",
+      "es7",
+      "es2017",
+      "dom"
+    ],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noErrorTruncation": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "outDir": "build/dist",
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "sourceMap": false,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es6"
+  }
+}

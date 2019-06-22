@@ -1,0 +1,48 @@
+@import "../../common/style";
+
+@include media("<desktop") {
+  header {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+
+    display: flex;
+  }
+
+  #app-branding {
+    display: none;
+  }
+}
+
+@include media(">=desktop") {
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    height: 75px;
+  }
+
+  #app-branding {
+    display: flex;
+    align-items: center;
+  }
+
+  #app-logo, #app-title {
+    font-weight: 600;
+  }
+
+  #app-logo {
+    font-size: 42px;
+    margin-right: 5px;
+    padding: 0 20px;
+  }
+
+  #app-title {
+    margin: 0 35px 0 0;
+    font-size: 30px;
+    color: #ff9933;
+  }
+}

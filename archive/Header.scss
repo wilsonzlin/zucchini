@@ -1,0 +1,61 @@
+#app-listings {
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.app-listing::before {
+  content: attr(value);
+}
+
+@include media("<desktop") {
+  #app-branding {
+    display: none;
+  }
+
+  #app-listings {
+    display: flex;
+    width: calc(100% - 40px);
+  }
+
+  .app-listing {
+    background: rgba(230, 230, 230, 0.12);
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    color: #888;
+    font-size: 14px;
+
+    text-align: center;
+    text-transform: capitalize;
+
+    flex: 1 0 0;
+  }
+
+  .app-listing[data-active="true"] {
+    background: #222;
+    color: #ff9900;
+  }
+
+  #app[data-mobile-hidden="false"] .app-listing[data-active="true"] {
+    border-top-color: #222;
+  }
+}
+
+@include media(">=desktop") {
+  .app-listing {
+    background: rgba(230, 230, 230, 0.12);
+    color: #888;
+    font-size: 14px;
+    padding: 7px 12px;
+    text-transform: uppercase;
+  }
+
+  .app-listing:not(:last-child) {
+    margin-right: 19px;
+  }
+
+  .app-listing[data-active="true"] {
+    background: transparent;
+    cursor: default;
+  }
+}

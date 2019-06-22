@@ -1,0 +1,131 @@
+@import "common/style";
+
+* {
+  box-sizing: border-box;
+  outline: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background: black;
+  color: white;
+  margin: 0;
+}
+
+body, button, select, input, textarea {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Ubuntu, Cantarell, Oxygen, Droid Sans, Fira Sans, sans-serif;
+  border-radius: 0;
+  margin: 0; /* For iOS Safari */
+}
+
+button, input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+
+/* Hide arrows on number inputs in Chrome */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  display: block;
+}
+
+.flex-spacer {
+  flex-grow: 1;
+}
+
+.table {
+  border-collapse: collapse;
+  display: table;
+  width: 100%;
+}
+
+.table.fixed {
+  table-layout: fixed;
+}
+
+.tbody {
+  display: table-row-group;
+}
+
+.tr {
+  display: table-row;
+}
+
+.th, .td {
+  display: table-cell;
+}
+
+#app {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+main {
+}
+
+@include media("<desktop") {
+  main {
+    height: calc(100% - 40px);
+    overflow: auto;
+  }
+  #mobile-branding {
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #mobile-branding .logo {
+    font-size: 18px;
+    padding-right: 8px;
+    font-weight: 600;
+  }
+
+  #mobile-branding .title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ff9933;
+  }
+}
+
+@include media(">=desktop") {
+  main {
+    display: flex;
+    height: calc(100% - 75px);
+  }
+
+  #mobile-branding {
+    display: none;
+  }
+}
+
