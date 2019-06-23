@@ -3,13 +3,9 @@
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const paths = require("./paths");
 
-// This is the development configuration.
-// It is focused on developer experience and fast rebuilds.
-// The production configuration is different and lives in a separate file.
 module.exports = {
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
@@ -40,8 +36,8 @@ module.exports = {
     strictExportPresence: true,
     rules: [
       {
-        test: /\.(js)$/,
-        loader: require.resolve("source-map-loader"),
+        test: /\.js$/,
+        loader: "source-map-loader",
         enforce: "pre",
         include: paths.SRC,
       },
@@ -55,26 +51,26 @@ module.exports = {
           // A missing `test` is equivalent to a match.
           {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-            loader: require.resolve("url-loader"),
+            loader: "url-loader",
             options: {
               limit: 10000,
               name: "static/media/[name].[hash:8].[ext]",
             },
           },
           {
-            test: /\.(js)$/,
+            test: /\.js$/,
             include: paths.SRC,
-            loader: require.resolve("babel-loader"),
+            loader: "babel-loader",
             options: {
               compact: true,
             },
           },
           {
-            test: /\.(ts|tsx)$/,
+            test: /\.tsx?$/,
             include: paths.SRC,
             use: [
               {
-                loader: require.resolve("ts-loader"),
+                loader: "ts-loader",
                 options: {
                   // disable type checker - we will use it in fork plugin
                   transpileOnly: true,
@@ -101,7 +97,7 @@ module.exports = {
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
             exclude: [/\.(js)$/, /\.html$/, /\.json$/],
-            loader: require.resolve("file-loader"),
+            loader: "file-loader",
             options: {
               name: "static/media/[name].[hash:8].[ext]",
             },
@@ -112,16 +108,9 @@ module.exports = {
   },
   plugins: [
     // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({
-      inject: true,
-      template: paths.INDEX_HTML,
-    }),
+    new HtmlWebpackPlugin({inject: true, template: paths.INDEX_HTML}),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),
-    // Watcher doesn't work well if you mistype casing in a path so we use
-    // a plugin that prints an error when you attempt to do this.
-    // See https://github.com/facebookincubator/create-react-app/issues/240
-    new CaseSensitivePathsPlugin(),
     // Perform type checking and linting in a separate process to speed up compilation
     new ForkTsCheckerWebpackPlugin({
       async: false,
