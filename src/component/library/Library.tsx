@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: GlobalDispatcher) => ({});
 
 export const Library = connect(mapStateToProps, mapDispatchToProps)(
   (props: LibraryProps) => (
-    <div id="library">{
+    <main id="library">{
       // Map artists to artists with only albums with one or more songs after filtering.
       props.artists
         .map(artist => ({
@@ -46,6 +46,6 @@ export const Library = connect(mapStateToProps, mapDispatchToProps)(
           key={keyFromOptionalField("artist", artist.artist)}
           {...artist}
         />)
-    }</div>
+    }</main>
   )
 );

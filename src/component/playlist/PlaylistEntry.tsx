@@ -1,7 +1,7 @@
 import * as React from "react";
 import {callOptionalHandler, EventHandler} from "../../common/Event";
 import {Song} from "../../common/Media";
-import "./HeaderPlaylist.scss";
+import "./Playlist.scss";
 
 export interface PlaylistEntryPlayEvent {
   song: Song;

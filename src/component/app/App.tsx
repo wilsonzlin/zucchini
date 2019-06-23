@@ -6,6 +6,7 @@ import {RepeatMode, ShuffleMode} from "../../common/Media";
 import {AppState} from "../../state/AppState";
 import {connect} from "react-redux";
 import {GlobalDispatcher} from "../../common/Action";
+import "./App.scss";
 
 export interface AppProps {
   searchTerm: string;
@@ -24,18 +25,10 @@ const mapDispatchToProps = (dispatch: GlobalDispatcher) => ({});
 export const App = connect(mapStateToProps, mapDispatchToProps)(
   (props: AppProps) => (
     <div id="app">
-      <Header
-        playlist={[]}
-        playlistVisible={true}
-      />
-      <main>
-        <div id="mobile-branding">
-          <span className="logo">w.l</span>
-          <span className="title">Music</span>
-        </div>
-        <Player/>
-        <Library/>
-      </main>
+      <Header/>
+      <Library/>
+      <div className="flex-spacer"/>
+      <Player/>
     </div>
   )
 );

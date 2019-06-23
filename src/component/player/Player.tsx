@@ -12,6 +12,7 @@ import {
   playerSeekThunk,
   playerToggleMuteThunk
 } from "../../state/PlayerState";
+import {PlaylistToggle} from "../playlist/PlaylistToggle";
 
 export interface PlayerTogglePlaybackEvent {
   playing: boolean;
@@ -77,22 +78,37 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: GlobalDispatcher) => ({
-  onTogglePlayback: (e: PlayerTogglePlaybackEvent) => {
-    dispatch(playerPlayOrPauseThunk({shouldPlay: e.playing}));
-  },
-  onSeek: (e: PlayerSeekEvent) => {
-    dispatch(playerSeekThunk({seekTo: e.progress}));
-  },
-  onVolumeChange: (e: PlayerVolumeChangeEvent) => {
-    dispatch(playerChangeVolumeThunk({volume: e.volume}));
-  },
-  onToggleMute: (e: PlayerToggleMuteEvent) => {
-    dispatch(playerToggleMuteThunk({mute: e.mute}));
-  },
+  onTogglePlayback: (e: PlayerTogglePlaybackEvent) => dispatch(playerPlayOrPauseThunk({shouldPlay: e.playing})),
+  onSeek: (e: PlayerSeekEvent) => dispatch(playerSeekThunk({seekTo: e.progress})),
+  onVolumeChange: (e: PlayerVolumeChangeEvent) => dispatch(playerChangeVolumeThunk({volume: e.volume})),
+  onToggleMute: (e: PlayerToggleMuteEvent) => dispatch(playerToggleMuteThunk({mute: e.mute})),
 });
+
+type MouseOrTouchEvent<T> = React.MouseEvent<T> | React.TouchEvent<T>;
+
+const isTouchEvent = function <T> (event: React.SyntheticEvent<T>): event is React.TouchEvent<T> {
+  return (event as any).touches instanceof TouchList;
+};
+
+const getMouseOrTouchX = (event: MouseOrTouchEvent<HTMLDivElement>) => {
+  if (isTouchEvent(event)) {
+    return event.touches[0].pageX;
+  } else {
+    return event.pageX;
+  }
+};
+
+const getViewportWidth = () => {
+  return document.documentElement.clientWidth;
+};
+
+const SEEK_DEBOUNCE_MS = 50;
 
 export const Player = connect(mapStateToProps, mapDispatchToProps)(
   class extends React.Component<PlayerProps, PlayerState> {
+    private seeking: boolean = false;
+    private seekDebounce: number | undefined = undefined;
+
     constructor (props: PlayerProps) {
       super(props);
 
@@ -101,14 +117,63 @@ export const Player = connect(mapStateToProps, mapDispatchToProps)(
       };
     }
 
+    render () {
+      return (
+        <div id="player"
+             data-loading={this.props.loading}
+        >
+          <div id="controls-playback">
+            <button id="button-previous" onClick={this.handlePreviousButtonClick}/>
+            {this.props.playing ?
+              <button id="button-pause" onClick={this.handlePauseButtonClick}/> :
+              <button id="button-play" onClick={this.handlePlayButtonClick}/>
+            }
+            <button id="button-next" onClick={this.handleNextButtonClick}/>
+          </div>
+
+          <div id="current-song">
+            <h1 id="title">{this.props.title}</h1>
+            <h2 id="subtitle">{this.props.artist} &mdash; {this.props.album}</h2>
+          </div>
+          <PlaylistToggle/>
+
+          <div id="controls-volume">
+            {this.props.muted ?
+              <button id="button-unmute" onClick={this.handleUnmuteButtonClick}/> :
+              <button id="button-mute" onClick={this.handleMuteButtonClick}/>
+            }
+            <input id="volume-input"
+                   type="number"
+                   min={0}
+                   max={100}
+                   value={this.props.volume}
+                   onChange={this.handleVolumeChange}/>
+          </div>
+
+          <div id="progress-container"
+            // Prevent long taps on touchscreens (e.g. pausing/holding while seeking) from opening context menu/popup.
+               onContextMenu={e => e.preventDefault()}
+               onMouseDown={this.handleProgressSeekingInputDown}
+               onTouchStart={this.handleProgressSeekingInputDown}
+               onMouseMove={this.handleProgressSeekingInputMove}
+               onTouchMove={this.handleProgressSeekingInputMove}
+               onMouseUp={this.handleProgressSeekingInputStop}
+               onMouseLeave={this.handleProgressSeekingInputStop}
+               onTouchEnd={this.handleProgressSeekingInputStop}
+               onTouchCancel={this.handleProgressSeekingInputStop}
+          >
+            <div id="progress" style={{width: `${this.props.progress}%`}}>
+              <div id="handle" style={{left: `${this.state.handleOffset}px`}}/>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     private handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
       let parsed = /^[0-9]+$/.test(value) ? minMax(0, 100, Number.parseInt(value)) : 0;
       callOptionalHandler(this.props.onVolumeChange, {volume: parsed});
-    };
-
-    private handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-      this.setState({handleOffset: event.pageX});
     };
 
     private handlePreviousButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -135,56 +200,33 @@ export const Player = connect(mapStateToProps, mapDispatchToProps)(
       callOptionalHandler(this.props.onToggleMute, {mute: false});
     };
 
-    private handleProgressClick = (event: React.MouseEvent<HTMLDivElement>) => {
-      callOptionalHandler(this.props.onSeek, {
-        // Get the position of the mouse relative to the width of the viewport.
-        progress: event.pageX / document.documentElement.clientWidth * this.props.duration,
-      });
+    private seekToSeekingInput = (event: MouseOrTouchEvent<HTMLDivElement>) => {
+      clearTimeout(this.seekDebounce);
+      // Calculate now and store.
+      const seekTo = getMouseOrTouchX(event) / getViewportWidth() * this.props.duration;
+      this.seekDebounce = setTimeout(() => {
+        callOptionalHandler(this.props.onSeek, {
+          // Get the position of the mouse relative to the width of the viewport.
+          progress: seekTo,
+        });
+      }, SEEK_DEBOUNCE_MS);
     };
 
-    render () {
-      return (
-        <div id="player"
-             data-has-source={this.props.hasSource}
-             data-loading={this.props.loading}
-             onMouseMove={this.handleMouseMove}
-        >
-          <div id="top">
-            <div id="controls-left">
-              <button id="button-previous" onClick={this.handlePreviousButtonClick}/>
-              {this.props.playing ?
-                <button id="button-pause" onClick={this.handlePauseButtonClick}/> :
-                <button id="button-play" onClick={this.handlePlayButtonClick}/>
-              }
-              <button id="button-next" onClick={this.handleNextButtonClick}/>
-            </div>
+    private handleProgressSeekingInputDown = (event: MouseOrTouchEvent<HTMLDivElement>) => {
+      this.seeking = true;
 
-            <div id="details">
-              <h1 id="title">{this.props.title}</h1>
-              <h2 id="subtitle">{this.props.artist} &mdash; {this.props.album}</h2>
-            </div>
+      this.seekToSeekingInput(event);
+    };
 
-            <div id="controls-right">
-              {this.props.muted ?
-                <button id="button-unmute" onClick={this.handleUnmuteButtonClick}/> :
-                <button id="button-mute" onClick={this.handleMuteButtonClick}/>
-              }
-              <input id="volume-input"
-                     type="number"
-                     min={0}
-                     max={100}
-                     value={this.props.volume}
-                     onChange={this.handleVolumeChange}/>
-            </div>
-          </div>
+    private handleProgressSeekingInputMove = (event: MouseOrTouchEvent<HTMLDivElement>) => {
+      this.setState({handleOffset: getMouseOrTouchX(event)});
 
-          <div id="progress-container"
-               onClick={this.handleProgressClick}>
-            <div id="progress" style={{width: `${this.props.progress}%`}}>
-              <div id="handle" style={{left: `${this.state.handleOffset}px`}}/>
-            </div>
-          </div>
-        </div>
-      );
-    }
+      if (this.seeking) {
+        this.seekToSeekingInput(event);
+      }
+    };
+
+    private handleProgressSeekingInputStop = (event: MouseOrTouchEvent<HTMLDivElement>) => {
+      this.seeking = false;
+    };
   });

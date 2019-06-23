@@ -66,22 +66,22 @@ export const computePropertyIfAbsent = <O, P extends keyof O> (obj: O, prop: P, 
 };
 
 export class JMap<K, V> implements Map<K, V> {
-  get [Symbol.toStringTag] (): string {
-    return this.map[Symbol.toStringTag];
-  }
-
   private readonly map: Map<K, V>;
 
   public constructor (entries?: ReadonlyArray<readonly [K, V]> | null) {
     this.map = new Map(entries);
   }
 
-  [Symbol.iterator] (): IterableIterator<[K, V]> {
-    return this.map[Symbol.iterator]();
+  get [Symbol.toStringTag] (): string {
+    return this.map[Symbol.toStringTag];
   }
 
   get size (): number {
     return this.map.size;
+  }
+
+  [Symbol.iterator] (): IterableIterator<[K, V]> {
+    return this.map[Symbol.iterator]();
   }
 
   clear (): void {

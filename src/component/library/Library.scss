@@ -3,40 +3,25 @@
 #library {
   max-width: 100rem;
   margin: 0 auto;
+  overflow: auto;
 }
 
 @include media("<desktop") {
   #library {
-    padding: 15px 20px 0 20px; /* padding-bottom is emulated by ::after because Firefox */
-  }
-
-  #library::after {
-    height: 15px;
-    display: block;
-    content: '';
+    padding: 15px 20px;
   }
 }
 
 @include media(">=desktop") {
   #library {
-    padding: 16px 30px 0 30px; /* padding-bottom is emulated by ::after because Firefox */
+    padding: 16px 30px;
     overflow: auto;
     flex-grow: 1;
-  }
-
-  #library::after {
-    height: 70px;
-    content: '';
-    display: block;
   }
 }
 
 .artist:not(:last-child) {
   margin-bottom: 65px;
-}
-
-.artist[data-hidden="true"] {
-  display: none;
 }
 
 .artist-name {

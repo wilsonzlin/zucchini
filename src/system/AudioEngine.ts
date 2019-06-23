@@ -11,4 +11,5 @@ audioEngine.onpause = () => store.dispatch(playerAction("UPDATE_PLAYBACK", {isPl
 audioEngine.onplaying = () => store.dispatch(playerAction("UPDATE_PLAYBACK", {isPlaying: true}));
 audioEngine.ontimeupdate = () => store.dispatch(
   playerAction("UPDATE_PROGRESS", {progress: audioEngine.currentTime / audioEngine.duration * 100}));
-audioEngine.onvolumechange = () => store.dispatch(playerAction("UPDATE_VOLUME", {volume: audioEngine.volume * 100, muted: audioEngine.muted}));
+audioEngine.onvolumechange = () => store.dispatch(
+  playerAction("UPDATE_VOLUME", {volume: audioEngine.volume * 100, muted: audioEngine.muted}));

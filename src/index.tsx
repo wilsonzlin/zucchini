@@ -51,7 +51,7 @@ if (libraryDataURL == null) {
 }
 
 // TODO
-const $searchInput = document.querySelector("#search input") as HTMLInputElement;
+const $searchInput = document.querySelector("#search") as HTMLInputElement;
 window.addEventListener("keydown", e => {
   if (document.activeElement === $searchInput) {
     // Search input already has focus.
