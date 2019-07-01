@@ -11,6 +11,7 @@ import {
 } from "../common/Media";
 import {compareNullable, compareProperties, concatThenDeduplicate, JMap, undefinedFallback} from "../common/Util";
 import {searchEngine} from "../system/SearchEngine";
+import {queryEngine} from "../system/QueryEngine";
 
 interface LibraryAlbumState {
   album: OptionalAlbumName;
@@ -80,6 +81,9 @@ export const LibraryReducer = createReducer<LibraryState, LibraryActions>({
 
     // Prepare to rebuild search index.
     searchEngine.clear();
+
+    // Send songs to worker to allow querying.
+    queryEngine.loadData(action.songs);
 
     const artists: Set<OptionalArtistName> = new Set();
     const genres: Set<OptionalGenreName> = new Set();
