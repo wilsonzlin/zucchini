@@ -1,4 +1,4 @@
-import {OptionalTitleName, OptionalTrackNumber, SongId} from "../../common/Media";
+import {OptionalTitleName, OptionalTrackNumber} from "../../common/Media";
 import {callOptionalHandler, EventHandler} from "../../common/Event";
 import * as React from "react";
 import {AppState} from "../../state/AppState";
@@ -7,11 +7,10 @@ import {GlobalDispatcher} from "../../common/Action";
 import {playerPlaySongThunk} from "../../state/PlayerState";
 
 export interface PlayTrackEvent {
-  id: SongId;
+  file: string;
 }
 
 export interface TrackProps {
-  id: SongId;
   file: string;
   track: OptionalTrackNumber;
   title: OptionalTitleName;
@@ -23,13 +22,12 @@ const connectStateToProps = (state: AppState) => ({});
 
 const connectDispatchToProps = (dispatch: GlobalDispatcher) => ({
   onPlayTrack: (event: PlayTrackEvent) => {
-    dispatch(playerPlaySongThunk({id: event.id}));
+    dispatch(playerPlaySongThunk({file: event.file}));
   },
 });
 
 export const Track = connect(connectStateToProps, connectDispatchToProps)((
   {
-    id,
     file,
     track,
     title,
@@ -37,7 +35,7 @@ export const Track = connect(connectStateToProps, connectDispatchToProps)((
     onPlayTrack,
   }: TrackProps
 ) => (
-  <div className="track tr" onClick={() => callOptionalHandler(onPlayTrack, {id, file})}>
+  <div className="track tr" onClick={() => callOptionalHandler(onPlayTrack, {file})}>
     <div className="track-number td" style={{width: "35px"}}>{track}</div>
     <div className="track-title td">{title}</div>
   </div>

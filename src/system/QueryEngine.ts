@@ -1,65 +1,125 @@
-import {Song} from "../common/Media";
 import {
+  QueryEngineWorkerRequest,
   QueryEngineWorkerRequestType,
   QueryEngineWorkerResponse,
+  QueryEngineWorkerResponseError,
   QueryEngineWorkerResponseType
 } from "./QueryEngineWorkerMessage";
 import Worker from "worker-loader!./QueryEngine.worker";
+import {Song} from "../common/Media";
+import {ISearchEngine} from "./ISearchEngine";
 
-interface PromiseResultCallbacks<R, E> {
+interface PromiseResultCallbacks<R = any, E = any> {
   resolve: (val: R) => void;
   reject: (err: E) => void;
 }
 
-export const queryEngine = new class {
-  private readonly worker: Worker;
-  private readonly inTransit: Map<number, PromiseResultCallbacks<any, any>>;
-  private nextID: number;
+enum QueryEngineState {
+  LOADING,
+  READY,
+  PROCESSING,
+}
+
+export const queryEngine = new class implements ISearchEngine {
+  // worker and state are not initialised initially before and during the beginning of the initNewWorker() call.
+  private worker?: Worker;
+  private state?: QueryEngineState;
+  private request?: {
+    message: QueryEngineWorkerRequest;
+    callbacks: PromiseResultCallbacks;
+  };
+  // TODO Bind to store.
+  private songs: Song[] = [];
 
   constructor () {
-    this.worker = new Worker();
-    this.inTransit = new Map();
-    this.nextID = 0;
+    this.initNewWorker();
+  }
 
-    // this.worker.addEventListener("error", console.error);
-    this.worker.addEventListener("message", msg => {
-      const {id, type, error, data} = msg.data as QueryEngineWorkerResponse<any>;
-      if (type === QueryEngineWorkerResponseType.WORKER_LOADED) {
-        // Do nothing
-      } else if (type === QueryEngineWorkerResponseType.REQUEST_RESPONSE) {
-        const callbacks = this.inTransit.get(id);
-        if (!callbacks) {
-          throw new Error(`Response to unknown request ID: ${id}`);
-        }
-        const {resolve, reject} = callbacks;
-        if (error) {
-          reject(data);
-        } else {
-          resolve(data);
-        }
-      } else {
-        throw new Error(`Unknown response type: ${type}`);
+  private makeAsyncRequest<R> (type: QueryEngineWorkerRequestType, data: any): Promise<R> {
+    return new Promise((resolve, reject) => {
+      const message = {type, data};
+      const callbacks = {resolve, reject};
+      this.request = {message, callbacks};
+      switch (this.state) {
+      case QueryEngineState.LOADING:
+        break;
+
+      case QueryEngineState.READY:
+        this.startRequestProcessing();
+        break;
+
+      case QueryEngineState.PROCESSING:
+        this.initNewWorker();
+        break;
+
+      default:
+        throw new Error(`Unknown query engine state: ${this.state}`);
       }
     });
   }
 
-  private generateID () {
-    return this.nextID++;
+  /**
+   * Doesn't check if worker or request exist.
+   * Doesn't check current state.
+   */
+  private startRequestProcessing () {
+    this.worker!.postMessage(this.request!.message);
+    this.state = QueryEngineState.PROCESSING;
   }
 
-  private postMessage<D> (type: QueryEngineWorkerRequestType, data: D) {
-    return new Promise((resolve, reject) => {
-      const id = this.generateID();
-      this.worker.postMessage({id, type, data});
-      this.inTransit.set(id, {resolve, reject});
+  private initNewWorker () {
+    const worker = new Worker();
+
+    // worker.addEventListener("error", console.error);
+    worker.addEventListener("message", msg => {
+      const {type, error, data} = msg.data as QueryEngineWorkerResponse;
+
+      switch (type) {
+      case QueryEngineWorkerResponseType.WORKER_LOADED:
+        worker.postMessage({
+          type: QueryEngineWorkerRequestType.LOAD_LIBRARY,
+          // TODO Bind to store
+          data: this.songs,
+        });
+        break;
+
+      case QueryEngineWorkerResponseType.LIBRARY_LOADED:
+        if (this.request) {
+          this.startRequestProcessing();
+        } else {
+          this.state = QueryEngineState.READY;
+        }
+        break;
+
+      case QueryEngineWorkerResponseType.REQUEST_RESPONSE:
+        const {resolve, reject} = this.request!.callbacks;
+        if (error) {
+          reject(new QueryEngineWorkerResponseError(data));
+        } else {
+          resolve(data);
+        }
+        this.state = QueryEngineState.READY;
+        break;
+
+      default:
+        throw new Error(`Unknown response type: ${type}`);
+      }
     });
+
+    if (this.worker != undefined) {
+      this.worker.terminate();
+    }
+
+    this.worker = worker;
+    this.state = QueryEngineState.LOADING;
+  }
+
+  async search (query: string) {
+    return await this.makeAsyncRequest<string[]>(QueryEngineWorkerRequestType.RUN_INLINE_JS_QUERY, query);
   }
 
   loadData (songs: Song[]) {
-    void this.postMessage(QueryEngineWorkerRequestType.LOAD_LIBRARY, songs);
-  }
-
-  async query (query: string) {
-    return await this.postMessage(QueryEngineWorkerRequestType.RUN_JS_QUERY, query);
+    this.songs = songs;
+    this.initNewWorker();
   }
 };

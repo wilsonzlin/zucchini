@@ -5,7 +5,6 @@ import {
   OptionalTitleName,
   RepeatMode,
   ShuffleMode,
-  SongId
 } from "../common/Media";
 import {getKeyOrDefault, PLAYER_REPEAT_MODE, PLAYER_SHUFFLE_MODE, PLAYER_VOLUME, setKey} from "../common/LocalStorage";
 import {audioEngine} from "../system/AudioEngine";
@@ -80,9 +79,9 @@ export const playerToggleMuteThunk = (action: { mute: boolean }) =>
     audioEngine.muted = action.mute;
   };
 
-export const playerPlaySongThunk = (action: { id: SongId }) =>
+export const playerPlaySongThunk = (action: { file: string }) =>
   (dispatch: GlobalDispatcher, getState: () => AppState) => {
-    const song = getState().library.songs.find(s => s.id === action.id)!;
+    const song = getState().library.songs.find(s => s.file === action.file)!;
     audioEngine.src = song.file;
     audioEngine.play();
     dispatch(playerAction("UPDATE_SONG_DETAILS", {

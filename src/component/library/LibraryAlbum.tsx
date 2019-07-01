@@ -53,7 +53,7 @@ export const Album = connect(connectStateToProps, connectDispatchToProps)(
       <div className="album-table table fixed">
         <div className="tbody">{tracks
           .map(track => <Track
-            key={track.id}
+            key={track.file}
             {...track}
           />)
         }</div>

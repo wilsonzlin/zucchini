@@ -4,71 +4,49 @@ import {
   QueryEngineWorkerResponse,
   QueryEngineWorkerResponseType
 } from "./QueryEngineWorkerMessage";
-import {Song} from "../common/Media";
+import {isWellFormedSong, Song} from "../common/Media";
 
-type Handler<D, R> = (data: D) => R | Promise<R>;
+let library: Song[] = [];
 
-const worker = new class QueryEngineWorker {
-  private readonly worker: Worker;
-  private readonly handlers: Map<QueryEngineWorkerRequestType, Handler<any, any>>;
+const worker: Worker = self as any;
 
-  constructor () {
-    this.worker = self as any;
-    this.handlers = new Map();
-
-    this.worker.addEventListener("message", async (msg) => {
-      const {id, type, data} = msg.data as QueryEngineWorkerRequest<any>;
-      const handler = this.handlers.get(type);
-      if (!handler) {
-        throw new Error(`No registered handler for request type: ${type}`);
-      }
-      let response, error;
-      try {
-        response = await handler(data);
-      } catch (e) {
-        error = e;
-      }
-      if (response !== undefined) {
-        this.postRawMessage({
-          id,
-          type: QueryEngineWorkerResponseType.REQUEST_RESPONSE,
-          data: response,
-        });
-      } else if (error !== undefined) {
-        this.postRawMessage({
-          id,
-          type: QueryEngineWorkerResponseType.REQUEST_RESPONSE,
-          error: true,
-          data: error,
-        });
-      }
-    });
-  }
-
-  postRawMessage<D> (msg: QueryEngineWorkerResponse<D>): void {
-    this.worker.postMessage(msg);
-  }
-
-  registerHandler (type: QueryEngineWorkerRequestType, handler: Handler<any, any>) {
-    if (this.handlers.has(type)) {
-      throw new Error(`A handler has already been registered for type: ${type}`);
-    }
-    this.handlers.set(type, handler);
-  }
+const postRawMessage = (msg: QueryEngineWorkerResponse): void => {
+  worker.postMessage(msg);
 };
 
-worker.postRawMessage({
-  id: -1,
+worker.addEventListener("message", (msg) => {
+  const {type, data} = msg.data as QueryEngineWorkerRequest;
+
+  switch (type) {
+  case QueryEngineWorkerRequestType.LOAD_LIBRARY:
+    library = data;
+    postRawMessage({
+      type: QueryEngineWorkerResponseType.LIBRARY_LOADED,
+      data: true,
+    });
+    break;
+
+  case QueryEngineWorkerRequestType.RUN_INLINE_JS_QUERY:
+    let result: Song[] = [], error;
+    try {
+      result = new Function(`l`, `return ${data}`)(library);
+    } catch (e) {
+      error = e;
+    }
+    if (!Array.isArray(result) || !result.every(s => isWellFormedSong(s))) {
+      error = new TypeError(`Query result is not an array of songs`);
+    }
+    postRawMessage({
+      type: QueryEngineWorkerResponseType.REQUEST_RESPONSE,
+      error: error !== undefined,
+      // Error objects cannot be sent using postMessage.
+      data: error !== undefined ? `${error}` : result!.map(s => s.file),
+    });
+  }
+});
+
+postRawMessage({
   type: QueryEngineWorkerResponseType.WORKER_LOADED,
   data: true,
 });
 
-let library: Song[] = [];
-
-worker.registerHandler(QueryEngineWorkerRequestType.LOAD_LIBRARY, songs => {
-  library = songs;
-});
-
-worker.registerHandler(QueryEngineWorkerRequestType.RUN_JS_QUERY, query => {
-  return new Function(query)(library);
-});

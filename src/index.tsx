@@ -3,19 +3,21 @@ import * as ReactDOM from "react-dom";
 import {App} from "./component/app/App";
 import "./index.scss";
 import {Provider} from "react-redux";
-import {applyMiddleware, createStore} from "redux";
+import {applyMiddleware, createStore, Store} from "redux";
 import {AppReducer} from "./state/AppState";
 import {libraryAction} from "./state/LibraryState";
 import {isWellFormedSong} from "./common/Media";
 import thunk from "redux-thunk";
+import {GlobalDispatcher} from "./common/Action";
 
-export const store = createStore(
+// Fix store.dispatch not accepting redux-thunk functions.
+export const store: Store | { dispatch: GlobalDispatcher; } = createStore(
   AppReducer,
   applyMiddleware(thunk)
 );
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={store as Store}>
     <App/>
   </Provider>,
   document.getElementById("root")
@@ -34,8 +36,7 @@ if (libraryDataURL == null) {
         throw new Error();
       }
 
-      for (const [id, song] of songs.entries()) {
-        song.id = id;
+      for (const song of songs) {
         if (!isWellFormedSong(song)) {
           // TODO
           alert("Song is not valid");
@@ -44,9 +45,7 @@ if (libraryDataURL == null) {
         }
       }
 
-      store.dispatch(libraryAction("UPDATE_SONGS", {
-        songs: songs,
-      }));
+      store.dispatch(libraryAction("UPDATE_SONGS", {songs}));
     });
 }
 
@@ -60,12 +59,5 @@ window.addEventListener("keydown", e => {
   if (e.key == "f" && e.ctrlKey || e.key == "/") {
     e.preventDefault();
     $searchInput.focus();
-  }
-});
-$searchInput.addEventListener("keydown", e => {
-  if (e.key == "Escape") {
-    store.dispatch(libraryAction("UPDATE_SEARCH_TERM", {
-      searchTerm: "",
-    }));
   }
 });

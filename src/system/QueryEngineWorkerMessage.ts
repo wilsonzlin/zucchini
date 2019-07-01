@@ -1,22 +1,27 @@
-export interface QueryEngineWorkerRequest<D> {
-  id: number;
+export interface QueryEngineWorkerRequest {
   type: QueryEngineWorkerRequestType;
-  data: D;
+  data: any;
 }
 
 export enum QueryEngineWorkerRequestType {
-  LOAD_LIBRARY,
-  RUN_JS_QUERY,
+  LOAD_LIBRARY = "LOAD_LIBRARY",
+  RUN_INLINE_JS_QUERY = "RUN_INLINE_JS_QUERY",
 }
 
-export interface QueryEngineWorkerResponse<D> {
-  id: number;
+export interface QueryEngineWorkerResponse {
   type: QueryEngineWorkerResponseType;
   error?: boolean;
-  data: D;
+  data: any;
 }
 
 export enum QueryEngineWorkerResponseType {
-  WORKER_LOADED,
-  REQUEST_RESPONSE,
+  WORKER_LOADED = "WORKER_LOADED",
+  LIBRARY_LOADED = "LIBRARY_LOADED",
+  REQUEST_RESPONSE = "REQUEST_RESPONSE",
+}
+
+export class QueryEngineWorkerResponseError extends Error {
+  constructor (message: string) {
+    super(message);
+  }
 }

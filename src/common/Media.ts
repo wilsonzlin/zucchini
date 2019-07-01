@@ -1,4 +1,3 @@
-export type SongId = number;
 export type OptionalAlbumName = string | null;
 export type OptionalArtistName = string | null;
 export type ArtistNames = string[];
@@ -15,7 +14,6 @@ export const keyFromOptionalField = <T> (fieldName: string, value: T): string =>
 };
 
 export interface Song {
-  id: SongId;
   file: string;
   album: OptionalAlbumName;
   artists: ArtistNames;
