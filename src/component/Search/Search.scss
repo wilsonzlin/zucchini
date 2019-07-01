@@ -4,6 +4,13 @@
   color: #333;
 
   flex-grow: 1;
+
+  transition: 0.4s;
+}
+
+#search:focus {
+  box-shadow: 0 0 8px 4px #ff9933;
+  background: rgba(255, 255, 255, 0.88);
 }
 
 @include media("<desktop") {
@@ -20,5 +27,7 @@
     font-size: 1rem;
     border-radius: 1rem;
     max-width: 42rem;
+
+    margin: 0.25rem 0;
   }
 }
