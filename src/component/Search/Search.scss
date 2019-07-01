@@ -1,9 +1,14 @@
 @import "../../common/style";
 
+#search-centre {
+  flex-grow: 1;
+}
+
 #search {
   color: #333;
 
-  flex-grow: 1;
+  display: block;
+  width: 100%;
 
   transition: 0.4s;
 }
@@ -11,6 +16,33 @@
 #search:focus {
   box-shadow: 0 0 8px 4px #ff9933;
   background: rgba(255, 255, 255, 0.88);
+}
+
+#search-suggestions {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#search-suggestions, .search-suggestion {
+  height: 2.4rem;
+  line-height: 2.4rem;
+}
+
+.search-suggestion {
+  display: inline-block;
+  vertical-align: top;
+
+  background: #444;
+  color: #e2e2e2;
+  font-size: 0.875rem;
+  padding: 0 0.5rem;
+  margin-right: 0.5rem;
+
+  transition: 0.3s;
+}
+
+.search-suggestion:empty {
+  opacity: 0;
 }
 
 @include media("<desktop") {
@@ -21,13 +53,16 @@
 }
 
 @include media(">=desktop") {
+  #search-centre {
+    max-width: 42rem;
+
+    margin: 0.25rem 0;
+  }
+
   #search {
     background: rgba(255, 255, 255, 0.92);
     padding: 1rem;
     font-size: 1rem;
     border-radius: 1rem;
-    max-width: 42rem;
-
-    margin: 0.25rem 0;
   }
 }

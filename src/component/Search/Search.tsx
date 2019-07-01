@@ -5,7 +5,10 @@ import {AppState} from "../../state/AppState";
 import {librarySearchThunk} from "../../state/LibraryState";
 import {connect} from "react-redux";
 import {GlobalDispatcher} from "../../common/Action";
-import {textSearchAutocompleteToKey, TextSearchEngineAutocomplete} from "../../system/TextSearchEngineField";
+import {TextSearchEngineAutocomplete} from "../../system/TextSearchEngineField";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCalendar, faCalendarWeek, faCoffee, faFolder, faMicrophone} from "@fortawesome/free-solid-svg-icons";
+import {faWallet} from "@fortawesome/free-solid-svg-icons/faWallet";
 
 export interface SearchInputEvent {
   term: string;
@@ -34,6 +37,21 @@ const connectDispatchToProps = (dispatch: GlobalDispatcher) => ({
   })),
 });
 
+const renderSearchSuggestion = (suggestion: TextSearchEngineAutocomplete | undefined) => {
+  if (!suggestion) {
+    return <li className="search-suggestion"/>;
+  }
+  let icon = {
+    "album": () => <FontAwesomeIcon icon={faFolder}/>,
+    "artists": () => <FontAwesomeIcon icon={faMicrophone}/>,
+    "genres": () => <FontAwesomeIcon icon={faCoffee}/>,
+    "title": () => <FontAwesomeIcon icon={faWallet}/>,
+    "year": () => <FontAwesomeIcon icon={faCalendar}/>,
+    "decade": () => <FontAwesomeIcon icon={faCalendarWeek}/>,
+  }[suggestion.field]();
+  return <li className="search-suggestion">{icon} {suggestion.value}</li>;
+};
+
 export const Search = connect(connectStateToProps, connectDispatchToProps)(
   (props: SearchProps) => (
     <div id="search-centre">
@@ -50,7 +68,16 @@ export const Search = connect(connectStateToProps, connectDispatchToProps)(
       <p>{props.loading && "Loading..."}</p>
       <p id="search-error">{props.error}</p>
       <ul id="search-suggestions">{
-        props.suggestions.map(s => <li key={textSearchAutocompleteToKey(s)}>{s.field}: {s.value}</li>)
+        // TODO Comment
+        renderSearchSuggestion(props.suggestions[0])
+      }{
+        renderSearchSuggestion(props.suggestions[1])
+      }{
+        renderSearchSuggestion(props.suggestions[2])
+      }{
+        renderSearchSuggestion(props.suggestions[3])
+      }{
+        renderSearchSuggestion(props.suggestions[4])
       }</ul>
     </div>
   )
