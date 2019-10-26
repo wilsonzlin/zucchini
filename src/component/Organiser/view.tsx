@@ -2,6 +2,8 @@ import {callHandler, EventHandler} from "common/Event";
 import {Field} from "model/Song";
 import * as moment from "moment";
 import * as React from "react";
+import {Button} from "ui/Button/view";
+import {useDismissibleControl} from "ui/common/dismissible";
 import {Dropdown} from "ui/Dropdown/view";
 import {HoverCard, HoverCardAnchor} from "ui/HoverCard/view";
 import {Input} from "ui/Input/view";
@@ -58,43 +60,62 @@ export const Organiser = (
     onChangeGroupBy,
     onChangeSubgroupBy,
   }: OrganiserProps
-) => (
-  <div className={style.organiser}>
-    <aside className={style.organiserLabel}>
-      {statistics && (
-        <>
-          <span>{statistics.count} songs</span>
-          <span>{moment.duration(statistics.duration, "s").humanize()}</span>
-        </>
-      )}
-    </aside>
+) => {
+  const [showingOptions, setShowingOptions, onOptionsRelevantClick] = useDismissibleControl();
 
-    <HoverCard shouldShow={true} anchor={HoverCardAnchor.BOTTOM}>
+  return (
+    <div className={style.organiser}>
+      <aside className={style.label}>
+        {/* Coerce count to boolean to prevent rendering if zero. */}
+        {statistics && !!statistics.count && (
+          /* Wrap text to allow flex for center-right alignment. */
+          <span className={style.labelText}>
+            {statistics.count} songs
+            {" • "}
+            {moment.duration(statistics.duration, "s").humanize()}
+          </span>
+        )}
+        <Button onClick={() => !showingOptions && setShowingOptions(true)}>⚙</Button>
+      </aside>
 
-      <form className={style.organiserOptions}>
-        <span>Showing</span>
-        <Dropdown
-          options={createOptions(filterByOptions, filterByOptionLabels)}
-          value={filterBy}
-          onChange={e => callHandler(onChangeFilterBy, e)}
-        />
-        {filterBy && <Input
-          value={filterOn || ""}
-          onChange={e => callHandler(onChangeFilterOn, e)}
-        />}
+      <HoverCard
+        anchor={HoverCardAnchor.BOTTOM}
+        className={style.options}
+        shouldShow={showingOptions}
+        onClick={onOptionsRelevantClick}
+      >
+        <div className={style.optionsRow}>
+          <label>Use </label>
+          <Dropdown
+            options={createOptions(filterByOptions, filterByOptionLabels)}
+            value={filterBy}
+            onChange={e => callHandler(onChangeFilterBy, e)}
+          />
+          {filterBy && <Input
+            value={filterOn || ""}
+            onChange={e => callHandler(onChangeFilterOn, e)}
+          />}
+        </div>
 
-        <Dropdown
-          options={createOptions(groupByOptions, groupByOptionLabels)}
-          value={groupBy}
-          onChange={e => callHandler(onChangeGroupBy, e)}
-        />
-
-        {groupBy && <Dropdown
-          options={createOptions(subgroupByOptions, subgroupByOptionLabels)}
-          value={subgroupBy}
-          onChange={e => callHandler(onChangeSubgroupBy, e)}
-        />}
-      </form>
-    </HoverCard>
-  </div>
-);
+        <div className={style.optionsRow}>
+          <label>Group by </label>
+          <Dropdown
+            options={createOptions(groupByOptions, groupByOptionLabels)}
+            value={groupBy}
+            onChange={e => callHandler(onChangeGroupBy, e)}
+          />
+          {groupBy && (
+            <>
+              <label> then by </label>
+              <Dropdown
+                options={createOptions(subgroupByOptions, subgroupByOptionLabels)}
+                value={subgroupBy}
+                onChange={e => callHandler(onChangeSubgroupBy, e)}
+              />
+            </>
+          )}
+        </div>
+      </HoverCard>
+    </div>
+  );
+};

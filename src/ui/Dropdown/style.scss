@@ -38,9 +38,10 @@
   box-shadow: 0 0 $dropShadowRadius var(--color-dropdown-menu-shadow);
 
   position: absolute;
-  z-index: 1;
+  z-index: $zIndexControlMenu;
 
   // TODO Dynamically set size, alignment, and position based on button position and available surrounding space.
+  // TODO Optionally set width dynamically based on largest value.
   top: 100%;
   right: 0;
   text-align: right;

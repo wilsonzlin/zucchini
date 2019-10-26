@@ -1,4 +1,5 @@
 import {cls} from "common/Classes";
+import {callHandler, EventHandler} from "common/Event";
 import * as React from "react";
 import {useState} from "react";
 import style from "./style.scss";
@@ -25,11 +26,15 @@ export const HoverCard = (
     shouldShow,
     anchor,
     className,
+
+    onClick,
   }: {
     children?: React.ReactNode;
     shouldShow: boolean;
     anchor: HoverCardAnchor;
     className?: string;
+
+    onClick?: EventHandler;
   }
 ) => {
   const [hoveringSelf, setHoveringSelf] = useState(false);
@@ -42,6 +47,7 @@ export const HoverCard = (
       }, className, anchorClass[anchor])}
       onMouseEnter={() => setHoveringSelf(true)}
       onMouseLeave={() => setHoveringSelf(false)}
+      onClick={() => callHandler(onClick)}
     >
       {children}
     </div>

@@ -1,3 +1,32 @@
 .organiser {
   grid-area: organiser;
+
+  // For HoverCard.
+  position: relative;
+}
+
+.label {
+  text-align: right;
+
+  // Fill .organiser space, which can be anything and is
+  // determined by whoever uses it.
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+
+.options {
+  width: var(--width-organiser-options);
+  right: 0;
+}
+
+.optionsRow {
+  display: flex;
+  align-items: center;
+
+  > label {
+    // Ensure spaces that are used for natural margins are rendered.
+    white-space: pre;
+  }
 }

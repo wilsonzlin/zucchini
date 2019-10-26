@@ -1,6 +1,7 @@
+import * as React from "react";
 import {useEffect, useState} from "react";
 
-export const useDismissibleControl = () => {
+export const useDismissibleControl = (): [boolean, React.Dispatch<React.SetStateAction<boolean>>, () => void] => {
   const [showing, setShowing] = useState(false);
 
   let didRelevantClick = false;
@@ -13,7 +14,7 @@ export const useDismissibleControl = () => {
     if (!showing) {
       return;
     }
-    const globalClickListener = (e: any) => {
+    const globalClickListener = () => {
       if (!didRelevantClick) {
         setShowing(false);
       } else {
@@ -26,5 +27,5 @@ export const useDismissibleControl = () => {
     };
   }, [showing]);
 
-  return {onRelevantClick, showing, setShowing};
+  return [showing, setShowing, onRelevantClick];
 };

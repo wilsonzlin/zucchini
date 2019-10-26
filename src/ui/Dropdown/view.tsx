@@ -21,7 +21,7 @@ interface Props<V> {
 
 export function Dropdown<V> (props: Props<V>) {
   assert(props.options.length > 0);
-  const {onRelevantClick, showing, setShowing} = useDismissibleControl();
+  const [showing, setShowing, onRelevantClick] = useDismissibleControl();
   const {value, options, onChange} = props;
   const label = (options.find(o => o.value === value) || options[0]).label;
 

@@ -10,6 +10,7 @@
   padding: var(--padding-hovercard);
 
   position: absolute;
+  z-index: $zIndexControlMenu;
 }
 
 .showing {
