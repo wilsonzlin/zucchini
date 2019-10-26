@@ -1,3 +1,4 @@
+import {Song} from "model/Song";
 import {
   QueryEngineWorkerRequest,
   QueryEngineWorkerRequestType,
@@ -6,8 +7,6 @@ import {
   QueryEngineWorkerResponseType
 } from "./QueryEngineWorkerMessage";
 import Worker from "worker-loader!./QueryEngine.worker";
-import {Song} from "../common/Media";
-import {ISearchEngine} from "./ISearchEngine";
 
 interface PromiseResultCallbacks<R = any, E = any> {
   resolve: (val: R) => void;
@@ -20,7 +19,7 @@ enum QueryEngineState {
   PROCESSING,
 }
 
-export const queryEngine = new class implements ISearchEngine {
+export const queryEngine = new class {
   // worker and state are not initialised initially before and during the beginning of the initNewWorker() call.
   private worker?: Worker;
   private state?: QueryEngineState;
@@ -114,8 +113,12 @@ export const queryEngine = new class implements ISearchEngine {
     this.state = QueryEngineState.LOADING;
   }
 
-  async search (query: string) {
+  async inline (query: string) {
     return await this.makeAsyncRequest<string[]>(QueryEngineWorkerRequestType.RUN_INLINE_JS_QUERY, query);
+  }
+
+  async filter (query: string) {
+    return await this.makeAsyncRequest<string[]>(QueryEngineWorkerRequestType.RUN_FILTER_JS_QUERY, query);
   }
 
   loadData (songs: Song[]) {

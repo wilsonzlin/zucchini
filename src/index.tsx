@@ -1,54 +1,36 @@
+import {AppFactory} from "component/App/factory";
+import {LibrariesFactory} from "component/Libraries/factory";
+import {SongsFactory} from "component/List/factory";
+import {OrganiserFactory} from "component/Organiser/factory";
+import {PlayerFactory} from "component/Player/factory";
+import {SearchFactory} from "component/Search/factory";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import {App} from "./component/app/App";
 import "./index.scss";
-import {Provider} from "react-redux";
-import {applyMiddleware, createStore, Store} from "redux";
-import {AppReducer} from "./state/AppState";
-import {libraryAction} from "./state/LibraryState";
-import {isWellFormedSong} from "./common/Media";
-import thunk from "redux-thunk";
-import {GlobalDispatcher} from "./common/Action";
 
-// Fix store.dispatch not accepting redux-thunk functions.
-export const store: Store | { dispatch: GlobalDispatcher; } = createStore(
-  AppReducer,
-  applyMiddleware(thunk)
-);
+const {Player, playSong} = PlayerFactory();
+
+const {Libraries, librariesState} = LibrariesFactory();
+
+const {Search, searchState} = SearchFactory({getSongs: librariesState.getSongs});
+
+const {Organiser, organiserState} = OrganiserFactory({
+  getSongs: searchState.getFilteredSongs,
+});
+
+const {Songs} = SongsFactory({
+  playSong,
+  getListing: organiserState.getListing,
+});
+
+const {App} = AppFactory({Libraries, Organiser, Player, Search, Songs});
 
 ReactDOM.render(
-  <Provider store={store as Store}>
-    <App/>
-  </Provider>,
+  <App/>,
   document.getElementById("root")
 );
 
-const libraryDataURL = new URLSearchParams(location.search).get("library");
-if (libraryDataURL == null) {
-  // TODO
-} else {
-  fetch(libraryDataURL)
-    .then(res => res.json())
-    .then(songs => {
-      if (!Array.isArray(songs)) {
-        // TODO
-        alert("Not an array");
-        throw new Error();
-      }
-
-      for (const song of songs) {
-        if (!isWellFormedSong(song)) {
-          // TODO
-          alert("Song is not valid");
-          console.error(song);
-          throw new Error();
-        }
-      }
-
-      store.dispatch(libraryAction("UPDATE_SONGS", {songs}));
-    });
-}
-
+/*
 // TODO
 const $searchInput = document.querySelector("#search") as HTMLInputElement;
 window.addEventListener("keydown", e => {
@@ -61,3 +43,4 @@ window.addEventListener("keydown", e => {
     $searchInput.focus();
   }
 });
+ */

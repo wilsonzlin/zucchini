@@ -1,0 +1,60 @@
+@import "~common/style";
+
+.container {
+  color: var(--color-dropdown-text);
+
+  position: relative;
+}
+
+.value {
+  @include bareButton();
+
+  // So that the button fills .container, which may be
+  // customised by whoever uses it.
+  height: 100%;
+
+  background: var(--color-dropdown-background);
+  border: $borderWidth solid var(--color-dropdown-border);
+  border-radius: $borderRadius;
+  box-shadow: inset 0 0 $insetShadowRadius var(--color-dropdown-insetshadow);
+
+  font-size: var(--fontsize-dropdown-value);
+  padding: var(--padding-dropdown-value);
+}
+
+@include growOneAnchorRest(".value", ".valueText");
+
+.arrow::before {
+  content: "▼"
+}
+
+.showing .arrow::before {
+  content: "▲";
+}
+
+.menu {
+  background: var(--color-dropdown-menu-background);
+  border-radius: $borderRadius;
+  box-shadow: 0 0 $dropShadowRadius var(--color-dropdown-menu-shadow);
+
+  position: absolute;
+  z-index: 1;
+
+  // TODO Dynamically set size, alignment, and position based on button position and available surrounding space.
+  top: 100%;
+  right: 0;
+  text-align: right;
+}
+
+.option {
+  @include bareButton();
+
+  font-size: var(--fontsize-dropdown-option);
+  padding: var(--padding-dropdown-option);
+
+  transition: $transitionTime;
+
+  &:hover {
+    background: var(--color-dropdown-option-background);
+  }
+}

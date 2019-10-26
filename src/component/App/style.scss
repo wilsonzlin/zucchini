@@ -1,0 +1,33 @@
+@import "~common/style";
+
+.app {
+  display: grid;
+
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue, Ubuntu, Cantarell, Oxygen, Fira Sans, sans-serif;
+  font-size: var(--fontsize-content);
+  line-height: var(--lineheight-content);
+
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+@include media("<desktop") {
+  .app {
+    // Make sure to use explicit dimensions, as auto is very slow.
+    grid-template-columns: 1fr;
+    grid-template-rows: 2.5rem 1rem 1fr 2.5rem;
+    grid-template-areas: "player" "playlist" "songs" "toolbar";
+  }
+}
+
+@include media(">=desktop") {
+  .app {
+    // Make sure to use explicit dimensions, as auto is very slow.
+    grid-template-columns: 1fr 3fr 1fr 16rem;
+    grid-template-rows: var(--height-toolbar) 1fr var(--height-player);
+    grid-template-areas: "libraries search organiser playlist" "songs songs songs playlist" "player player player player";
+  }
+}

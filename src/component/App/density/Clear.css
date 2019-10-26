@@ -1,0 +1,32 @@
+:root {
+  --fontsize-content: 16px;
+  --lineheight-content: 1.33;
+
+  --height-toolbar: 2.5rem;
+  --height-player: 2.5rem;
+
+  --width-search-suggestions: 30rem;
+  --fontsize-search-suggestion: 1rem;
+  --padding-search-suggestion: 0.75rem;
+
+  --padding-list-cell: 0.5rem 1rem;
+
+  --hmargin-player-elements: 0.25rem;
+
+  --length-player-button: 1.75rem;
+  --hmargin-player-button: 0.25rem;
+
+  --width-player-card: 27.5rem;
+  --fontsize-player-card-field: 1rem;
+  --vmargin-player-card-field: 0.33rem;
+
+  --padding-hovercard: 0.67rem;
+
+  --fontsize-input: 0.875rem;
+  --padding-input: 0.5rem;
+
+  --fontsize-dropdown-value: 0.875rem;
+  --padding-dropdown-value: 0.5rem 0.75rem;
+  --fontsize-dropdown-option: 0.875rem;
+  --padding-dropdown-option: 0.75rem;
+}

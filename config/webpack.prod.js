@@ -17,10 +17,10 @@ module.exports = {
   bail: true,
   mode: "production",
   devtool: false,
-  entry: paths.INDEX_TSX,
+  entry: paths.SRC_INDEX_TSX,
   output: {
     // The build folder.
-    path: paths.BUILD,
+    path: paths.BUILD_PROD,
     // Generated JS file names (with nested folders).
     // There will be one main bundle, and one file per asynchronous chunk.
     // We don't currently advertise code splitting but Webpack supports it.
@@ -41,12 +41,6 @@ module.exports = {
       {
         test: /\.worker\.js$/,
         use: {loader: "worker-loader"},
-      },
-      {
-        test: /\.js$/,
-        loader: "source-map-loader",
-        enforce: "pre",
-        include: paths.SRC,
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -113,7 +107,7 @@ module.exports = {
   },
   plugins: [
     // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({inject: true, template: paths.INDEX_HTML}),
+    new HtmlWebpackPlugin({inject: true, template: paths.SRC_INDEX_HTML}),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new MiniCssExtractPlugin({filename: "static/css/[name].[contenthash].css"}),
     // Generate a manifest file which contains a mapping of all asset filenames

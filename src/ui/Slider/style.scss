@@ -1,0 +1,65 @@
+@import "~common/style";
+
+$playerSliderHeight: 0.875rem;
+$playerSliderTrackHeight: 33%;
+
+.container {
+  position: relative;
+  height: $playerSliderHeight;
+  // Necessary for loading animation.
+  overflow: hidden;
+}
+
+.value {
+  position: absolute;
+  top: 50% - ($playerSliderTrackHeight / 2);
+  bottom: 50% - ($playerSliderTrackHeight / 2);
+  left: 0;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.loading .value {
+  @include animationIndefiniteLoading(0);
+}
+
+.slider {
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+
+  overflow: hidden;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+
+  background: transparent;
+  border-radius: 100%;
+  height: $playerSliderHeight;
+  width: $playerSliderHeight;
+}
+
+.slider:hover::-webkit-slider-thumb {
+  background: #ff9933;
+}
+
+.slider::-webkit-slider-runnable-track {
+  // Set the same height as thumb to increase clickable area,
+  // and use linear gradient to have thin line background.
+  background-image: linear-gradient(
+                  to bottom,
+                  rgba(0, 0, 0, 0) (50% - ($playerSliderTrackHeight / 2)),
+                  rgba(255, 255, 255, 0.1) (50% - ($playerSliderTrackHeight / 2)),
+                  rgba(255, 255, 255, 0.1) (50% + ($playerSliderTrackHeight / 2)),
+                  rgba(0, 0, 0, 0) (50% + ($playerSliderTrackHeight / 2))
+  );
+  border-radius: 0.2rem;
+  width: 100%;
+  height: $playerSliderHeight;
+}

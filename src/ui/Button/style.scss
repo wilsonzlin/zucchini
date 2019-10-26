@@ -1,0 +1,12 @@
+@import "~common/style";
+
+.button {
+  // Reset UA styling.
+  padding: 0;
+
+  cursor: pointer;
+
+  border: $borderWidth solid var(--color-button-border);
+  border-radius: $borderRadius;
+  background: var(--color-button-background);
+}

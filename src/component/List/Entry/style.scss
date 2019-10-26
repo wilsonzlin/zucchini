@@ -1,0 +1,11 @@
+@import "~common/style";
+
+.entry {
+  cursor: pointer;
+
+  transition: $transitionTime;
+}
+
+.hovering {
+  background: var(--color-list-highlight);
+}

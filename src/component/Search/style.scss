@@ -1,0 +1,49 @@
+@import "~common/style";
+
+.search {
+  grid-area: search;
+
+  color: var(--color-search-text);
+
+  // For .auxiliary.
+  position: relative;
+}
+
+@include growOneAnchorRest(".search", ".searchInput", "center");
+
+.auxiliary {
+  z-index: 1;
+  padding: 0;
+  margin: 0;
+
+  width: var(--width-search-suggestions);
+
+  background: var(--color-search-suggestions-background);
+  border-radius: var($borderRadius);
+  box-shadow: 0 0 1rem var(--color-search-suggestions-shadow);
+
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+
+.suggestion {
+  @include bareButton();
+
+  font-size: var(--fontsize-search-suggestion);
+  padding: var(--padding-search-suggestion);
+
+  &:hover {
+    background: var(--color-search-suggestion-background);
+  }
+}
+
+.error {
+  // TODO.
+  background: red;
+  color: white;
+}
+
+.suggestion {
+  display: block;
+}

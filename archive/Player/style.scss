@@ -1,0 +1,50 @@
+.handle {
+  background: white;
+  display: none;
+  position: absolute;
+  width: 1.5px;
+  bottom: 0;
+  height: 16px;
+}
+
+@include media("<desktop") {
+  .details {
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    padding: 6px 8px;
+  }
+
+  .title, .songSubtitle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .songSubtitle {
+    font-size: 13px;
+  }
+
+  .volumeControls {
+    display: none;
+  }
+
+  .playbackControls {
+    width: 100%;
+  }
+
+  .player:not(.loading) .progressContainer {
+    background: rgba(180, 180, 180, 0.5);
+  }
+
+  #progress {
+    height: 6px;
+  }
+}

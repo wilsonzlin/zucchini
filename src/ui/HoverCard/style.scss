@@ -1,0 +1,35 @@
+@import "~common/style";
+
+.card {
+  display: none;
+
+  background: var(--color-hovercard-background);
+  border: $borderWidth solid var(--color-hovercard-border);
+  border-radius: $borderRadius;
+
+  padding: var(--padding-hovercard);
+
+  position: absolute;
+}
+
+.showing {
+  display: block;
+}
+
+$anchorMargin: 0.25rem;
+
+.anchorTop {
+  bottom: calc(100% + #{$anchorMargin});
+}
+
+.anchorRight {
+  left: calc(100% + #{$anchorMargin});
+}
+
+.anchorBottom {
+  top: calc(100% + #{$anchorMargin});
+}
+
+.anchorLeft {
+  right: calc(100% + #{$anchorMargin});
+}

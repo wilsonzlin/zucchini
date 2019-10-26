@@ -4,8 +4,9 @@ export interface QueryEngineWorkerRequest {
 }
 
 export enum QueryEngineWorkerRequestType {
-  LOAD_LIBRARY = "LOAD_LIBRARY",
-  RUN_INLINE_JS_QUERY = "RUN_INLINE_JS_QUERY",
+  LOAD_LIBRARY,
+  RUN_INLINE_JS_QUERY,
+  RUN_FILTER_JS_QUERY,
 }
 
 export interface QueryEngineWorkerResponse {
@@ -15,9 +16,9 @@ export interface QueryEngineWorkerResponse {
 }
 
 export enum QueryEngineWorkerResponseType {
-  WORKER_LOADED = "WORKER_LOADED",
-  LIBRARY_LOADED = "LIBRARY_LOADED",
-  REQUEST_RESPONSE = "REQUEST_RESPONSE",
+  WORKER_LOADED,
+  LIBRARY_LOADED,
+  REQUEST_RESPONSE,
 }
 
 export class QueryEngineWorkerResponseError extends Error {

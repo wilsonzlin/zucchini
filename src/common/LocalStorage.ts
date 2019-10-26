@@ -1,79 +1,68 @@
-export const KEY_PREFIX = "zucchini_";
+import {assert, assertExists} from "common/Sanity";
 
-abstract class LSKey {
-  readonly name: string;
-
-  protected constructor (name: string) {
-    this.name = name;
-  }
+type Codec<T> = {
+  encode: (val: T) => string;
+  decode: (raw: string) => T;
 }
 
-class LSNumKey extends LSKey {
-  constructor (name: string) {
-    super(name);
-  }
-}
-
-class LSStrKey extends LSKey {
-  constructor (name: string) {
-    super(name);
-  }
-}
-
-const buildKey = (key: LSKey): string => {
-  return `${KEY_PREFIX}${key.name}`;
+export const STRING_CODEC = {
+  encode: (val: string) => val,
+  decode: (raw: string) => raw,
 };
 
-const hasKey = (key: LSKey): boolean => {
-  return localStorage.getItem(buildKey(key)) != null;
+export const INTEGER_CODEC = {
+  encode: (val: number) => val.toString(),
+  decode: (raw: string) => Number.parseInt(raw, 10),
 };
 
-const assertGetRawKey = (key: LSKey): string => {
-  const val = localStorage.getItem(buildKey(key));
-  if (val == null) {
-    throw new ReferenceError(`Key doesn't exist`);
-  }
-  return val;
+export const BOOLEAN_CODEC = {
+  encode: (val: boolean) => val ? "1" : "",
+  decode: (raw: string) => !!raw,
 };
 
-const setRawKey = (key: LSKey, rawValue: any): void => {
-  localStorage.setItem(buildKey(key), rawValue);
+export const JSON_CODEC = {
+  encode: (val: any) => JSON.stringify(val),
+  decode: (raw: string) => JSON.parse(raw),
 };
 
-export function getKey (key: LSNumKey): number;
-export function getKey (key: LSStrKey): string;
-export function getKey (key: LSKey): number | string {
-  if (key instanceof LSNumKey) {
-    return Number.parseFloat(assertGetRawKey(key));
-  } else if (key instanceof LSStrKey) {
-    return assertGetRawKey(key);
-  } else {
-    throw new Error("This should never happen");
-  }
-}
+const DEFAULT_VALIDATOR = (val: any) => true;
 
-export function getKeyOrDefault (key: LSNumKey, def: number): number;
-export function getKeyOrDefault (key: LSStrKey, def: string): string;
-export function getKeyOrDefault (key: LSKey, def: number | string): number | string {
-  if (!hasKey(key)) {
-    return def;
+const createKeyspace = (prefix: string) => class LSKey<T> {
+  constructor (
+    private readonly name: string,
+    private readonly codec: Codec<T>,
+    private readonly validator: (val: T) => boolean = DEFAULT_VALIDATOR,
+  ) {
   }
-  return getKey(key);
-}
 
-export function setKey (key: LSNumKey, value: number): number;
-export function setKey (key: LSStrKey, value: string): string;
-export function setKey (key: LSKey, value: number | string): number | string {
-  if (key instanceof LSNumKey) {
-    setRawKey(key, value.toString());
-  } else if (key instanceof LSStrKey) {
-    setRawKey(key, value);
-  } else {
-    throw new Error("This should never happen");
+  static createSubkeyspace (additionalPrefix: string) {
+    return createKeyspace(`${prefix}${additionalPrefix}`);
   }
-  return value;
-}
 
-export const PLAYER_VOLUME = new LSNumKey("PLAYER_VOLUME");
-export const PLAYER_REPEAT_MODE = new LSNumKey("PLAYER_REPEAT_MODE");
-export const PLAYER_SHUFFLE_MODE = new LSNumKey("PLAYER_SHUFFLE_MODE");
+  buildKey (): string {
+    return `${prefix}${this.name}`;
+  }
+
+  getOrDefault (def: T): T {
+    try {
+      const raw = assertExists(localStorage.getItem(this.buildKey()));
+      const val = this.codec.decode(raw);
+      assert(this.validator(val));
+      return val;
+    } catch (err) {
+      localStorage.removeItem(this.buildKey());
+      return def;
+    }
+  }
+
+  set (val: T): void {
+    assert(this.validator(val));
+    const raw = this.codec.encode(val);
+    localStorage.setItem(this.buildKey(), raw);
+  }
+};
+
+const ZucchiniLSKey = createKeyspace("zucchini_");
+export const AppLSKey = ZucchiniLSKey.createSubkeyspace("app_");
+export const LibrariesLSKey = ZucchiniLSKey.createSubkeyspace("libraries_");
+export const PlayerLSKey = ZucchiniLSKey.createSubkeyspace("player_");

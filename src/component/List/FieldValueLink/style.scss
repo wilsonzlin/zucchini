@@ -1,0 +1,39 @@
+.libraryFieldLink {
+  display: inline-block;
+
+  // TODO
+  margin-right: 0.25rem;
+  background: #222;
+  padding: 0.33rem 0.6rem;
+  border-radius: 0.25rem 0.5rem;
+
+  // TODO
+  text-decoration: none;
+  font-size: 0.85rem;
+  color: gray;
+
+  // For the hover effect.
+  position: relative;
+  transition: 0.4s;
+
+  // TODO
+  &::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    left: 0.5rem;
+
+    transition: 0.2s;
+    opacity: 0;
+  }
+
+  // TODO
+  &:hover {
+    padding-left: 1.75rem;
+  }
+
+  // TODO
+  &:hover::before {
+    opacity: 1;
+  }
+}

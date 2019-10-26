@@ -5,9 +5,10 @@
   "compilerOptions": {
     "allowJs": false,
     "alwaysStrict": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "declaration": false,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "lib": [
@@ -28,7 +29,7 @@
     "outDir": "build/dist",
     "rootDir": "src",
     "skipLibCheck": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "strict": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,

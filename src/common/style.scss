@@ -1,1 +1,84 @@
 @import "~include-media/dist/include-media";
+
+@mixin noSelect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@mixin growOneAnchorRest($container, $growable, $alignItems: "center") {
+  #{$container} {
+    display: flex;
+    align-items: unquote($alignItems);
+  }
+
+  #{$container} > :not(#{$growable}) {
+    flex: 0 0 auto;
+  }
+
+  #{$growable} {
+    flex-grow: 1;
+  }
+}
+
+@mixin noAppearance {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+@mixin bareButton {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  margin: 0;
+  text-align: inherit;
+  width: 100%;
+}
+
+@keyframes:global(indefiniteLoading) {
+  from {
+    margin-left: -25%;
+    width: 25%;
+  }
+  25% {
+    margin-left: 15%;
+  }
+  50% {
+    width: 25%;
+  }
+  70% {
+    width: 70%;
+  }
+  80% {
+    margin-left: 65%;
+  }
+  95% {
+    margin-left: 120%;
+  }
+  to {
+    margin-left: 95%;
+  }
+}
+
+@mixin animationIndefiniteLoading($delay) {
+  :global {
+    animation-name: indefiniteLoading;
+  };
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: $delay;
+}
+
+// TODO Use these.
+$transitionTime: 0.3s;
+$borderWidth: 1px;
+$borderRadius: 0.25rem;
+$insetShadowRadius: 4px;
+$dropShadowRadius: 1rem;

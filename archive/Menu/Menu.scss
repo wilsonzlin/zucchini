@@ -1,0 +1,31 @@
+@import "../../common/style";
+
+.menu {
+  grid-area: menu;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  padding: 0;
+  margin: 0;
+
+  li {
+    a {
+      display: block;
+      padding: 1rem 1.25rem;
+
+      // TODO
+      font-size: 1.125rem;
+      text-decoration: none;
+      color: white;
+
+      // TODO
+      transition: 0.4s;
+      border-bottom: 0.25rem solid transparent;
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+    }
+  }
+}

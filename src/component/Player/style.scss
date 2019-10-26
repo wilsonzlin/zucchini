@@ -1,0 +1,94 @@
+@import "~common/style";
+
+.player {
+  grid-area: player;
+
+  background: var(--color-player-background);
+  color: var(--color-player-text);
+
+  box-shadow: 0 0 $dropShadowRadius var(--color-player-shadow);
+
+  // Show drop shadow.
+  z-index: 1;
+}
+
+@include growOneAnchorRest(".player", ".progress", "stretch");
+
+.player > * {
+  margin: 0 var(--hmargin-player-elements);
+}
+
+.playbackControls {
+  display: flex;
+  align-items: center;
+}
+
+.playbackControls > button {
+  height: var(--length-player-button);
+  width: var(--length-player-button);
+  margin: 0 var(--hmargin-player-button);
+}
+
+$titleFontWeight: 700;
+
+.details {
+  min-width: 10rem;
+  width: 20%;
+  max-width: 20rem;
+
+  // For .detailsLabel.
+  display: flex;
+  align-items: center;
+
+  // For HoverCard.
+  position: relative;
+}
+
+.detailsLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card {
+  width: var(--width-player-card);
+}
+
+.card > * {
+  font-size: var(--fontsize-player-card-field);
+  margin: var(--vmargin-player-card-field) 0;
+  // For default UA <ul>.
+  padding: 0;
+}
+
+.cardTitle {
+  font-weight: $titleFontWeight;
+}
+
+.cardAlbum {
+  // For default UA <ul>.
+  font-weight: normal;
+}
+
+.cardArtists {
+  display: flex;
+  align-items: center;
+}
+
+@include growOneAnchorRest(".cardOthers", ".cardGenres")
+
+.cardOthers > * {
+  // For default UA <p>.
+  margin: 0;
+  // This effect is twofold: show the space before the bullet, and don't wrap (and therefore use text-overflow) for genres.
+  white-space: pre;
+}
+
+.cardGenres {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title {
+  font-weight: $titleFontWeight;
+}

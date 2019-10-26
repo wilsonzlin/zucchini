@@ -1,20 +1,26 @@
 "use strict";
 
-const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const paths = require("./paths");
 
 module.exports = {
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
-  devtool: false,
+  devtool: "inline-source-map",
+  devServer: {
+    contentBase: paths.BUILD_DEV,
+    historyApiFallback: true,
+  },
   mode: "development",
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
-  entry: paths.INDEX_TSX,
+  entry: [
+    paths.SRC_INDEX_TSX,
+  ],
   output: {
     // This does not produce a real file. It's just the virtual path that is
     // served by WebpackDevServer in development. This is the JS bundle
@@ -26,6 +32,7 @@ module.exports = {
     publicPath: "/",
     // For worker, which doesn't have "window".
     globalObject: "this",
+    path: paths.BUILD_DEV,
   },
   resolve: {
     extensions: [
@@ -33,6 +40,7 @@ module.exports = {
       ".tsx",
       ".js",
     ],
+    plugins: [new TsconfigPathsPlugin()]
   },
   module: {
     strictExportPresence: true,
@@ -40,12 +48,6 @@ module.exports = {
       {
         test: /\.worker\.js$/,
         use: {loader: "worker-loader"},
-      },
-      {
-        test: /\.js$/,
-        loader: "source-map-loader",
-        enforce: "pre",
-        include: paths.SRC,
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -58,38 +60,28 @@ module.exports = {
           {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
             loader: "url-loader",
-            options: {
-              limit: 10000,
-              name: "static/media/[name].[hash:8].[ext]",
-            },
+            options: {limit: false, name: "static/media/[name].[hash].[ext]"},
           },
           {
             test: /\.js$/,
             include: paths.SRC,
             loader: "babel-loader",
-            options: {
-              compact: true,
-            },
+            options: {compact: true},
           },
           {
             test: /\.tsx?$/,
             include: paths.SRC,
             use: [
-              {
-                loader: "ts-loader",
-                options: {
-                  // disable type checker - we will use it in fork plugin
-                  transpileOnly: true,
-                },
-              },
+              // disable type checker - we will use it in fork plugin
+              {loader: "ts-loader", options: {transpileOnly: true}},
             ],
           },
           {
             test: /\.scss$/,
             use: [
-              "style-loader", // creates style nodes from JS strings
-              "css-loader", // translates CSS into CommonJS
-              "sass-loader" // compiles Sass to CSS, using Node Sass by default
+              {loader: "style-loader"}, // creates style nodes from JS strings
+              {loader: "css-loader", options: {modules: true}}, // translates CSS into CommonJS
+              {loader: "sass-loader", options: {includePaths: [paths.SRC]}} // compiles Sass to CSS, using Node Sass by default
             ]
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.
@@ -102,10 +94,10 @@ module.exports = {
             // its runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.(js)$/, /\.html$/, /\.json$/],
+            exclude: [/\.js$/, /\.html$/, /\.json$/],
             loader: "file-loader",
             options: {
-              name: "static/media/[name].[hash:8].[ext]",
+              name: "static/media/[name].[hash].[ext]",
             },
           },
         ],
@@ -114,7 +106,7 @@ module.exports = {
   },
   plugins: [
     // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({inject: true, template: paths.INDEX_HTML}),
+    new HtmlWebpackPlugin({inject: true, template: paths.SRC_INDEX_HTML}),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),
     // Perform type checking and linting in a separate process to speed up compilation
@@ -125,6 +117,7 @@ module.exports = {
       tslint: false,
     }),
   ],
+  watch: true,
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
   node: {

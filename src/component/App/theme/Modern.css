@@ -1,0 +1,40 @@
+:root {
+  --color-list-loading-background: rgb(39, 190, 255);
+  --color-list-background: white;
+  --color-list-highlight: rgba(0, 0, 0, 0.04);
+  --color-list-text: black;
+  --color-list-heading-background: linear-gradient(
+    to bottom,
+    white 0%,
+    rgba(250, 250, 250, 0.92) 33%
+  );
+
+  --color-playlist-background: #f4f4f4;
+
+  --color-player-background: #f4f4f4;
+  --color-player-shadow: rgba(200, 200, 200, 0.9);
+  --color-player-text: #464646;
+
+  --color-search-text: black;
+  --color-search-suggestions-background: rgba(252, 252, 252, 0.96);
+  --color-search-suggestions-shadow: rgba(200, 200, 200, 0.9);
+  --color-search-suggestion-background: rgba(234, 234, 234, 0.95);
+
+  --color-button-border: rgb(220, 220, 220);
+  --color-button-background: rgb(250, 250, 250);
+
+  --color-dropdown-border: rgb(220, 220, 220);
+  --color-dropdown-background: rgb(250, 250, 250);
+  --color-dropdown-insetshadow: transparent;
+  --color-dropdown-text: black;
+  --color-dropdown-menu-background: rgba(252, 252, 252, 0.96);
+  --color-dropdown-menu-shadow: rgba(200, 200, 200, 0.9);
+  --color-dropdown-option-background: rgba(234, 234, 234, 0.95);
+
+  --color-input-border: rgb(220, 220, 220);
+  --color-input-background: rgb(250, 250, 250);
+  --color-input-insetshadow: transparent;
+
+  --color-hovercard-border: rgb(220, 220, 220);
+  --color-hovercard-background: rgba(252, 252, 252, 0.96);
+}

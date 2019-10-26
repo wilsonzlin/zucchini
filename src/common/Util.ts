@@ -43,42 +43,8 @@ export const undefinedFallback = <V, F = V> (value: V | undefined, fallback: V):
   return value;
 };
 
-export enum ComparisonOrder {
-  ASC, DESC,
-}
-
-export enum NullComparisonBehaviour {
-  FIRST, LAST
-}
-
-export type Comparator<V> = (a: V, b: V) => number;
-
-export const compareNullable = <V> (order: ComparisonOrder = ComparisonOrder.ASC, nullBehaviour: NullComparisonBehaviour = NullComparisonBehaviour.LAST): Comparator<V> => {
-  // By default, the comparator returns -1 if A < B (i.e. ascending).
-  // This is flipped by multiplying by -1 if the order is DESC.
-  const orderMultiplier = order == ComparisonOrder.ASC ? 1 : -1;
-  // By default, the comparator always treats null as the greatest value.
-  // This is flipped by multiplying by -1 if the behaviour is FIRST.
-  const nullOrderMultiplier = nullBehaviour == NullComparisonBehaviour.LAST ? 1 : -1;
-  return (valA: V, valB: V) => {
-    // If one is null, then it will always come after the other unless the other is null as well.
-    if (valA === null || valB === null) {
-      return (valA === null ? 1 :
-        valB === null ? 0 :
-          -1) * nullOrderMultiplier * orderMultiplier;
-    }
-    return (valA < valB ? -1 :
-      valA > valB ? 1 :
-        0) * orderMultiplier;
-  };
-};
-
-export const compareProperties = <O, K extends keyof O> (key: K, propertyComparator: Comparator<O[K]>): Comparator<O> => {
-  return (objA: O, objB: O) => {
-    const valA = objA[key];
-    const valB = objB[key];
-    return propertyComparator(valA, valB);
-  };
+export const mapOptional = <V, R> (value: V | null | undefined, mapper: (v: V) => R, def: R): R => {
+  return value == null ? def : mapper(value);
 };
 
 export const computePropertyIfAbsent = <O, P extends keyof O> (obj: O, prop: P, provider: (prop: P, obj: O) => O[P]): O[P] => {
