@@ -21,6 +21,10 @@
   right: 0;
 }
 
+.optionsButtonActive {
+  color: var(--color-organiser-button-active);
+}
+
 .optionsRow {
   display: flex;
   align-items: center;

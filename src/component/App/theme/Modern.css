@@ -1,4 +1,6 @@
 :root {
+  --color-organiser-button-active: rgb(39, 190, 255);
+
   --color-list-loading-background: rgb(39, 190, 255);
   --color-list-background: white;
   --color-list-highlight: rgba(0, 0, 0, 0.04);

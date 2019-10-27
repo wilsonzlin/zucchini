@@ -1,8 +1,8 @@
 import {cls} from "common/Classes";
 import {callHandler, EventHandler} from "common/Event";
 import {assert} from "common/Sanity";
-import React from "react";
-import {useDismissibleControl} from "ui/common/dismissible";
+import React, {useState} from "react";
+import {Dismissible} from "ui/Dismissible/view";
 import style from "./style.scss";
 
 export interface DropdownOption<V> {
@@ -21,12 +21,12 @@ interface Props<V> {
 
 export function Dropdown<V> (props: Props<V>) {
   assert(props.options.length > 0);
-  const [showing, setShowing, onRelevantClick] = useDismissibleControl();
+  const [showing, setShowing] = useState(false);
   const {value, options, onChange} = props;
   const label = (options.find(o => o.value === value) || options[0]).label;
 
   return (
-    <div className={cls(style.container, props.className, showing && style.showing)} onClick={onRelevantClick}>
+    <div className={cls(style.container, props.className, showing && style.showing)}>
       <button
         type="button"
         className={style.value}
@@ -35,18 +35,24 @@ export function Dropdown<V> (props: Props<V>) {
         <span className={style.valueText}>{label}</span>
         <span className={style.arrow}/>
       </button>
-      <div className={style.menu} hidden={!showing}>{options.map((o, i) => (
-        <button
-          key={i}
-          className={style.option}
-          type="button"
-          onClick={() => {
-            setShowing(false);
-            callHandler(onChange, o.value);
-          }}>
-          {o.label}
-        </button>
-      ))}</div>
+      <Dismissible
+        className={style.menu}
+        hidden={!showing}
+        onDismiss={() => setShowing(false)}
+      >
+        {options.map((o, i) => (
+          <button
+            key={i}
+            className={style.option}
+            type="button"
+            onClick={() => {
+              setShowing(false);
+              callHandler(onChange, o.value);
+            }}>
+            {o.label}
+          </button>
+        ))}
+      </Dismissible>
     </div>
   );
 }

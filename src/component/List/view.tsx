@@ -22,7 +22,7 @@ const Songs = (props: { songs: Song[], onPlayTrack?: EventHandler<Song> }) => (
 );
 
 const GroupedSongs = (props: { group: GroupedSongs, onPlayTrack?: EventHandler<Song> }) => (
-  <React.Fragment key={`${props.group.field}\0${props.group.name}`}>
+  <React.Fragment key={`grouped\0${props.group.field}\0${props.group.name}`}>
     <tbody>
       <tr>
         <th colSpan={Number.MAX_SAFE_INTEGER}>{props.group.field}: {props.group.name}</th>
@@ -33,7 +33,7 @@ const GroupedSongs = (props: { group: GroupedSongs, onPlayTrack?: EventHandler<S
 );
 
 const SubgroupedSongs = (props: { subgroups: SubgroupedSongs, onPlayTrack?: EventHandler<Song> }) => (
-  <React.Fragment key={`${props.subgroups.field}\0${props.subgroups.name}`}>
+  <React.Fragment key={`subgrouped\0${props.subgroups.field}\0${props.subgroups.name}`}>
     <tbody>
       <tr>
         <th colSpan={Number.MAX_SAFE_INTEGER}>{props.subgroups.field}: {props.subgroups.name}</th>

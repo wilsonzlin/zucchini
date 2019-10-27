@@ -41,10 +41,8 @@ export const HoverCard = (
 
   return (
     <div
-      className={cls({
-        [style.card]: true,
-        [style.showing]: hoveringSelf || shouldShow,
-      }, className, anchorClass[anchor])}
+      hidden={!hoveringSelf && !shouldShow}
+      className={cls(style.card, className, anchorClass[anchor])}
       onMouseEnter={() => setHoveringSelf(true)}
       onMouseLeave={() => setHoveringSelf(false)}
       onClick={() => callHandler(onClick)}

@@ -1,8 +1,6 @@
 @import "~common/style";
 
 .card {
-  display: none;
-
   background: var(--color-hovercard-background);
   border: $borderWidth solid var(--color-hovercard-border);
   border-radius: $borderRadius;
@@ -11,10 +9,6 @@
 
   position: absolute;
   z-index: $zIndexControlMenu;
-}
-
-.showing {
-  display: block;
 }
 
 $anchorMargin: 0.25rem;

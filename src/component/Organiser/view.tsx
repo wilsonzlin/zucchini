@@ -2,8 +2,9 @@ import {callHandler, EventHandler} from "common/Event";
 import {Field} from "model/Song";
 import * as moment from "moment";
 import * as React from "react";
+import {useState} from "react";
 import {Button} from "ui/Button/view";
-import {useDismissibleControl} from "ui/common/dismissible";
+import {Dismissible} from "ui/Dismissible/view";
 import {Dropdown} from "ui/Dropdown/view";
 import {HoverCard, HoverCardAnchor} from "ui/HoverCard/view";
 import {Input} from "ui/Input/view";
@@ -61,7 +62,7 @@ export const Organiser = (
     onChangeSubgroupBy,
   }: OrganiserProps
 ) => {
-  const [showingOptions, setShowingOptions, onOptionsRelevantClick] = useDismissibleControl();
+  const [showingOptions, setShowingOptions] = useState(false);
 
   return (
     <div className={style.organiser}>
@@ -75,47 +76,54 @@ export const Organiser = (
             {moment.duration(statistics.duration, "s").humanize()}
           </span>
         )}
-        <Button onClick={() => !showingOptions && setShowingOptions(true)}>⚙</Button>
+        <Button
+          className={filterBy || groupBy ? style.optionsButtonActive : undefined}
+          onClick={() => !showingOptions && setShowingOptions(true)}
+        >⚙</Button>
       </aside>
 
-      <HoverCard
-        anchor={HoverCardAnchor.BOTTOM}
-        className={style.options}
-        shouldShow={showingOptions}
-        onClick={onOptionsRelevantClick}
+      <Dismissible
+        hidden={!showingOptions}
+        onDismiss={() => setShowingOptions(false)}
       >
-        <div className={style.optionsRow}>
-          <label>Use </label>
-          <Dropdown
-            options={createOptions(filterByOptions, filterByOptionLabels)}
-            value={filterBy}
-            onChange={e => callHandler(onChangeFilterBy, e)}
-          />
-          {filterBy && <Input
-            value={filterOn || ""}
-            onChange={e => callHandler(onChangeFilterOn, e)}
-          />}
-        </div>
+        <HoverCard
+          anchor={HoverCardAnchor.BOTTOM}
+          className={style.options}
+          shouldShow={true}
+        >
+          <div className={style.optionsRow}>
+            <label>Use </label>
+            <Dropdown
+              options={createOptions(filterByOptions, filterByOptionLabels)}
+              value={filterBy}
+              onChange={e => callHandler(onChangeFilterBy, e)}
+            />
+            {filterBy && <Input
+              value={filterOn || ""}
+              onChange={e => callHandler(onChangeFilterOn, e)}
+            />}
+          </div>
 
-        <div className={style.optionsRow}>
-          <label>Group by </label>
-          <Dropdown
-            options={createOptions(groupByOptions, groupByOptionLabels)}
-            value={groupBy}
-            onChange={e => callHandler(onChangeGroupBy, e)}
-          />
-          {groupBy && (
-            <>
-              <label> then by </label>
-              <Dropdown
-                options={createOptions(subgroupByOptions, subgroupByOptionLabels)}
-                value={subgroupBy}
-                onChange={e => callHandler(onChangeSubgroupBy, e)}
-              />
-            </>
-          )}
-        </div>
-      </HoverCard>
+          <div className={style.optionsRow}>
+            <label>Group by </label>
+            <Dropdown
+              options={createOptions(groupByOptions, groupByOptionLabels)}
+              value={groupBy}
+              onChange={e => callHandler(onChangeGroupBy, e)}
+            />
+            {groupBy && (
+              <>
+                <label> then by </label>
+                <Dropdown
+                  options={createOptions(subgroupByOptions, subgroupByOptionLabels)}
+                  value={subgroupBy}
+                  onChange={e => callHandler(onChangeSubgroupBy, e)}
+                />
+              </>
+            )}
+          </div>
+        </HoverCard>
+      </Dismissible>
     </div>
   );
 };
