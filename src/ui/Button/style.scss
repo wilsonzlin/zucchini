@@ -10,3 +10,9 @@
   border-radius: $borderRadius;
   background: var(--color-button-background);
 }
+
+.iconButton {
+  height: var(--length-iconbutton);
+  width: var(--length-iconbutton);
+  margin: 0 var(--hmargin-iconbutton);
+}

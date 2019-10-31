@@ -5,15 +5,13 @@
   position: relative;
 }
 
-.label {
-  text-align: right;
-
+.labelContainer {
   // Fill .organiser space, which can be anything and is
   // determined by whoever uses it.
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: right;
+  justify-content: flex-end;
 }
 
 .options {
@@ -28,6 +26,8 @@
 .optionsRow {
   display: flex;
   align-items: center;
+
+  margin: 0.75rem 0;
 
   > label {
     // Ensure spaces that are used for natural margins are rendered.

@@ -1,9 +1,10 @@
+import {cls} from "common/Classes";
 import {callHandler, EventHandler} from "common/Event";
 import {Field} from "model/Song";
 import * as moment from "moment";
 import * as React from "react";
 import {useState} from "react";
-import {Button} from "ui/Button/view";
+import {IconButton} from "ui/Button/view";
 import {Dismissible} from "ui/Dismissible/view";
 import {Dropdown} from "ui/Dropdown/view";
 import {HoverCard, HoverCardAnchor} from "ui/HoverCard/view";
@@ -66,20 +67,28 @@ export const Organiser = (
 
   return (
     <div className={style.organiser}>
-      <aside className={style.label}>
+      <aside className={style.labelContainer}>
+        {/* This is necessary as .labelContainer uses flex to centre vertically, but we want natural
+        space between text and button to be rendered, which would not be if container is flex. */}
+        <span>
         {/* Coerce count to boolean to prevent rendering if zero. */}
-        {statistics && !!statistics.count && (
-          /* Wrap text to allow flex for center-right alignment. */
-          <span className={style.labelText}>
+          {statistics && !!statistics.count && (
+            /* Wrap text to allow flex for center-right alignment. */
+            <span className={style.labelText}>
             {statistics.count} songs
-            {" • "}
-            {moment.duration(statistics.duration, "s").humanize()}
+              {" • "}
+              {moment.duration(statistics.duration, "s").humanize()}
           </span>
-        )}
-        <Button
-          className={filterBy || groupBy ? style.optionsButtonActive : undefined}
-          onClick={() => !showingOptions && setShowingOptions(true)}
-        >⚙</Button>
+          )}
+          {" "}
+          <IconButton
+            className={cls(
+              style.optionsButton,
+              filterBy || groupBy ? style.optionsButtonActive : undefined
+            )}
+            onClick={() => !showingOptions && setShowingOptions(true)}
+          >⚙</IconButton>
+        </span>
       </aside>
 
       <Dismissible

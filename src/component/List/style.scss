@@ -9,28 +9,6 @@
   color: var(--color-list-text);
 }
 
-.list {
-  table-layout: fixed;
-  width: 100%;
-  border-collapse: collapse;
-
-  opacity: 1;
-  transition: opacity $transitionTime;
-}
-
-.isLoading .list {
-  opacity: 0.4;
-}
-
-.headingCell {
-  position: -webkit-sticky;
-  position: sticky;
-
-  top: 0;
-
-  background: var(--color-list-heading-background);
-}
-
 $loadingAnimationDelay: 1s;
 
 .loadingContainer {
@@ -58,4 +36,33 @@ $loadingAnimationDelay: 1s;
 
   background: var(--color-list-loading-background);
   height: 100%;
+}
+
+.list {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+
+  opacity: 1;
+  transition: opacity $transitionTime;
+}
+
+.isLoading .list {
+  opacity: 0.4;
+}
+
+.headingCell {
+  position: -webkit-sticky;
+  position: sticky;
+
+  top: 0;
+
+  background: var(--color-list-heading-background);
+}
+
+.messageCell {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-list-message);
 }

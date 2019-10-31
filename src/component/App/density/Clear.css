@@ -5,18 +5,17 @@
   --height-toolbar: 2.5rem;
   --height-player: 2.5rem;
 
-  --width-search-suggestions: 30rem;
-  --fontsize-search-suggestion: 1rem;
-  --padding-search-suggestion: 0.75rem;
+  --fontsize-search-suggestion: 0.875rem;
+  --padding-search-suggestion: 0.5rem 0.75rem;
 
   --width-organiser-options: 30rem;
 
   --padding-list-cell: 0.5rem 1rem;
 
   --hmargin-player-elements: 0.25rem;
-
-  --length-player-button: 1.75rem;
   --hmargin-player-button: 0.25rem;
+
+  --length-iconbutton: 1.75rem;
 
   --width-player-card: 27.5rem;
   --fontsize-player-card-field: 1rem;

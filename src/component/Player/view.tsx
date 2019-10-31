@@ -2,7 +2,7 @@ import {cls} from "common/Classes";
 import {callHandler, EventHandler} from "common/Event";
 import {Song} from "model/Song";
 import * as React from "react";
-import {Button} from "ui/Button/view";
+import {IconButton} from "ui/Button/view";
 import {HoverCard, HoverCardAnchor} from "ui/HoverCard/view";
 import {Slider} from "ui/Slider/view";
 import style from "./style.scss";
@@ -68,12 +68,12 @@ export const Player = (
     [style.loading]: loading,
   })}>
     <div className={style.playbackControls}>
-      <Button onClick={() => callHandler(onPrevious)}>⏮</Button>
+      <IconButton onClick={() => callHandler(onPrevious)}>⏮</IconButton>
       {playing ?
-        <Button onClick={() => callHandler(onPlaybackChange, false)}>⏸</Button> :
-        <Button onClick={() => callHandler(onPlaybackChange, true)}>▶</Button>
+        <IconButton onClick={() => callHandler(onPlaybackChange, false)}>⏸</IconButton> :
+        <IconButton onClick={() => callHandler(onPlaybackChange, true)}>▶</IconButton>
       }
-      <Button onClick={() => callHandler(onNext)}>⏭</Button>
+      <IconButton onClick={() => callHandler(onNext)}>⏭</IconButton>
     </div>
 
     <div

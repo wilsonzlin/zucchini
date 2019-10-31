@@ -49,7 +49,7 @@ const SubgroupedSongs = (props: { subgroups: SubgroupedSongs, onPlayTrack?: Even
 const MessageBody = (props: { message: string }) => (
   <tbody>
     <tr>
-      <td>{props.message}</td>
+      <td className={style.messageCell} colSpan={Number.MAX_SAFE_INTEGER}>{props.message}</td>
     </tr>
   </tbody>
 );

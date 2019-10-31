@@ -3,18 +3,20 @@ import {callHandler, EventHandler} from "common/Event";
 import * as React from "react";
 import style from "./style.scss";
 
+export interface ButtonProps {
+  className?: string;
+  children?: React.ReactNode;
+
+  onClick?: EventHandler;
+}
+
 export const Button = (
   {
     className,
     children,
 
     onClick,
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-
-    onClick?: EventHandler;
-  }
+  }: ButtonProps
 ) => {
   return (
     <button
@@ -24,3 +26,12 @@ export const Button = (
     />
   );
 };
+
+export const IconButton = (
+  {
+    className,
+    ...props
+  }: ButtonProps
+) => (
+  <Button className={cls(className, style.iconButton)} {...props}/>
+);

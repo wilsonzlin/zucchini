@@ -16,7 +16,10 @@
   padding: 0;
   margin: 0;
 
-  width: var(--width-search-suggestions);
+  display: flex;
+  align-items: stretch;
+  white-space: nowrap;
+  overflow: hidden;
 
   background: var(--color-search-suggestions-background);
   border-radius: var($borderRadius);
@@ -25,6 +28,7 @@
   position: absolute;
   top: 100%;
   left: 0;
+  right: 0;
 }
 
 .suggestion {
@@ -35,6 +39,14 @@
 
   &:hover {
     background: var(--color-search-suggestion-background);
+  }
+
+  &:nth-child(odd) {
+    color: var(--color-search-suggestion-text-odd);
+  }
+
+  &:nth-child(even) {
+    color: var(--color-search-suggestion-text-even);
   }
 }
 

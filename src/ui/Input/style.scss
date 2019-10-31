@@ -9,5 +9,6 @@
   box-shadow: inset 0 0 $insetShadowRadius var(--color-input-insetshadow);
   line-height: var(--lineheight-content);
   font-size: var(--fontsize-input);
+  font-family: inherit;
   padding: var(--padding-input);
 }

@@ -2,13 +2,14 @@
   --color-organiser-button-active: rgb(39, 190, 255);
 
   --color-list-loading-background: rgb(39, 190, 255);
+  --color-list-message: #464646;
   --color-list-background: white;
   --color-list-highlight: rgba(0, 0, 0, 0.04);
   --color-list-text: black;
   --color-list-heading-background: linear-gradient(
     to bottom,
     white 0%,
-    rgba(250, 250, 250, 0.92) 33%
+    rgba(248, 248, 248, 0.9) 100%
   );
 
   --color-playlist-background: #f4f4f4;
@@ -21,6 +22,8 @@
   --color-search-suggestions-background: rgba(252, 252, 252, 0.96);
   --color-search-suggestions-shadow: rgba(200, 200, 200, 0.9);
   --color-search-suggestion-background: rgba(234, 234, 234, 0.95);
+  --color-search-suggestion-text-odd: black;
+  --color-search-suggestion-text-even: #464646;
 
   --color-button-border: rgb(220, 220, 220);
   --color-button-background: rgb(250, 250, 250);

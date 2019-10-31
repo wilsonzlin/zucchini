@@ -12,6 +12,7 @@
   // So that the button fills .container, which may be
   // customised by whoever uses it.
   height: 100%;
+  width: 100%;
 
   background: var(--color-dropdown-background);
   border: $borderWidth solid var(--color-dropdown-border);
@@ -52,6 +53,7 @@
 
   font-size: var(--fontsize-dropdown-option);
   padding: var(--padding-dropdown-option);
+  width: 100%;
 
   transition: $transitionTime;
 
