@@ -39,7 +39,7 @@
   font-size: var(--fontsize-search-suggestion);
   padding: var(--padding-search-suggestion);
 
-  &:hover {
+  &:hover, &:focus, &.keyboardFocusedSuggestion {
     background: var(--color-search-suggestion-background);
   }
 

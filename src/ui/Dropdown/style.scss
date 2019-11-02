@@ -57,7 +57,7 @@
 
   transition: $transitionTime;
 
-  &:hover {
+  &:hover, &:focus {
     background: var(--color-dropdown-option-background);
   }
 }

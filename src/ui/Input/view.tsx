@@ -9,11 +9,13 @@ export const Input = (props: {
   autocomplete?: string;
   value: string;
 
+  onKeyDown?: EventHandler<React.KeyboardEvent<HTMLInputElement>>;
   onChange?: EventHandler<string>;
 }) => {
   return (
     <input
       className={cls(style.input, props.className)}
+      onKeyDown={props.onKeyDown}
       onChange={e => callHandler(props.onChange, e.target.value)}
       autoComplete={props.autocomplete}
       value={props.value}

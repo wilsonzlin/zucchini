@@ -28,6 +28,7 @@ export const SearchFactory = (
       status={watchPromise(store.filteredSongs)}
 
       onSearch={presenter.updateSearchTerm}
+      onSelectSuggestion={presenter.updateSearchTerm}
     />
   );
 

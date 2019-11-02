@@ -1,7 +1,10 @@
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 
-const showingStateSetters = new Set<any>();
-const ignoredShowingStateSetters = new Set<any>();
+type SetShowing = Dispatch<SetStateAction<boolean>>;
+type OnRelevantClick = () => void;
+
+const showingStateSetters = new Set<SetShowing>();
+const ignoredShowingStateSetters = new Set<SetShowing>();
 
 window.addEventListener("click", () => {
   for (const setShowing of showingStateSetters) {
@@ -13,8 +16,8 @@ window.addEventListener("click", () => {
 
 export const useDismissible = (): [
   boolean,
-  Dispatch<SetStateAction<boolean>>,
-  () => void,
+  SetShowing,
+  OnRelevantClick,
 ] => {
   const [showing, setShowing] = useState(false);
 
@@ -26,7 +29,16 @@ export const useDismissible = (): [
     };
   }, []);
 
-  return [showing, setShowing, () => {
+  return [showing, val => {
+    setShowing(val);
+    // Dismiss other overlays when toggling an overlay.
+    ignoredShowingStateSetters.clear();
+    for (const otherSetShowing of showingStateSetters) {
+      if (setShowing !== otherSetShowing) {
+        otherSetShowing(false);
+      }
+    }
+  }, () => {
     ignoredShowingStateSetters.add(setShowing);
   }];
 };

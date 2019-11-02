@@ -5,40 +5,10 @@ import {SearchType} from "component/Search/state";
 import * as style from "component/Search/style.scss";
 import {Song} from "model/Song";
 import * as React from "react";
+import {useState} from "react";
 import {Dropdown, DropdownOption} from "ui/Dropdown/view";
 import {Input} from "ui/Input/view";
 import {useDismissible} from "ui/util/dismissible";
-
-export interface SearchProps {
-  type: SearchType;
-  term: string;
-  status: WatchedPromise<Song[]>;
-  suggestions: WatchedPromise<string[]>;
-
-  onSearch?: EventHandler<string>;
-}
-
-const renderSearchAuxiliaryContent = (props: SearchProps) => {
-  switch (props.type) {
-  case SearchType.FILTER:
-  case SearchType.QUERY:
-    return (
-      <p className={style.error}>
-        {props.status && props.status.value}
-      </p>
-    );
-  case SearchType.TEXT:
-    return renderPromise(props.suggestions, {
-      fulfilled: suggestions => (
-        <div className={style.suggestions}>
-          {suggestions.map(s => (
-            <button className={style.suggestion}>{s}</button>
-          ))}
-        </div>
-      ),
-    });
-  }
-};
 
 const SearchInputTypeOptions: DropdownOption<SearchType>[] = [
   {value: SearchType.TEXT, label: "Search"},
@@ -46,8 +16,30 @@ const SearchInputTypeOptions: DropdownOption<SearchType>[] = [
   {value: SearchType.QUERY, label: "Query"},
 ];
 
-export const Search = (props: SearchProps) => {
+export const Search = ({
+  type,
+  term,
+  status,
+  suggestions,
+
+  onSearch,
+  onSelectSuggestion,
+}: {
+  type: SearchType;
+  term: string;
+  status: WatchedPromise<Song[]>;
+  suggestions: WatchedPromise<string[]>;
+
+  onSearch?: EventHandler<string>;
+  onSelectSuggestion?: EventHandler<string>;
+}) => {
   const [showingAuxiliary, setShowingAuxiliary, onRelevantAuxiliaryClick] = useDismissible();
+  const [keyboardFocusedSuggestion, setKeyboardFocusedSuggestion] = useState(-1);
+
+  const exitAuxiliary = () => {
+    setKeyboardFocusedSuggestion(-1);
+    setShowingAuxiliary(false);
+  };
 
   return (
     <div className={style.search}>
@@ -56,10 +48,38 @@ export const Search = (props: SearchProps) => {
         className={style.searchInput}
         autocomplete="off"
         placeholder="Search artist, album, genre, decade&hellip;"
-        value={props.term}
+        value={term}
+        onKeyDown={e => {
+          if (suggestions.state === "fulfilled") {
+            switch (e.key) {
+            case "ArrowUp":
+              e.preventDefault();
+              setKeyboardFocusedSuggestion(
+                (keyboardFocusedSuggestion <= 0
+                  ? suggestions.value.length
+                  : keyboardFocusedSuggestion) - 1);
+              break;
+            case "ArrowDown":
+              e.preventDefault();
+              setKeyboardFocusedSuggestion((keyboardFocusedSuggestion + 1) % suggestions.value.length);
+              break;
+            case "Escape":
+              exitAuxiliary();
+              break;
+            case "Enter":
+              const suggestion = suggestions.value[keyboardFocusedSuggestion];
+              if (suggestion != undefined) {
+                callHandler(onSelectSuggestion, suggestion);
+                exitAuxiliary();
+              }
+              break;
+            }
+          }
+        }}
         onChange={e => {
-          callHandler(props.onSearch, e);
+          callHandler(onSearch, e);
           setShowingAuxiliary(true);
+          setKeyboardFocusedSuggestion(-1);
         }}
       />
       <div
@@ -67,7 +87,19 @@ export const Search = (props: SearchProps) => {
         hidden={!showingAuxiliary}
         onClick={() => onRelevantAuxiliaryClick()}
       >
-        {renderSearchAuxiliaryContent(props)}
+        {renderPromise(suggestions, {
+          fulfilled: suggestions => (
+            <div className={style.suggestions}>
+              {suggestions.map((s, i) => (
+                <button className={cls(
+                  style.suggestion,
+                  keyboardFocusedSuggestion == i && style.keyboardFocusedSuggestion
+                )}
+                >{s}</button>
+              ))}
+            </div>
+          ),
+        })}
       </div>
     </div>
   );
