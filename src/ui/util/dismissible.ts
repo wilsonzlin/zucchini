@@ -2,6 +2,7 @@ import {Dispatch, SetStateAction, useEffect, useState} from "react";
 
 type SetShowing = Dispatch<SetStateAction<boolean>>;
 type OnRelevantClick = () => void;
+type OnRelevantFocus = () => void;
 
 const showingStateSetters = new Set<SetShowing>();
 const ignoredShowingStateSetters = new Set<SetShowing>();
@@ -14,10 +15,23 @@ window.addEventListener("click", () => {
   }
 });
 
+let focusCaptureTimeout: any;
+window.addEventListener("focus", () => {
+  clearTimeout(focusCaptureTimeout);
+  focusCaptureTimeout = setTimeout(() => {
+    for (const setShowing of showingStateSetters) {
+      if (!ignoredShowingStateSetters.delete(setShowing)) {
+        setShowing(false);
+      }
+    }
+  });
+}, true);
+
 export const useDismissible = (): [
   boolean,
   SetShowing,
   OnRelevantClick,
+  OnRelevantFocus,
 ] => {
   const [showing, setShowing] = useState(false);
 
@@ -29,16 +43,12 @@ export const useDismissible = (): [
     };
   }, []);
 
-  return [showing, val => {
-    setShowing(val);
-    // Dismiss other overlays when toggling an overlay.
-    ignoredShowingStateSetters.clear();
-    for (const otherSetShowing of showingStateSetters) {
-      if (setShowing !== otherSetShowing) {
-        otherSetShowing(false);
-      }
-    }
-  }, () => {
-    ignoredShowingStateSetters.add(setShowing);
-  }];
+  const ignore = () => ignoredShowingStateSetters.add(setShowing);
+
+  return [
+    showing,
+    setShowing,
+    ignore,
+    ignore,
+  ];
 };

@@ -62,7 +62,7 @@ export const Organiser = (
     onChangeSubgroupBy,
   }: OrganiserProps
 ) => {
-  const [showingOptions, setShowingOptions, onRelevantOptionsClick] = useDismissible();
+  const [showingOptions, setShowingOptions, onRelevantOptionsClick, onRelevantOptionsFocus] = useDismissible();
 
   return (
     <div className={style.organiser}>
@@ -95,7 +95,8 @@ export const Organiser = (
 
       <div
         hidden={!showingOptions}
-        onClick={() => onRelevantOptionsClick()}
+        onClick={onRelevantOptionsClick}
+        onFocusCapture={onRelevantOptionsFocus}
       >
         <HoverCard
           anchor={HoverCardAnchor.BOTTOM}

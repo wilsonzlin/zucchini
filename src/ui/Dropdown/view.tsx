@@ -21,7 +21,7 @@ interface Props<V> {
 
 export function Dropdown<V> (props: Props<V>) {
   assert(props.options.length > 0);
-  const [showing, setShowing, onRelevantClick] = useDismissible();
+  const [showing, setShowing, onRelevantClick, onRelevantFocus] = useDismissible();
   const {value, options, onChange} = props;
   const label = (options.find(o => o.value === value) || options[0]).label;
 
@@ -41,6 +41,7 @@ export function Dropdown<V> (props: Props<V>) {
       <div
         className={style.menu}
         hidden={!showing}
+        onFocusCapture={onRelevantFocus}
       >
         {options.map((o, i) => (
           <button

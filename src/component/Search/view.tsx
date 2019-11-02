@@ -33,7 +33,7 @@ export const Search = ({
   onSearch?: EventHandler<string>;
   onSelectSuggestion?: EventHandler<string>;
 }) => {
-  const [showingAuxiliary, setShowingAuxiliary, onRelevantAuxiliaryClick] = useDismissible();
+  const [showingAuxiliary, setShowingAuxiliary, onRelevantAuxiliaryClick, onRelevantAuxiliaryFocus] = useDismissible();
   const [keyboardFocusedSuggestion, setKeyboardFocusedSuggestion] = useState(-1);
 
   const exitAuxiliary = () => {
@@ -42,7 +42,7 @@ export const Search = ({
   };
 
   return (
-    <div className={style.search}>
+    <div className={style.search} onFocusCapture={onRelevantAuxiliaryFocus}>
       <Dropdown value={SearchType.TEXT} options={SearchInputTypeOptions}/>
       <Input
         className={style.searchInput}
@@ -85,7 +85,7 @@ export const Search = ({
       <div
         className={cls(style.auxiliary)}
         hidden={!showingAuxiliary}
-        onClick={() => onRelevantAuxiliaryClick()}
+        onClick={onRelevantAuxiliaryClick}
       >
         {renderPromise(suggestions, {
           fulfilled: suggestions => (
@@ -93,7 +93,7 @@ export const Search = ({
               {suggestions.map((s, i) => (
                 <button className={cls(
                   style.suggestion,
-                  keyboardFocusedSuggestion == i && style.keyboardFocusedSuggestion
+                  keyboardFocusedSuggestion == i && style.keyboardFocusedSuggestion,
                 )}
                 >{s}</button>
               ))}
