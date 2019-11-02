@@ -3,12 +3,11 @@ import {callHandler, EventHandler} from "common/Event";
 import {Field} from "model/Song";
 import * as moment from "moment";
 import * as React from "react";
-import {useState} from "react";
 import {IconButton} from "ui/Button/view";
-import {Dismissible} from "ui/Dismissible/view";
 import {Dropdown} from "ui/Dropdown/view";
 import {HoverCard, HoverCardAnchor} from "ui/HoverCard/view";
 import {Input} from "ui/Input/view";
+import {useDismissible} from "ui/util/dismissible";
 import * as style from "./style.scss";
 
 const createOptions = (fields: (Field | undefined)[], labels: Map<Field | undefined, string>) => fields.map(f => ({
@@ -63,7 +62,7 @@ export const Organiser = (
     onChangeSubgroupBy,
   }: OrganiserProps
 ) => {
-  const [showingOptions, setShowingOptions] = useState(false);
+  const [showingOptions, setShowingOptions, onRelevantOptionsClick] = useDismissible();
 
   return (
     <div className={style.organiser}>
@@ -86,14 +85,17 @@ export const Organiser = (
               style.optionsButton,
               filterBy || groupBy ? style.optionsButtonActive : undefined
             )}
-            onClick={() => !showingOptions && setShowingOptions(true)}
+            onClick={() => {
+              onRelevantOptionsClick();
+              setShowingOptions(!showingOptions);
+            }}
           >⚙</IconButton>
         </span>
       </aside>
 
-      <Dismissible
+      <div
         hidden={!showingOptions}
-        onDismiss={() => setShowingOptions(false)}
+        onClick={() => onRelevantOptionsClick()}
       >
         <HoverCard
           anchor={HoverCardAnchor.BOTTOM}
@@ -132,7 +134,7 @@ export const Organiser = (
             )}
           </div>
         </HoverCard>
-      </Dismissible>
+      </div>
     </div>
   );
 };

@@ -25,7 +25,6 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "noUnusedLocals": true,
     "outDir": "build/dist",
     "rootDir": "src",
     "skipLibCheck": true,

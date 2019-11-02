@@ -66,3 +66,18 @@ $loadingAnimationDelay: 1s;
   font-size: 0.875rem;
   color: var(--color-list-message);
 }
+
+@keyframes:global(breathingText) {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.loadingCell {
+  :global {
+    animation: 1s linear alternate infinite breathingText;
+  }
+}

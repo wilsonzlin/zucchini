@@ -46,10 +46,13 @@ const SubgroupedSongs = (props: { subgroups: SubgroupedSongs, onPlayTrack?: Even
   </React.Fragment>
 );
 
-const MessageBody = (props: { message: string }) => (
+const MessageBody = (props: {
+  cellClassName?: string;
+  message: string;
+}) => (
   <tbody>
     <tr>
-      <td className={style.messageCell} colSpan={Number.MAX_SAFE_INTEGER}>{props.message}</td>
+      <td className={cls(style.messageCell, props.cellClassName)} colSpan={Number.MAX_SAFE_INTEGER}>{props.message}</td>
     </tr>
   </tbody>
 );
@@ -71,7 +74,7 @@ export const Library = (
 ) => {
   const body = renderPromise(listing, {
     uninitialised: () => <MessageBody message="No library chosen"/>,
-    pending: () => <MessageBody message="Loading..."/>,
+    pending: () => <MessageBody cellClassName={style.loadingCell} message="Loading..."/>,
     fulfilled: listing => {
       switch (listing.type) {
       case "single":

@@ -16,11 +16,6 @@
   padding: 0;
   margin: 0;
 
-  display: flex;
-  align-items: stretch;
-  white-space: nowrap;
-  overflow: hidden;
-
   background: var(--color-search-suggestions-background);
   border-radius: var($borderRadius);
   box-shadow: 0 0 1rem var(--color-search-suggestions-shadow);
@@ -29,6 +24,13 @@
   top: 100%;
   left: 0;
   right: 0;
+}
+
+.suggestions {
+  display: flex;
+  align-items: stretch;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .suggestion {

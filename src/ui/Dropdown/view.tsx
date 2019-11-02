@@ -1,8 +1,8 @@
 import {cls} from "common/Classes";
 import {callHandler, EventHandler} from "common/Event";
 import {assert} from "common/Sanity";
-import React, {useState} from "react";
-import {Dismissible} from "ui/Dismissible/view";
+import React from "react";
+import {useDismissible} from "ui/util/dismissible";
 import style from "./style.scss";
 
 export interface DropdownOption<V> {
@@ -21,12 +21,15 @@ interface Props<V> {
 
 export function Dropdown<V> (props: Props<V>) {
   assert(props.options.length > 0);
-  const [showing, setShowing] = useState(false);
+  const [showing, setShowing, onRelevantClick] = useDismissible();
   const {value, options, onChange} = props;
   const label = (options.find(o => o.value === value) || options[0]).label;
 
   return (
-    <div className={cls(style.container, props.className, showing && style.showing)}>
+    <div
+      className={cls(style.container, props.className, showing && style.showing)}
+      onClick={() => onRelevantClick()}
+    >
       <button
         type="button"
         className={style.value}
@@ -35,10 +38,9 @@ export function Dropdown<V> (props: Props<V>) {
         <span className={style.valueText}>{label}</span>
         <span className={style.arrow}/>
       </button>
-      <Dismissible
+      <div
         className={style.menu}
         hidden={!showing}
-        onDismiss={() => setShowing(false)}
       >
         {options.map((o, i) => (
           <button
@@ -52,7 +54,7 @@ export function Dropdown<V> (props: Props<V>) {
             {o.label}
           </button>
         ))}
-      </Dismissible>
+      </div>
     </div>
   );
 }
