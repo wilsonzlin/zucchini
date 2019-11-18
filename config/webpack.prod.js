@@ -6,21 +6,22 @@ const TerserJsPlugin = require("terser-webpack-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-const paths = require("./paths");
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const common = require("./common");
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
-const publicPath = "/";
+const publicPath = process.env.ZUCCHINI_BUILD_PATH_PREFIX;
 
 module.exports = {
   // Don't attempt to continue if there are any errors.
   bail: true,
   mode: "production",
   devtool: false,
-  entry: paths.SRC_INDEX_TSX,
+  entry: common.SRC_INDEX_TSX,
   output: {
     // The build folder.
-    path: paths.BUILD_PROD,
+    path: common.BUILD_PROD,
     // Generated JS file names (with nested folders).
     // There will be one main bundle, and one file per asynchronous chunk.
     // We don't currently advertise code splitting but Webpack supports it.
@@ -34,6 +35,7 @@ module.exports = {
       ".tsx",
       ".js",
     ],
+    plugins: [new TsconfigPathsPlugin()],
   },
   module: {
     strictExportPresence: true,
@@ -56,29 +58,29 @@ module.exports = {
           },
           {
             test: /\.js$/,
-            include: paths.SRC,
+            include: common.SRC,
             loader: "babel-loader",
             options: {compact: true},
           },
           {
             test: /\.tsx?$/,
-            include: paths.SRC,
+            include: common.SRC,
             use: [
               {
                 loader: "ts-loader",
                 // disable type checker - we will use it in fork plugin
-                options: {transpileOnly: true, configFile: paths.TSCONFIG},
+                options: {transpileOnly: true, configFile: common.TSCONFIG},
               },
             ],
           },
           {
-            test: /\.(sa|s?c)ss$/,
+            test: /\.scss$/,
             use: [
               {
                 loader: MiniCssExtractPlugin.loader,
                 options: {hmr: false},
               },
-              "css-loader",
+              {loader: 'css-loader', options: {modules: true}},
               "sass-loader",
             ],
           },
@@ -106,8 +108,9 @@ module.exports = {
     ],
   },
   plugins: [
+    common.DEFINE_PLUGIN,
     // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({inject: true, template: paths.SRC_INDEX_HTML}),
+    new HtmlWebpackPlugin({inject: true, template: common.SRC_INDEX_HTML}),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new MiniCssExtractPlugin({filename: "static/css/[name].[contenthash].css"}),
     // Generate a manifest file which contains a mapping of all asset filenames
@@ -115,7 +118,7 @@ module.exports = {
     // having to parse `index.html`.
     new ManifestPlugin({fileName: "asset-manifest.json"}),
     // Perform type checking and linting in a separate process to speed up compilation
-    new ForkTsCheckerWebpackPlugin({async: false, tsconfig: paths.TSCONFIG, tslint: false}),
+    new ForkTsCheckerWebpackPlugin({async: false, tsconfig: common.TSCONFIG, tslint: false}),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

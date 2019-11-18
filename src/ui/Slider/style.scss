@@ -6,60 +6,100 @@ $playerSliderTrackHeight: 33%;
 .container {
   position: relative;
   height: $playerSliderHeight;
+  // Since all children are absolutely positioned, need to have some width.
+  min-width: 7.5rem;
   // Necessary for loading animation.
   overflow: hidden;
 }
 
-.value {
+.track, .value {
   position: absolute;
   top: 50% - ($playerSliderTrackHeight / 2);
   bottom: 50% - ($playerSliderTrackHeight / 2);
   left: 0;
-  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+
+  border-radius: 0.2rem;
+}
+
+.track {
+  background: var(--color-slider-track);
+  width: 100%;
+}
+
+.value {
+  background: var(--color-slider-value);
+  // Default value.
+  width: 0;
 }
 
 .loading .value {
   @include animationIndefiniteLoading(0);
 }
 
-.slider {
+.input {
+  // Undo Chrome styling.
   -webkit-appearance: none;
+  // Undo Firefox styling.
+  margin: 0;
+
   background: transparent;
   cursor: pointer;
-  display: block;
-  width: 100%;
 
-  overflow: hidden;
+  // Absolute positioning is needed as otherwise .track and .value overlap with thumb.
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // These are still needed as browser uses fixed dimensions by default.
+  height: 100%;
+  width: 100%;
 
   &:focus {
     outline: 0;
   }
 }
 
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
+/*
+ * Cross-browser thumb styling.
+ */
 
-  background: transparent;
-  border-radius: 100%;
-  height: $playerSliderHeight;
-  width: $playerSliderHeight;
+$thumbSuffixes: '-webkit-slider-thumb', '-moz-range-thumb';
+
+@each $suffix in $thumbSuffixes {
+  // Cannot use comma-separated selector as browsers ignore entire rule
+  // if a part isn't recognised by it.
+  .input::#{$suffix} {
+    -webkit-appearance: none;
+
+    background: transparent;
+    border: 0;
+    border-radius: 100%;
+    height: $playerSliderHeight;
+    width: $playerSliderHeight;
+
+    transition: $transitionTime;
+  }
+
+  .input:hover::#{$suffix} {
+    background: var(--color-slider-thumb);
+  }
 }
 
-.slider:hover::-webkit-slider-thumb {
-  background: #ff9933;
-}
+/*
+ * Cross-browser track styling.
+ */
 
-.slider::-webkit-slider-runnable-track {
-  // Set the same height as thumb to increase clickable area,
-  // and use linear gradient to have thin line background.
-  background-image: linear-gradient(
-                  to bottom,
-                  rgba(0, 0, 0, 0) (50% - ($playerSliderTrackHeight / 2)),
-                  rgba(255, 255, 255, 0.1) (50% - ($playerSliderTrackHeight / 2)),
-                  rgba(255, 255, 255, 0.1) (50% + ($playerSliderTrackHeight / 2)),
-                  rgba(0, 0, 0, 0) (50% + ($playerSliderTrackHeight / 2))
-  );
-  border-radius: 0.2rem;
-  width: 100%;
-  height: $playerSliderHeight;
+$trackSuffixes: '-webkit-slider-runnable-track', '-moz-range-track';
+
+@each $suffix in $trackSuffixes {
+  .input::#{$suffix} {
+    // We use our own track and value for simple and consistent cross-browser support.
+    // Setting display: none makes input not accept interactions in Chrome.
+    // Setting visibility: hidden or opacity: 0 hides thumb in Chrome.
+    // Set height to 100% to maximise interaction area.
+    height: $playerSliderHeight;
+  }
 }

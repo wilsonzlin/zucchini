@@ -1,5 +1,6 @@
 import {JSON_CODEC, LibrariesLSKey} from "common/LocalStorage";
 import {UserError} from "common/UserError";
+import {DefaultLibraries} from "component/Libraries/config";
 import {computed, observable} from "mobx";
 import {fromPromise, IPromiseBasedObservable} from "mobx-utils";
 import {isWellFormedSong, Song} from "model/Song";
@@ -19,17 +20,7 @@ const assertWellFormedSongs = (data: any): Song[] => {
 };
 
 export class LibrariesStore {
-  @observable libraries: Library[] = LIBRARIES.getOrDefault([
-    // TODO
-    {
-      name: "local",
-      URL: "http://localhost:8081/new.json"
-    },
-    {
-      name: "aws",
-      URL: "https://wilsonl.in/music/library.json"
-    },
-  ]);
+  @observable libraries: Library[] = LIBRARIES.getOrDefault(DefaultLibraries);
   @observable selectedLibrary?: Library = this.libraries[0];
 
   @computed get songs (): IPromiseBasedObservable<Song[]> | undefined {

@@ -19,11 +19,14 @@ export const Slider = (
     props.className,
     props.value == undefined && style.loading,
   )}>
-    <div className={style.value} style={props.value == undefined
-      ? undefined
-      : {width: `${props.value / props.max * 100}%`}}
+    <div className={style.track}/>
+    <div
+      className={style.value}
+      style={props.value == undefined
+        ? undefined
+        : {width: `${props.value / props.max * 100}%`}}
     />
-    <input className={style.slider}
+    <input className={style.input}
            type="range"
            min={props.min}
            max={props.max}

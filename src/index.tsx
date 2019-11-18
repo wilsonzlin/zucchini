@@ -23,7 +23,10 @@ const {Songs} = SongsFactory({
   getListing: organiserState.getListing,
 });
 
-const {App} = AppFactory({Libraries, Organiser, Player, Search, Songs});
+// TODO
+const Playlist = () => <h1>Playlist</h1>;
+
+const {App} = AppFactory({Libraries, Organiser, Player, Playlist, Search, Songs});
 
 ReactDOM.render(
   <App/>,

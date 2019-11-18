@@ -1,8 +1,7 @@
 import {SearchEngine} from "component/Search/state";
 import {getFieldValues, Song, TEXT_SEARCH_FIELDS} from "model/Song";
 // TODO flexsearch types
-// @ts-ignore
-import flexsearch = require("flexsearch");
+const flexsearch = require("flexsearch");
 
 export const createSearchEngine = async (songs: Song[]): Promise<SearchEngine> => {
   const searchEngine = new flexsearch({

@@ -8,6 +8,7 @@ export interface AppDependencies {
   Libraries: () => JSX.Element;
   Organiser: () => JSX.Element;
   Player: () => JSX.Element;
+  Playlist: () => JSX.Element;
   Search: () => JSX.Element;
   Songs: () => JSX.Element;
 }
@@ -17,6 +18,7 @@ export const AppFactory = (
     Libraries,
     Organiser,
     Player,
+    Playlist,
     Search,
     Songs,
   }: AppDependencies
@@ -33,6 +35,7 @@ export const AppFactory = (
       Libraries={Libraries}
       Organiser={Organiser}
       Player={Player}
+      Playlist={Playlist}
       Search={Search}
       Songs={Songs}
     />

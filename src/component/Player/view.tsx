@@ -34,8 +34,12 @@ const formatDuration = (d: number): string => {
 const CardContents = ({song}: { song: Song }) => (
   <>
     {song.title != null && <h1 className={style.cardTitle}>{song.title}</h1>}
-    {song.artists.length && <p className={style.cardArtists}>{song.artists.join("; ")}</p>}
-    {song.album != null && <p className={style.cardAlbum}>{song.album}</p>}
+    {song.artists.length && <p className={style.cardArtists}>
+      {song.artists.length != 1 ? "👥" : "👤"}
+      {" "}
+      {song.artists.join("; ")}
+    </p>}
+    {song.album != null && <p className={style.cardAlbum}>🖸 {song.album}</p>}
     <div className={style.cardOthers}>
       <p className={style.cardDuration}>{formatDuration(song.duration)}</p>
       {song.year != null && <p className={style.cardYear}> • {song.year}</p>}
@@ -68,12 +72,22 @@ export const Player = (
     [style.loading]: loading,
   })}>
     <div className={style.playbackControls}>
-      <IconButton onClick={() => callHandler(onPrevious)}>⏮</IconButton>
+      <IconButton
+        className={style.previousButton}
+        onClick={() => callHandler(onPrevious)}
+      >⏮</IconButton>
       {playing ?
-        <IconButton onClick={() => callHandler(onPlaybackChange, false)}>⏸</IconButton> :
-        <IconButton onClick={() => callHandler(onPlaybackChange, true)}>▶</IconButton>
+        <IconButton
+          onClick={() => callHandler(onPlaybackChange, false)}
+        >⏸</IconButton> :
+        <IconButton
+          onClick={() => callHandler(onPlaybackChange, true)}
+        >▶</IconButton>
       }
-      <IconButton onClick={() => callHandler(onNext)}>⏭</IconButton>
+      <IconButton
+        className={style.nextButton}
+        onClick={() => callHandler(onNext)}
+      >⏭</IconButton>
     </div>
 
     <div
@@ -113,12 +127,15 @@ export const Player = (
       onChange={e => callHandler(onSeek, e)}
     />
 
-    <Slider
-      min={0}
-      max={1}
-      step={0.01}
-      value={volume}
-      onChange={v => callHandler(onVolumeChange, v)}
-    />
+    <div className={style.volumeContainer}>
+      <span className={style.volumeIcon}>🔊</span>
+      <Slider
+        min={0}
+        max={1}
+        step={0.01}
+        value={volume}
+        onChange={v => callHandler(onVolumeChange, v)}
+      />
+    </div>
   </div>
 );

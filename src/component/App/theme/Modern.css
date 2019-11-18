@@ -42,4 +42,8 @@
 
   --color-hovercard-border: rgb(220, 220, 220);
   --color-hovercard-background: rgba(252, 252, 252, 0.96);
+
+  --color-slider-track: #dbdbdb;
+  --color-slider-value: rgb(39, 190, 255);
+  --color-slider-thumb: rgb(39, 190, 255);
 }

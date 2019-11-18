@@ -10,6 +10,7 @@ export interface AppProps {
   Libraries: () => JSX.Element;
   Organiser: () => JSX.Element;
   Player: () => JSX.Element;
+  Playlist: () => JSX.Element;
   Search: () => JSX.Element;
   Songs: () => JSX.Element;
 }
@@ -24,6 +25,7 @@ export const App = (
     Libraries,
     Organiser,
     Player,
+    Playlist,
     Search,
     Songs,
   }: AppProps
@@ -33,10 +35,14 @@ export const App = (
       {themes[selectedTheme]}
       {densities[selectedDensity]}
     </style>
-    <Libraries/>
-    <Organiser/>
-    <Player/>
-    <Search/>
-    <Songs/>
+
+    <div className={style.toolbar}>
+      <div className={style.libraries}><Libraries/></div>
+      <div className={style.organiser}><Organiser/></div>
+      <div className={style.search}><Search/></div>
+    </div>
+    <div className={style.songs}><Songs/></div>
+    <div className={style.playlist}><Playlist/></div>
+    <div className={style.player}><Player/></div>
   </div>
 );

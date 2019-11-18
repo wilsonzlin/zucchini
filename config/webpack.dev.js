@@ -1,53 +1,53 @@
-"use strict";
+'use strict';
 
-const webpack = require("webpack");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
-const paths = require("./paths");
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const common = require('./common');
 
 module.exports = {
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
-  devtool: "inline-source-map",
+  devtool: 'inline-source-map',
   devServer: {
-    contentBase: paths.BUILD_DEV,
+    contentBase: common.BUILD_DEV,
     historyApiFallback: true,
   },
-  mode: "development",
+  mode: 'development',
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
   entry: [
-    paths.SRC_INDEX_TSX,
+    common.SRC_INDEX_TSX,
   ],
   output: {
     // This does not produce a real file. It's just the virtual path that is
     // served by WebpackDevServer in development. This is the JS bundle
     // containing code from all our entry points, and the Webpack runtime.
-    filename: "static/js/[name].js",
+    filename: 'static/js/[name].js',
     // There are also additional JS chunk files if you use code splitting.
-    chunkFilename: "static/js/[name].chunk.js",
+    chunkFilename: 'static/js/[name].chunk.js',
     // This is the URL that app is served from. We use "/" in development.
-    publicPath: "/",
+    publicPath: '/',
     // For worker, which doesn't have "window".
-    globalObject: "this",
-    path: paths.BUILD_DEV,
+    globalObject: 'this',
+    path: common.BUILD_DEV,
   },
   resolve: {
     extensions: [
-      ".ts",
-      ".tsx",
-      ".js",
+      '.ts',
+      '.tsx',
+      '.js',
     ],
-    plugins: [new TsconfigPathsPlugin()]
+    plugins: [new TsconfigPathsPlugin()],
   },
   module: {
     strictExportPresence: true,
     rules: [
       {
         test: /\.worker\.js$/,
-        use: {loader: "worker-loader"},
+        use: {loader: 'worker-loader'},
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -59,29 +59,29 @@ module.exports = {
           // A missing `test` is equivalent to a match.
           {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-            loader: "url-loader",
-            options: {limit: false, name: "static/media/[name].[hash].[ext]"},
+            loader: 'url-loader',
+            options: {limit: false, name: 'static/media/[name].[hash].[ext]'},
           },
           {
             test: /\.js$/,
-            include: paths.SRC,
-            loader: "babel-loader",
+            include: common.SRC,
+            loader: 'babel-loader',
             options: {compact: true},
           },
           {
             test: /\.tsx?$/,
-            include: paths.SRC,
+            include: common.SRC,
             use: [
               // disable type checker - we will use it in fork plugin
-              {loader: "ts-loader", options: {transpileOnly: true}},
+              {loader: 'ts-loader', options: {transpileOnly: true}},
             ],
           },
           {
             test: /\.scss$/,
             use: [
-              {loader: "style-loader"}, // creates style nodes from JS strings
-              {loader: "css-loader", options: {modules: true}}, // translates CSS into CommonJS
-              {loader: "sass-loader", options: {includePaths: [paths.SRC]}} // compiles Sass to CSS, using Node Sass by default
+              {loader: 'style-loader'}, // creates style nodes from JS strings
+              {loader: 'css-loader', options: {modules: true}}, // translates CSS into CommonJS
+              {loader: 'sass-loader', options: {includePaths: [common.SRC]}} // compiles Sass to CSS, using Node Sass by default
             ]
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.
@@ -95,9 +95,9 @@ module.exports = {
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
             exclude: [/\.js$/, /\.html$/, /\.json$/],
-            loader: "file-loader",
+            loader: 'file-loader',
             options: {
-              name: "static/media/[name].[hash].[ext]",
+              name: 'static/media/[name].[hash].[ext]',
             },
           },
         ],
@@ -105,15 +105,16 @@ module.exports = {
     ],
   },
   plugins: [
+    common.DEFINE_PLUGIN,
     // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({inject: true, template: paths.SRC_INDEX_HTML}),
+    new HtmlWebpackPlugin({inject: true, template: common.SRC_INDEX_HTML}),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),
     // Perform type checking and linting in a separate process to speed up compilation
     new ForkTsCheckerWebpackPlugin({
       async: false,
-      watch: paths.SRC,
-      tsconfig: paths.TSCONFIG,
+      watch: common.SRC,
+      tsconfig: common.TSCONFIG,
       tslint: false,
     }),
   ],
@@ -121,11 +122,11 @@ module.exports = {
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
   node: {
-    dgram: "empty",
-    fs: "empty",
-    net: "empty",
-    tls: "empty",
-    child_process: "empty",
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    child_process: 'empty',
   },
   // Turn off performance hints during development because we don't do any
   // splitting or minification in interest of speed. These warnings become
