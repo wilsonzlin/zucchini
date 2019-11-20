@@ -1,10 +1,11 @@
 "use strict";
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
+const StyleExtHtmlWebpackPlugin = require("style-ext-html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserJsPlugin = require("terser-webpack-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const ManifestPlugin = require("webpack-manifest-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const common = require("./common");
@@ -103,22 +104,51 @@ module.exports = {
   },
   optimization: {
     minimizer: [
-      new TerserJsPlugin({parallel: true}),
+      new TerserJsPlugin({
+        parallel: true,
+        extractComments: false,
+        terserOptions: {
+          output: {
+            comments: false,
+          },
+        },
+      }),
       new OptimizeCssAssetsPlugin({}),
     ],
   },
   plugins: [
     common.DEFINE_PLUGIN,
     // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({inject: true, template: common.SRC_INDEX_HTML}),
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: common.SRC_INDEX_HTML,
+      minify: {
+        collapseBooleanAttributes: true,
+        collapseInlineTagWhitespace: true,
+        collapseWhitespace: true,
+        decodeEntities: true,
+        removeAttributeQuotes: true,
+        removeComments: true,
+        removeOptionalTags: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        removeTagWhitespace: true,
+        useShortDoctype: true,
+      },
+    }),
+    new ScriptExtHtmlWebpackPlugin({
+      inline: ['main.js'],
+    }),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new MiniCssExtractPlugin({filename: "static/css/[name].[contenthash].css"}),
-    // Generate a manifest file which contains a mapping of all asset filenames
-    // to their corresponding output file so that tools can pick it up without
-    // having to parse `index.html`.
-    new ManifestPlugin({fileName: "asset-manifest.json"}),
+    new StyleExtHtmlWebpackPlugin(),
     // Perform type checking and linting in a separate process to speed up compilation
-    new ForkTsCheckerWebpackPlugin({async: false, tsconfig: common.TSCONFIG, tslint: false}),
+    new ForkTsCheckerWebpackPlugin({
+      async: false,
+      tsconfig: common.TSCONFIG,
+      tslint: false,
+    }),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
