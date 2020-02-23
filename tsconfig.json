@@ -16,6 +16,9 @@
       "es6",
       "es7",
       "es2017",
+      "es2018",
+      "es2019",
+      "es2020",
       "dom"
     ],
     "module": "commonjs",

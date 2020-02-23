@@ -1,27 +1,21 @@
 import {computed, observable} from "mobx";
 import {fromPromise, IPromiseBasedObservable} from "mobx-utils";
-import {Field, Song} from "model/Song";
+import {Field, ISong} from "model/Song";
 
 export interface SearchEngine {
-  searchAllFields (query: string): Promise<Song[]>;
+  searchAllFields (query: string): Promise<ISong[]>;
 
-  searchField (field: Field, query: string): Promise<Song[]>;
+  searchField (field: Field, query: string): Promise<ISong[]>;
 
   suggestAllFields (query: string, limit: number): Promise<string[]>;
 
   suggestField (field: Field, query: string, limit: number): Promise<string[]>;
 }
 
-export const enum SearchType {
-  FILTER,
-  QUERY,
-  TEXT,
-}
-
 export class SearchStore {
   constructor (
-    private readonly searchEngineFactory: (songs: Song[]) => Promise<SearchEngine>,
-    private readonly getSongs: () => IPromiseBasedObservable<Song[]> | undefined,
+    private readonly searchEngineFactory: (songs: ISong[]) => Promise<SearchEngine>,
+    private readonly getSongs: () => IPromiseBasedObservable<ISong[]> | undefined,
   ) {
   }
 
@@ -30,8 +24,8 @@ export class SearchStore {
     return this.getSongs();
   }
 
-  @observable searchType: SearchType = SearchType.TEXT;
-  @observable searchTerm: string = "";
+  @observable unconfirmedSearchTerm: string = "";
+  @observable confirmedSearchTerm: string = "";
 
   @computed get searchEngine (): IPromiseBasedObservable<SearchEngine> | undefined {
     return this.songs && fromPromise(
@@ -40,18 +34,18 @@ export class SearchStore {
   }
 
   @computed get searchSuggestions (): IPromiseBasedObservable<string[]> | undefined {
-    return !this.searchTerm || this.searchType != SearchType.TEXT || !this.searchEngine
+    return !this.unconfirmedSearchTerm || !this.searchEngine
       ? undefined
-      : fromPromise(this.searchEngine.then<string[]>(engine => engine.suggestAllFields(this.searchTerm, 5)));
+      : fromPromise(this.searchEngine.then<string[]>(engine => engine.suggestAllFields(this.unconfirmedSearchTerm, 5)));
   }
 
-  @computed get filteredSongs (): IPromiseBasedObservable<Song[]> | undefined {
-    const term = this.searchTerm.trim();
+  @computed get filteredSongs (): IPromiseBasedObservable<ISong[]> | undefined {
+    const term = this.confirmedSearchTerm.trim();
     if (!term || !this.searchEngine) {
       return this.songs;
     }
 
-    return fromPromise(this.searchEngine.then<Song[]>(engine => engine.searchAllFields(this.searchTerm)));
+    return fromPromise(this.searchEngine.then<ISong[]>(engine => engine.searchAllFields(this.confirmedSearchTerm)));
   }
 }
 

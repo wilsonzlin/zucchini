@@ -1,6 +1,6 @@
-import {action} from "mobx";
-import {Song} from "model/Song";
-import {PlayerStore, RepeatMode, ShuffleMode} from "./state";
+import {action} from 'mobx';
+import {ISong} from 'model/Song';
+import {PlayerStore} from './state';
 
 export class PlayerPresenter {
   constructor (
@@ -9,18 +9,8 @@ export class PlayerPresenter {
   }
 
   @action
-  private setSong = (song: Song | undefined) => {
+  private setSong = (song: ISong | undefined) => {
     this.store.song = song;
-  };
-
-  @action
-  setRepeatMode = (mode: RepeatMode) => {
-    this.store.repeatMode = mode;
-  };
-
-  @action
-  setShuffleMode = (mode: ShuffleMode) => {
-    this.store.shuffleMode = mode;
   };
 
   @action
@@ -44,9 +34,17 @@ export class PlayerPresenter {
   };
 
   @action
-  play = (song: Song) => {
-    this.setSource(song.file);
-    this.setPlaying(true);
+  play = (song: ISong | undefined) => {
+    if (song) {
+      if (this.store.song?.file === song.file) {
+        this.store.currentTime = 0;
+      } else {
+        this.setSource(song.file);
+      }
+      this.setPlaying(true);
+    } else {
+      this.setSource(null);
+    }
     this.setSong(song);
   };
 

@@ -2,7 +2,7 @@ import {Listing} from "component/Organiser/state";
 import {computed} from "mobx";
 import {IPromiseBasedObservable} from "mobx-utils";
 
-export class LibraryStore {
+export class ListStore {
   constructor (
     private readonly getListing: () => IPromiseBasedObservable<Listing> | undefined,
   ) {

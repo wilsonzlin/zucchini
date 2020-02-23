@@ -1,16 +1,17 @@
-import {cls} from "common/Classes";
-import {callHandler, EventHandler} from "common/Event";
-import {Song} from "model/Song";
-import * as React from "react";
-import {IconButton} from "ui/Button/view";
-import {HoverCard, HoverCardAnchor} from "ui/HoverCard/view";
-import {Slider} from "ui/Slider/view";
-import style from "./style.scss";
+import {cls} from 'common/Classes';
+import {callHandler, EventHandler} from 'common/Event';
+import {ISong} from 'model/Song';
+import * as React from 'react';
+import {IconButton} from 'ui/Button/view';
+import {HoverCard, HoverCardAnchor} from 'ui/HoverCard/view';
+import {Slider} from 'ui/Slider/view';
+import style from './style.scss';
+import {AlbumIcon, ArtistIcon, ArtistsIcon, NextTrackIcon, PauseIcon, PlayIcon, PreviousTrackIcon, VolumeIcon} from '../Icon/view';
 
 export interface PlayerProps {
   loading: boolean;
   playing: boolean;
-  song?: Song;
+  song?: ISong;
 
   // A number between 0 and $duration.
   progress: number;
@@ -31,19 +32,19 @@ const formatDuration = (d: number): string => {
   return `${Math.floor(d / 60)}:${Math.floor(d % 60)}`;
 };
 
-const CardContents = ({song}: { song: Song }) => (
+const CardContents = ({song}: { song: ISong }) => (
   <>
     {song.title != null && <h1 className={style.cardTitle}>{song.title}</h1>}
     {song.artists.length && <p className={style.cardArtists}>
-      {song.artists.length != 1 ? "👥" : "👤"}
-      {" "}
-      {song.artists.join("; ")}
+      {song.artists.length == 1 ? ArtistIcon : ArtistsIcon}
+      {' '}
+      {song.artists.join('; ')}
     </p>}
-    {song.album != null && <p className={style.cardAlbum}>🖸 {song.album}</p>}
+    {song.album != null && <p className={style.cardAlbum}>{AlbumIcon} {song.album}</p>}
     <div className={style.cardOthers}>
       <p className={style.cardDuration}>{formatDuration(song.duration)}</p>
       {song.year != null && <p className={style.cardYear}> • {song.year}</p>}
-      {song.genres.length && <p className={style.cardGenres}> • {song.genres.join("; ")}</p>}
+      {song.genres.length && <p className={style.cardGenres}> • {song.genres.join('; ')}</p>}
     </div>
   </>
 );
@@ -65,7 +66,7 @@ export const Player = (
     onSeek,
     onVolumeChange,
     onHoverChangeSongDetails,
-  }: PlayerProps
+  }: PlayerProps,
 ) => (
   <div className={cls({
     [style.player]: true,
@@ -75,19 +76,19 @@ export const Player = (
       <IconButton
         className={style.previousButton}
         onClick={() => callHandler(onPrevious)}
-      >⏮</IconButton>
+      >{PreviousTrackIcon}</IconButton>
       {playing ?
         <IconButton
           onClick={() => callHandler(onPlaybackChange, false)}
-        >⏸</IconButton> :
+        >{PauseIcon}</IconButton> :
         <IconButton
           onClick={() => callHandler(onPlaybackChange, true)}
-        >▶</IconButton>
+        >{PlayIcon}</IconButton>
       }
       <IconButton
         className={style.nextButton}
         onClick={() => callHandler(onNext)}
-      >⏭</IconButton>
+      >{NextTrackIcon}</IconButton>
     </div>
 
     <div
@@ -99,7 +100,7 @@ export const Player = (
         <>
           <div className={style.detailsLabel}>
             <strong className={style.title}>{song.title}</strong>
-            {" "}
+            {' '}
             {/* Only show em dash if both fields exist. */}
             {song.artists.length && song.album != null ?
               `${song.artists[0]}—${song.album}` :
@@ -128,7 +129,7 @@ export const Player = (
     />
 
     <div className={style.volumeContainer}>
-      <span className={style.volumeIcon}>🔊</span>
+      <span className={style.volumeIcon}>{VolumeIcon}</span>
       <Slider
         min={0}
         max={1}

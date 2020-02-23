@@ -1,0 +1,29 @@
+@import "~common/style";
+
+.playlist {
+  background: var(--color-playlist-background);
+
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.expanded {
+  // TODO
+  height: 22.5rem;
+  // TODO height - App/style/$playlistHeight
+  transform: translateY(-20rem);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+}
+
+@include growOneAnchorRest(".menu", ".playlists")
+
+.queue {
+  overflow: auto;
+}

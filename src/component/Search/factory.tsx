@@ -5,11 +5,11 @@ import {SearchState, SearchStore} from "component/Search/state";
 import {Search as SearchImpl} from "component/Search/view";
 import {observer} from "mobx-react";
 import {IPromiseBasedObservable} from "mobx-utils";
-import {Song} from "model/Song";
+import {ISong} from "model/Song";
 import * as React from "react";
 
 export interface SearchDependencies {
-  getSongs: () => IPromiseBasedObservable<Song[]> | undefined;
+  getSongs: () => IPromiseBasedObservable<ISong[]> | undefined;
 }
 
 export const SearchFactory = (
@@ -22,13 +22,14 @@ export const SearchFactory = (
 
   const Search = observer(() =>
     <SearchImpl
-      type={store.searchType}
-      term={store.searchTerm}
+      unconfirmedTerm={store.unconfirmedSearchTerm}
+      confirmedTerm={store.confirmedSearchTerm}
       suggestions={watchPromise(store.searchSuggestions)}
       status={watchPromise(store.filteredSongs)}
 
-      onSearch={presenter.updateSearchTerm}
-      onSelectSuggestion={presenter.updateSearchTerm}
+      onSearchInput={presenter.updateSearchTerm}
+      onSearch={presenter.confirmSearchTerm}
+      onSelectSuggestion={presenter.updateAndConfirmSearchTerm}
     />
   );
 

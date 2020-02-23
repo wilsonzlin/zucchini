@@ -1,61 +1,79 @@
-import {callHandler, EventHandler} from "common/Event";
-import {PlaylistEntry, PlaylistEntryProps} from "component/Playlist/Entry/view";
-import * as React from "react";
-import {RepeatMode, ShuffleMode} from "../Player/state";
-import * as style from "./style.scss";
+import {EventHandler} from 'common/Event';
+import * as React from 'react';
+import {ISong} from '../../model/Song';
+import {RepeatMode, ShuffleMode} from './state';
+import {PlaylistBarView} from './Bar/view';
+import {PlaylistPanelView} from './Panel/view';
 
-export interface HeaderToggleRepeatEvent {
-  mode: RepeatMode;
+export const enum PlaylistViewMode {
+  BAR,
+  PANEL,
 }
 
-export interface HeaderToggleShuffleEvent {
-  mode: ShuffleMode;
-}
+export const PlaylistView = ({
+  mode,
+  expanded,
 
-export interface HeaderPlaylistClearEvent {
-}
+  nowPlayingPlaylist,
+  otherPlaylists,
+  currentPlaylistName,
+  currentPlaylistSongs,
+  currentSong,
 
-export interface HeaderPlaylistProps {
-  songs: PlaylistEntryProps[];
-  visible: boolean;
+  repeatMode,
+  shuffleMode,
+
+  onToggleRepeat,
+  onToggleShuffle,
+  onClear,
+  onPlay,
+  onRequestExpand,
+  onRequestCollapse,
+}: {
+  mode: PlaylistViewMode;
+  expanded: boolean;
+  onRequestExpand?: EventHandler;
+  onRequestCollapse?: EventHandler;
+
+  nowPlayingPlaylist: string;
+  otherPlaylists: string[];
+  currentPlaylistName?: string;
+  currentPlaylistSongs: ISong[];
+  currentSong?: ISong;
 
   repeatMode: RepeatMode;
   shuffleMode: ShuffleMode;
 
-  onToggleRepeat?: EventHandler<HeaderToggleRepeatEvent>;
-  onToggleShuffle?: EventHandler<HeaderToggleShuffleEvent>;
-  onClear?: EventHandler<HeaderPlaylistClearEvent>;
-}
-
-export class Playlist extends React.Component<HeaderPlaylistProps> {
-  render () {
-    return (
-      <div className={style.playlist}>
-        <select>
-          <option defaultChecked={true}>Now playing</option>
-          <option disabled={true}>---</option>
-          <option>Playlist1</option>
-        </select>
-        <div id="playlist-controls">
-          <button id="repeat-one-button" onClick={() => this.handleToggleRepeat(RepeatMode.ONE)}>Repeat one</button>
-          <button id="repeat-all-button" onClick={() => this.handleToggleRepeat(RepeatMode.ALL)}>Repeat all</button>
-          <button id="shuffle-button" onClick={() => this.handleToggleShuffle(ShuffleMode.ALL)}>Shuffle</button>
-          <div className="flex-spacer"/>
-          <button onClick={() => callHandler(this.props.onClear, {})}>Clear</button>
-        </div>
-        <div id="playlist-queue"
-        >{this.props.songs.map(
-          e => <PlaylistEntry {...e}/>
-        )}</div>
-      </div>
-    );
-  }
-
-  private handleToggleRepeat = (to: RepeatMode) => {
-    callHandler(this.props.onToggleRepeat, {mode: this.props.repeatMode == to ? RepeatMode.OFF : to});
-  };
-
-  private handleToggleShuffle (to: ShuffleMode) {
-    callHandler(this.props.onToggleShuffle, {mode: this.props.shuffleMode == to ? ShuffleMode.OFF : to});
-  }
-}
+  onToggleRepeat?: EventHandler<RepeatMode>;
+  onToggleShuffle?: EventHandler<ShuffleMode>;
+  onClear?: EventHandler;
+  onPlay?: EventHandler<ISong>;
+}) => (
+  <div>
+    {mode == PlaylistViewMode.BAR
+      ? <PlaylistBarView
+        onClick={onRequestExpand}
+        onToggleRepeat={onToggleRepeat}
+        onToggleShuffle={onToggleShuffle}
+        playlist={currentPlaylistName ?? nowPlayingPlaylist}
+        repeatMode={repeatMode}
+        shuffleMode={shuffleMode}
+      />
+      : <PlaylistPanelView
+        currentPlaylistName={currentPlaylistName}
+        currentPlaylistSongs={currentPlaylistSongs}
+        currentSong={currentSong}
+        expanded={expanded}
+        nowPlayingPlaylist={nowPlayingPlaylist}
+        onClear={onClear}
+        onPlay={onPlay}
+        onRequestCollapse={onRequestCollapse}
+        onToggleRepeat={onToggleRepeat}
+        onToggleShuffle={onToggleShuffle}
+        otherPlaylists={otherPlaylists}
+        repeatMode={repeatMode}
+        shuffleMode={shuffleMode}
+      />
+    }
+  </div>
+);

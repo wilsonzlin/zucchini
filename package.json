@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "flexsearch": "^0.6.32",
-    "include-media": "^1.4.9",
     "mobx": "^5.15.0",
     "mobx-react": "^6.1.4",
     "mobx-utils": "^5.5.2",
@@ -49,7 +48,6 @@
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0",
-    "webpack-manifest-plugin": "^2.2.0",
     "worker-loader": "^2.0.0"
   }
 }

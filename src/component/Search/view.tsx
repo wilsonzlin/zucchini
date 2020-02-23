@@ -1,87 +1,99 @@
-import {renderPromise, WatchedPromise} from "common/Async";
-import {cls} from "common/Classes";
-import {callHandler, EventHandler} from "common/Event";
-import {SearchType} from "component/Search/state";
-import * as style from "component/Search/style.scss";
-import {Song} from "model/Song";
-import * as React from "react";
-import {useState} from "react";
-import {Dropdown, DropdownOption} from "ui/Dropdown/view";
-import {Input} from "ui/Input/view";
-import {useDismissible} from "ui/util/dismissible";
-
-const SearchInputTypeOptions: DropdownOption<SearchType>[] = [
-  {value: SearchType.TEXT, label: "Search"},
-  {value: SearchType.FILTER, label: "Filter"},
-  {value: SearchType.QUERY, label: "Query"},
-];
+import {renderPromise, WatchedPromise} from 'common/Async';
+import {cls} from 'common/Classes';
+import {callHandler, EventHandler} from 'common/Event';
+import * as style from 'component/Search/style.scss';
+import {ISong} from 'model/Song';
+import * as React from 'react';
+import {useState} from 'react';
+import {Input} from 'ui/Input/view';
+import {useDismissible} from 'ui/util/dismissible';
+import {IconButton} from '../../ui/Button/view';
+import {StemmedArrowRightIcon} from '../Icon/view';
 
 export const Search = ({
-  type,
-  term,
+  unconfirmedTerm,
+  confirmedTerm,
   status,
   suggestions,
 
+  onSearchInput,
   onSearch,
   onSelectSuggestion,
 }: {
-  type: SearchType;
-  term: string;
-  status: WatchedPromise<Song[]>;
+  unconfirmedTerm: string;
+  confirmedTerm: string;
+  status: WatchedPromise<ISong[]>;
   suggestions: WatchedPromise<string[]>;
 
-  onSearch?: EventHandler<string>;
+  onSearchInput?: EventHandler<string>;
+  onSearch?: EventHandler;
   onSelectSuggestion?: EventHandler<string>;
 }) => {
   const [showingAuxiliary, setShowingAuxiliary, onRelevantAuxiliaryClick, onRelevantAuxiliaryFocus] = useDismissible();
-  const [keyboardFocusedSuggestion, setKeyboardFocusedSuggestion] = useState(-1);
+  const [focusedSuggestion, setFocusedSuggestion] = useState(-1);
 
   const exitAuxiliary = () => {
-    setKeyboardFocusedSuggestion(-1);
+    setFocusedSuggestion(-1);
     setShowingAuxiliary(false);
+  };
+
+  const useSuggestion = (suggestion: string) => {
+    callHandler(onSelectSuggestion, suggestion);
+    exitAuxiliary();
+  };
+
+  const useInput = () => {
+    callHandler(onSearch);
+    exitAuxiliary();
   };
 
   return (
     <div className={style.search} onFocusCapture={onRelevantAuxiliaryFocus}>
-      <Dropdown value={SearchType.TEXT} options={SearchInputTypeOptions}/>
       <Input
         className={style.searchInput}
         autocomplete="off"
         placeholder="Search artist, album, genre, decade&hellip;"
-        value={term}
+        value={unconfirmedTerm}
         onKeyDown={e => {
-          if (suggestions.state === "fulfilled") {
+          if (suggestions.state === 'fulfilled') {
             switch (e.key) {
-            case "ArrowUp":
+            case 'ArrowUp':
               e.preventDefault();
-              setKeyboardFocusedSuggestion(
-                (keyboardFocusedSuggestion <= 0
-                  ? suggestions.value.length
-                  : keyboardFocusedSuggestion) - 1);
+              setFocusedSuggestion((focusedSuggestion <= 0 ? suggestions.value.length : focusedSuggestion) - 1);
               break;
-            case "ArrowDown":
+
+            case 'ArrowDown':
               e.preventDefault();
-              setKeyboardFocusedSuggestion((keyboardFocusedSuggestion + 1) % suggestions.value.length);
+              setFocusedSuggestion((focusedSuggestion + 1) % suggestions.value.length);
               break;
-            case "Escape":
+
+            case 'Escape':
               exitAuxiliary();
               break;
-            case "Enter":
-              const suggestion = suggestions.value[keyboardFocusedSuggestion];
+
+            case 'Enter':
+              const suggestion = suggestions.value[focusedSuggestion];
               if (suggestion != undefined) {
-                callHandler(onSelectSuggestion, suggestion);
-                exitAuxiliary();
+                // Search suggested value.
+                useSuggestion(suggestion);
+              } else {
+                // Search input value.
+                useInput();
               }
               break;
             }
+          } else if (e.key == 'Enter' && !unconfirmedTerm) {
+            // Clear search.
+            useInput();
           }
         }}
         onChange={e => {
-          callHandler(onSearch, e);
           setShowingAuxiliary(true);
-          setKeyboardFocusedSuggestion(-1);
+          callHandler(onSearchInput, e);
+          setFocusedSuggestion(-1);
         }}
       />
+      {unconfirmedTerm != confirmedTerm && <IconButton onClick={useInput}>{StemmedArrowRightIcon}</IconButton>}
       <div
         className={cls(style.auxiliary)}
         hidden={!showingAuxiliary}
@@ -91,10 +103,11 @@ export const Search = ({
           fulfilled: suggestions => (
             <div className={style.suggestions}>
               {suggestions.map((s, i) => (
-                <button className={cls(
-                  style.suggestion,
-                  keyboardFocusedSuggestion == i && style.keyboardFocusedSuggestion,
-                )}
+                <button
+                  key={s}
+                  className={cls(style.suggestion, focusedSuggestion == i && style.keyboardFocusedSuggestion)}
+                  onMouseEnter={() => setFocusedSuggestion(i)}
+                  onClick={() => useSuggestion(s)}
                 >{s}</button>
               ))}
             </div>

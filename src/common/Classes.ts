@@ -5,7 +5,7 @@ export interface ConditionalClasses {
 export function cls (...classes: (ConditionalClasses | string | string[] | false | null | undefined)[]) {
   const classNames: string[] = [];
   for (const unit of classes) {
-    if (typeof unit == "string") {
+    if (typeof unit == 'string') {
       classNames.push(unit);
     } else if (Array.isArray(unit)) {
       Array.prototype.push.apply(classNames, unit);
@@ -19,5 +19,5 @@ export function cls (...classes: (ConditionalClasses | string | string[] | false
       }
     }
   }
-  return classNames.join(" ");
+  return classNames.join(' ');
 }

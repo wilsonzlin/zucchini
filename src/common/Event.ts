@@ -5,7 +5,7 @@ export type EventHandler<E = undefined> = (event: E) => void;
 export function callHandler<E extends undefined> (handler: EventHandler<E> | undefined): void;
 export function callHandler<E> (handler: EventHandler<E> | undefined, event: E): void;
 export function callHandler<E> (handler: EventHandler<E> | undefined, event?: E): void {
-  // HACK: It's possible that this function is called with an event handler for a non-undefined
+  // TODO HACK: It's possible that this function is called with an event handler for a non-undefined
   // event but undefined is provided as the event.
   handler && handler(event!);
 }

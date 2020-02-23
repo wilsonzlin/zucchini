@@ -1,13 +1,14 @@
-import {cls} from "common/Classes";
-import {callHandler, EventHandler} from "common/Event";
-import {assert} from "common/Sanity";
-import React from "react";
-import {useDismissible} from "ui/util/dismissible";
-import style from "./style.scss";
+import {cls} from 'common/Classes';
+import {callHandler, EventHandler} from 'common/Event';
+import {assert} from 'common/Sanity';
+import React from 'react';
+import {useDismissible} from 'ui/util/dismissible';
+import style from './style.scss';
+import {BlockArrowDownIcon, BlockArrowUpIcon} from '../../component/Icon/view';
 
 export interface DropdownOption<V> {
   value: V;
-  label: string;
+  label: React.ReactNode;
 }
 
 interface Props<V> {
@@ -36,7 +37,7 @@ export function Dropdown<V> (props: Props<V>) {
         onClick={() => setShowing(!showing)}
       >
         <span className={style.valueText}>{label}</span>
-        <span className={style.arrow}/>
+        <span className={style.arrow}>{showing ? BlockArrowUpIcon : BlockArrowDownIcon}</span>
       </button>
       <div
         className={style.menu}

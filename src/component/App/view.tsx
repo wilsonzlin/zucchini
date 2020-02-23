@@ -1,5 +1,5 @@
-import * as React from "react";
-import style from "./style.scss";
+import * as React from 'react';
+import style from './style.scss';
 
 export interface AppProps {
   themes: { [name: string]: string };
@@ -8,28 +8,26 @@ export interface AppProps {
   selectedDensity: string;
 
   Libraries: () => JSX.Element;
+  List: () => JSX.Element;
   Organiser: () => JSX.Element;
   Player: () => JSX.Element;
   Playlist: () => JSX.Element;
   Search: () => JSX.Element;
-  Songs: () => JSX.Element;
 }
 
-export const App = (
-  {
-    themes,
-    selectedTheme,
-    densities,
-    selectedDensity,
+export const App = ({
+  themes,
+  selectedTheme,
+  densities,
+  selectedDensity,
 
-    Libraries,
-    Organiser,
-    Player,
-    Playlist,
-    Search,
-    Songs,
-  }: AppProps
-) => (
+  Libraries,
+  List,
+  Organiser,
+  Player,
+  Playlist,
+  Search,
+}: AppProps) => (
   <div className={style.app}>
     <style>
       {themes[selectedTheme]}
@@ -41,7 +39,7 @@ export const App = (
       <div className={style.organiser}><Organiser/></div>
       <div className={style.search}><Search/></div>
     </div>
-    <div className={style.songs}><Songs/></div>
+    <div className={style.songs}><List/></div>
     <div className={style.playlist}><Playlist/></div>
     <div className={style.player}><Player/></div>
   </div>

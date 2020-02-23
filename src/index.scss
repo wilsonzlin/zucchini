@@ -12,3 +12,7 @@
 body {
   @include noSelect();
 }
+
+::-moz-focus-inner {
+  border: 0;
+}

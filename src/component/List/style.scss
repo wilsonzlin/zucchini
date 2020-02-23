@@ -78,3 +78,14 @@ $loadingAnimationDelay: 1s;
     animation: $transitionTime linear $loadingAnimationDelay forwards breathingText;
   }
 }
+
+.groupTitleCell {
+  text-align: left;
+  padding: 0.25rem 0.5rem;
+}
+
+.groupTitleCellContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

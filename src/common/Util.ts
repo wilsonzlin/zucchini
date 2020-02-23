@@ -3,22 +3,22 @@ export const minMax = (min: number, max: number, val: number): number => {
 };
 
 export const escapeRegExp = (s: string): string => {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
 export function plural (format: string, value: number): string;
 export function plural (format: string, values: { [delimiter: string]: number }): string;
 export function plural (format: string, values: number | { [delimiter: string]: number }) {
-  if (typeof values == "number") {
+  if (typeof values == 'number') {
     values = {
-      "{}": values,
+      '{}': values,
     };
   }
   let result = format;
   for (const [valSub, value] of Object.entries(values)) {
     const isPlural = value != 1;
-    const valSubRegex = new RegExp(escapeRegExp(valSub), "g");
-    const pluralSwitchRegex = new RegExp(`\\${valSub[0]}(.*?):(.*?)\\${valSub[1]}`, "g");
+    const valSubRegex = new RegExp(escapeRegExp(valSub), 'g');
+    const pluralSwitchRegex = new RegExp(`\\${valSub[0]}(.*?):(.*?)\\${valSub[1]}`, 'g');
     result = result
       .replace(valSubRegex, `${value}`)
       .replace(pluralSwitchRegex, (_, singular, plural) => isPlural ? plural : singular);

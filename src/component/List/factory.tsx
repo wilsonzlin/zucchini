@@ -1,36 +1,36 @@
-import {watchPromise} from "common/Async";
-import {Library as LibraryImpl} from "component/List/view";
-import {Listing} from "component/Organiser/state";
-import * as mobxReact from "mobx-react";
-import {IPromiseBasedObservable} from "mobx-utils";
-import {Song} from "model/Song";
-import * as React from "react";
-import {Columns} from "./config";
-import {LibraryStore} from "./state";
+import {watchPromise} from 'common/Async';
+import {List as ListImpl} from 'component/List/view';
+import {Listing} from 'component/Organiser/state';
+import * as mobxReact from 'mobx-react';
+import {IPromiseBasedObservable} from 'mobx-utils';
+import {ISong} from 'model/Song';
+import * as React from 'react';
+import {Columns} from './config';
+import {ListStore} from './state';
 
-export interface SongsDependencies {
+export interface ListDependencies {
   getListing: () => IPromiseBasedObservable<Listing> | undefined;
-  playSong: (song: Song) => void;
+  updateAndPlayNowPlayingPlaylist: (songs: ISong[]) => void;
 }
 
-export const SongsFactory = (
+export const ListFactory = (
   {
     getListing,
-    playSong,
-  }: SongsDependencies
+    updateAndPlayNowPlayingPlaylist,
+  }: ListDependencies,
 ) => {
-  const store = new LibraryStore(getListing);
+  const store = new ListStore(getListing);
 
-  const Songs = mobxReact.observer(() =>
-    <LibraryImpl
+  const List = mobxReact.observer(() =>
+    <ListImpl
       listing={watchPromise(store.listing)}
       columns={Columns}
 
-      onPlayTrack={playSong}
-    />
+      onPlayTracks={updateAndPlayNowPlayingPlaylist}
+    />,
   );
 
   return {
-    Songs,
+    List,
   };
 };

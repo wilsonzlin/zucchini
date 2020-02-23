@@ -1,6 +1,6 @@
-import {UnreachableError} from "common/Sanity";
-import {WorkerRequests, workerServer} from "common/Worker";
-import {Listing} from "component/Organiser/state";
+import {assertExists, UnreachableError} from 'common/Sanity';
+import {WorkerRequests, workerServer} from 'common/Worker';
+import {Listing} from 'component/Organiser/state';
 import {
   ARRAY_FIELDS,
   ArtistNames,
@@ -11,21 +11,21 @@ import {
   OptionalAlbumName,
   OptionalDecadeName,
   OptionalTitleName,
-  Song,
-  SONG_COMPARATOR
-} from "model/Song";
+  ISong,
+  SONG_COMPARATOR,
+} from 'model/Song';
 
-const getGroups = <F extends Field> (field: F, value: Song[F]): (string | null)[] => {
+const getGroups = <F extends Field> (field: F, value: ISong[F]): (string | null)[] => {
   switch (field) {
-  case "album":
+  case 'album':
     return [value as OptionalAlbumName];
-  case "artists":
+  case 'artists':
     return value as ArtistNames;
-  case "genres":
+  case 'genres':
     return value as GenreNames;
-  case "title":
-    return [((value as OptionalTitleName) || "")[0] || null];
-  case "decade":
+  case 'title':
+    return [((value as OptionalTitleName) || '')[0] || null];
+  case 'decade':
     return [value as OptionalDecadeName];
   default:
     // Should not be able to group by any other field.
@@ -33,9 +33,9 @@ const getGroups = <F extends Field> (field: F, value: Song[F]): (string | null)[
   }
 };
 
-const grouped = (songs: Song[], field: Field): { group: string; songs: Song[] }[] => {
+const grouped = (songs: ISong[], field: Field): { group: string; songs: ISong[] }[] => {
   const isNumberField = NUMERIC_FIELDS.includes(field);
-  const grouped: { [group: string]: Song[] } = {};
+  const grouped: { [group: string]: ISong[] } = {};
   for (const song of songs) {
     for (const g of getGroups(field, song[field])) {
       if (g == null) {
@@ -55,7 +55,7 @@ const grouped = (songs: Song[], field: Field): { group: string; songs: Song[] }[
 export interface ListingWorkerRequests extends WorkerRequests {
   getListing: {
     request: {
-      songs: Song[],
+      songs: ISong[],
       filter?: { field: Field; match: string };
       group?: { field: Field; subgroup?: Field };
     };
@@ -73,43 +73,42 @@ workerServer<ListingWorkerRequests>({
     const count = filteredSongs.length;
     const duration = filteredSongs.reduce((sum, s) => sum + s.duration, 0);
 
-    const ordering = SONG_COMPARATOR.get(group
+    const ordering = assertExists(SONG_COMPARATOR.get(group
       ? (group.subgroup || group.field)
       : filter
         ? filter.field
-        : undefined
-    )!;
+        : undefined,
+    ));
 
     if (!group) {
       return {
-        type: "single",
+        groups: [{subgroups: [{songs: filteredSongs.sort(ordering)}]}],
         count, duration,
-        units: filteredSongs.sort(ordering),
       };
     } else if (!group.subgroup) {
       return {
-        type: "grouped",
-        count, duration,
-        units: grouped(filteredSongs, group.field).map(g => ({
-          name: g.group,
+        groups: grouped(filteredSongs, group.field).map(g => ({
           field: group.field,
-          songs: g.songs.sort(ordering),
+          name: g.group,
+          subgroups: [{
+            songs: g.songs.sort(ordering),
+          }],
         })),
+        count, duration,
       };
     } else {
       const {field, subgroup} = group;
       return {
-        type: "subgrouped",
-        count, duration,
-        units: grouped(filteredSongs, field).map(g => ({
-          name: g.group,
+        groups: grouped(filteredSongs, field).map(g => ({
           field: field,
+          name: g.group,
           subgroups: grouped(g.songs, subgroup).map(sg => ({
             name: sg.group,
             field: subgroup,
             songs: sg.songs.sort(ordering),
           })),
         })),
+        count, duration,
       };
     }
   },

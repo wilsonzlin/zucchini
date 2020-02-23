@@ -96,7 +96,7 @@ $titleFontWeight: 700;
   margin-right: 0.25rem;
 }
 
-@include media("<desktop") {
+body[vm=small] {
   .player {
     display: grid;
     grid-template-rows: min-content 1fr;
@@ -118,7 +118,7 @@ $titleFontWeight: 700;
   }
 }
 
-@include media(">=desktop") {
+body[vm=large] {
   @include growOneAnchorRest(".player", ".progress", "center");
 
   .player > * {

@@ -2,36 +2,22 @@ import {WorkerClient} from "common/Worker";
 import {ListingWorkerRequests} from "component/Organiser/listing.worker";
 import {computed, observable, toJS} from "mobx";
 import {fromPromise, IPromiseBasedObservable} from "mobx-utils";
-import {Field, FILTERABLE_FIELDS, GROUPABLE_FIELDS, Song, SUBGROUPABLE_FIELDS} from "model/Song";
+import {Field, FILTERABLE_FIELDS, GROUPABLE_FIELDS, ISong, SUBGROUPABLE_FIELDS} from "model/Song";
 
-export interface GroupedSongs {
-  name: string;
-  field: Field;
-  songs: Song[];
+export interface ISubgroup {
+  field?: Field;
+  name?: string;
+  songs: ISong[];
 }
 
-export interface SubgroupedSongs {
-  name: string;
-  field: Field;
-  subgroups: GroupedSongs[];
+export interface IGroup {
+  field?: Field;
+  name?: string;
+  subgroups: ISubgroup[];
 }
 
-export interface SingleListing {
-  type: "single";
-  units: Song[];
-}
-
-export interface GroupedListing {
-  type: "grouped";
-  units: GroupedSongs[];
-}
-
-export interface SubgroupedListing {
-  type: "subgrouped";
-  units: SubgroupedSongs[];
-}
-
-export type Listing = (SingleListing | GroupedListing | SubgroupedListing) & {
+export type Listing = {
+  groups: IGroup[];
   count: number;
   duration: number;
 };
@@ -39,7 +25,7 @@ export type Listing = (SingleListing | GroupedListing | SubgroupedListing) & {
 export class OrganiserStore {
   constructor (
     private readonly listingWorker: WorkerClient<ListingWorkerRequests>,
-    private readonly getSongs: () => IPromiseBasedObservable<Song[]> | undefined,
+    private readonly getSongs: () => IPromiseBasedObservable<ISong[]> | undefined,
   ) {
   }
 

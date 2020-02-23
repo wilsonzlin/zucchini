@@ -3,14 +3,14 @@ import {OrganiserPresenter} from "component/Organiser/presenter";
 import {OrganiserState, OrganiserStore} from "component/Organiser/state";
 import * as mobxReact from "mobx-react";
 import {IPromiseBasedObservable} from "mobx-utils";
-import {Song} from "model/Song";
+import {ISong} from "model/Song";
 import * as React from "react";
 import ListingWorker from "worker-loader!./listing.worker.ts";
 import * as config from "./config";
 import {Organiser as OrganiserImpl} from "./view";
 
 export interface OrganiserDependencies {
-  getSongs: () => IPromiseBasedObservable<Song[]> | undefined;
+  getSongs: () => IPromiseBasedObservable<ISong[]> | undefined;
 }
 
 export const OrganiserFactory = (

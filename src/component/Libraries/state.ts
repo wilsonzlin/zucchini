@@ -3,7 +3,7 @@ import {UserError} from "common/UserError";
 import {DefaultLibraries} from "component/Libraries/config";
 import {computed, observable} from "mobx";
 import {fromPromise, IPromiseBasedObservable} from "mobx-utils";
-import {isWellFormedSong, Song} from "model/Song";
+import {isWellFormedSong, ISong} from "model/Song";
 
 export interface Library {
   name: string;
@@ -12,7 +12,7 @@ export interface Library {
 
 const LIBRARIES = new LibrariesLSKey<Library[]>("LIBRARIES", JSON_CODEC);
 
-const assertWellFormedSongs = (data: any): Song[] => {
+const assertWellFormedSongs = (data: any): ISong[] => {
   if (!Array.isArray(data) || !data.every(e => isWellFormedSong(e))) {
     throw new UserError("Library URL does not point to a list of songs that zucchini understands");
   }
@@ -23,7 +23,7 @@ export class LibrariesStore {
   @observable libraries: Library[] = LIBRARIES.getOrDefault(DefaultLibraries);
   @observable selectedLibrary?: Library = this.libraries[0];
 
-  @computed get songs (): IPromiseBasedObservable<Song[]> | undefined {
+  @computed get songs (): IPromiseBasedObservable<ISong[]> | undefined {
     return fromPromise(
       !this.selectedLibrary ?
         Promise.reject(new UserError("No library selected")) :

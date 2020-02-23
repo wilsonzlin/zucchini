@@ -27,7 +27,7 @@ export type OptionalYearNumber = number | null;
 // above types change.
 export type FieldUnitValue = string | number;
 
-export interface Song {
+export interface ISong {
   album: OptionalAlbumName;
   artists: ArtistNames;
   decade: OptionalDecadeName;
@@ -39,7 +39,7 @@ export interface Song {
   year: OptionalYearNumber;
 }
 
-export const isWellFormedSong = (obj: any): obj is Song => {
+export const isWellFormedSong = (obj: any): obj is ISong => {
   return obj && typeof obj == "object" &&
     isArrayOfType(obj.artists, "string") &&
     isArrayOfType(obj.genres, "string") &&
@@ -52,7 +52,7 @@ export const isWellFormedSong = (obj: any): obj is Song => {
     isNotDefinedOrOfType(obj, "year", "number");
 };
 
-export type Field = keyof Song;
+export type Field = keyof ISong;
 
 /*
  * These are defined here so that changes to the song structure/format can be
@@ -74,13 +74,13 @@ export const NUMERIC_FIELDS: Field[] = ["track", "year"];
  * @param song song to get values from
  * @param field field to get values of
  */
-export const getFieldValues = <F extends Field> (song: Song, field: F): FieldUnitValue[] => {
+export const getFieldValues = <F extends Field> (song: ISong, field: F): FieldUnitValue[] => {
   return ARRAY_FIELDS.includes(field)
     ? song[field] as FieldUnitValue[]
     : mapOptional(song[field], v => [v], []) as FieldUnitValue[];
 };
 
-const FIELD_COMPARATORS: { [field in Field]: Comparator<Song> } = {
+const FIELD_COMPARATORS: { [field in Field]: Comparator<ISong> } = {
   file () {
     throw new UnreachableError("Attempted to compare song file URLs");
   },
@@ -110,7 +110,7 @@ const FIELD_COMPARATORS: { [field in Field]: Comparator<Song> } = {
 */
 const compareUsingFields = (...fields: Field[]) => compareUsing(...fields.map(f => FIELD_COMPARATORS[f]));
 
-export const SONG_COMPARATOR = new Map<Field | undefined, Comparator<Song>>();
+export const SONG_COMPARATOR = new Map<Field | undefined, Comparator<ISong>>();
 SONG_COMPARATOR.set("album", compareUsingFields("track", "title"));
 SONG_COMPARATOR.set("artists", compareUsingFields("album", "track", "title"));
 SONG_COMPARATOR.set("decade", compareUsingFields("album", "track", "title"));

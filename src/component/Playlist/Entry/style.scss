@@ -1,0 +1,32 @@
+@import "~common/style";
+
+@include growOneAnchorRest(".entry", ".label");
+
+.entry {
+  cursor: pointer;
+  padding: var(--vpadding-playlist-entry) 0;
+
+  &:hover {
+    background: var(--color-playlist-entry-background);
+  }
+}
+
+.current, .controls {
+  margin: var(--margin-playlist-entry-nonlabel);
+}
+
+.current {
+  font-size: 0.75rem;
+}
+
+.title, .subtitle {
+  font-size: var(--fontsize-playlist-entry);
+}
+
+.title {
+  margin-bottom: var(--bmargin-playlist-entry-title);
+}
+
+.subtitle {
+  color: var(--color-playlist-entry-subtitle);
+}

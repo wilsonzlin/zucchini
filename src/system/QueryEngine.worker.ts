@@ -1,4 +1,4 @@
-import {isWellFormedSong, Song} from "model/Song";
+import {isWellFormedSong, ISong} from "model/Song";
 import {
   QueryEngineWorkerRequest,
   QueryEngineWorkerRequestType,
@@ -6,7 +6,7 @@ import {
   QueryEngineWorkerResponseType
 } from "./QueryEngineWorkerMessage";
 
-let library: Song[] = [];
+let library: ISong[] = [];
 
 const executors: Map<QueryEngineWorkerRequestType, (query: string) => any> = new Map();
 executors
@@ -32,7 +32,7 @@ executors
       const year = song.year == null ? -1 : song.year;
       const y = year;
       return ${query.trim() || true};
-    `) as (s: Song) => boolean))
+    `) as (s: ISong) => boolean))
 ;
 
 const worker: Worker = self as any;
@@ -56,7 +56,7 @@ worker.addEventListener("message", (msg) => {
   case QueryEngineWorkerRequestType.RUN_INLINE_JS_QUERY:
   case QueryEngineWorkerRequestType.RUN_FILTER_JS_QUERY:
     const executor = executors.get(type)!;
-    let result: Song[] = [], error;
+    let result: ISong[] = [], error;
     try {
       result = executor(data);
     } catch (e) {

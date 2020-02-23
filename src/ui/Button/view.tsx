@@ -1,7 +1,7 @@
-import {cls} from "common/Classes";
-import {callHandler, EventHandler} from "common/Event";
-import * as React from "react";
-import style from "./style.scss";
+import {cls} from 'common/Classes';
+import {callHandler, EventHandler} from 'common/Event';
+import * as React from 'react';
+import style from './style.scss';
 
 export interface ButtonProps {
   className?: string;
@@ -10,28 +10,28 @@ export interface ButtonProps {
   onClick?: EventHandler;
 }
 
-export const Button = (
-  {
-    className,
-    children,
+const BaseButton = ({
+  className,
+  children,
+  onClick,
+}: ButtonProps) => (
+  <button
+    className={cls(style.commonButton, className)}
+    children={children}
+    onClick={onClick && (() => callHandler(onClick))}
+  />
+);
 
-    onClick,
-  }: ButtonProps
-) => {
-  return (
-    <button
-      className={cls(style.button, className)}
-      children={children}
-      onClick={onClick && (() => callHandler(onClick))}
-    />
-  );
-};
+export const Button = ({
+  className,
+  ...props
+}: ButtonProps) => (
+  <BaseButton className={cls(style.button, className)} {...props}/>
+);
 
-export const IconButton = (
-  {
-    className,
-    ...props
-  }: ButtonProps
-) => (
-  <Button className={cls(className, style.iconButton)} {...props}/>
+export const IconButton = ({
+  className,
+  ...props
+}: ButtonProps) => (
+  <BaseButton className={cls(style.iconButton, className)} {...props}/>
 );

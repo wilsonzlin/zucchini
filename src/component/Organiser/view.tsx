@@ -1,14 +1,15 @@
-import {cls} from "common/Classes";
-import {callHandler, EventHandler} from "common/Event";
-import {Field} from "model/Song";
-import * as moment from "moment";
-import * as React from "react";
-import {IconButton} from "ui/Button/view";
-import {Dropdown} from "ui/Dropdown/view";
-import {HoverCard, HoverCardAnchor} from "ui/HoverCard/view";
-import {Input} from "ui/Input/view";
-import {useDismissible} from "ui/util/dismissible";
-import * as style from "./style.scss";
+import {cls} from 'common/Classes';
+import {callHandler, EventHandler} from 'common/Event';
+import {Field} from 'model/Song';
+import * as moment from 'moment';
+import * as React from 'react';
+import {IconButton} from 'ui/Button/view';
+import {Dropdown} from 'ui/Dropdown/view';
+import {HoverCard, HoverCardAnchor} from 'ui/HoverCard/view';
+import {Input} from 'ui/Input/view';
+import {useDismissible} from 'ui/util/dismissible';
+import * as style from './style.scss';
+import {SettingsIcon} from '../Icon/view';
 
 const createOptions = (fields: (Field | undefined)[], labels: Map<Field | undefined, string>) => fields.map(f => ({
   value: f,
@@ -60,7 +61,7 @@ export const Organiser = (
     onChangeFilterOn,
     onChangeGroupBy,
     onChangeSubgroupBy,
-  }: OrganiserProps
+  }: OrganiserProps,
 ) => {
   const [showingOptions, setShowingOptions, onRelevantOptionsClick, onRelevantOptionsFocus] = useDismissible();
 
@@ -75,21 +76,20 @@ export const Organiser = (
             /* Wrap text to allow flex for center-right alignment. */
             <span className={style.labelText}>
             {statistics.count} songs
-              {" • "}
-              {moment.duration(statistics.duration, "s").humanize()}
+              {' • '}
+              {moment.duration(statistics.duration, 's').humanize()}
           </span>
           )}
-          {" "}
           <IconButton
             className={cls(
               style.optionsButton,
-              filterBy || groupBy ? style.optionsButtonActive : undefined
+              filterBy || groupBy ? style.optionsButtonActive : undefined,
             )}
             onClick={() => {
               onRelevantOptionsClick();
               setShowingOptions(!showingOptions);
             }}
-          >⚙</IconButton>
+          >{SettingsIcon}</IconButton>
         </span>
       </aside>
 
@@ -111,7 +111,7 @@ export const Organiser = (
               onChange={e => callHandler(onChangeFilterBy, e)}
             />
             {filterBy && <Input
-              value={filterOn || ""}
+              value={filterOn || ''}
               onChange={e => callHandler(onChangeFilterOn, e)}
             />}
           </div>

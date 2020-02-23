@@ -1,4 +1,4 @@
-import {Song} from "model/Song";
+import {ISong} from "model/Song";
 import {
   QueryEngineWorkerRequest,
   QueryEngineWorkerRequestType,
@@ -28,7 +28,7 @@ export const queryEngine = new class {
     callbacks: PromiseResultCallbacks;
   };
   // TODO Bind to store.
-  private songs: Song[] = [];
+  private songs: ISong[] = [];
 
   constructor () {
     this.initNewWorker();
@@ -121,7 +121,7 @@ export const queryEngine = new class {
     return await this.makeAsyncRequest<string[]>(QueryEngineWorkerRequestType.RUN_FILTER_JS_QUERY, query);
   }
 
-  loadData (songs: Song[]) {
+  loadData (songs: ISong[]) {
     this.songs = songs;
     this.initNewWorker();
   }

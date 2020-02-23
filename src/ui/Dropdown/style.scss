@@ -25,12 +25,9 @@
 
 @include growOneAnchorRest(".value", ".valueText");
 
-.arrow::before {
-  content: "▼"
-}
-
-.showing .arrow::before {
-  content: "▲";
+.arrow {
+  // Leave some room between text and arrow.
+  margin-left: 0.25rem;
 }
 
 .menu {

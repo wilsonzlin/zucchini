@@ -18,12 +18,15 @@
   --color-player-shadow: rgba(200, 200, 200, 0.9);
   --color-player-text: #464646;
 
+  --color-playlist-bar-shadow: rgba(200, 200, 200, 0.9);
+  --color-playlist-entry-background: rgba(234, 234, 234, 0.95);
+  --color-playlist-entry-subtitle: #464646;
+
   --color-search-text: black;
   --color-search-suggestions-background: rgba(252, 252, 252, 0.96);
   --color-search-suggestions-shadow: rgba(200, 200, 200, 0.9);
   --color-search-suggestion-background: rgba(234, 234, 234, 0.95);
-  --color-search-suggestion-text-odd: black;
-  --color-search-suggestion-text-even: #464646;
+  --color-search-suggestion-text: black;
 
   --color-button-border: rgb(220, 220, 220);
   --color-button-background: rgb(250, 250, 250);

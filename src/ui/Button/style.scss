@@ -1,14 +1,18 @@
 @import "~common/style";
 
-.button {
+.commonButton {
   // Reset UA styling.
   padding: 0;
 
   cursor: pointer;
-
   border: $borderWidth solid var(--color-button-border);
   border-radius: $borderRadius;
   background: var(--color-button-background);
+}
+
+.button {
+  font-size: var(--fontsize-button);
+  padding: var(--padding-button);
 }
 
 .iconButton {

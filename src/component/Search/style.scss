@@ -7,7 +7,7 @@
   position: relative;
 }
 
-@include growOneAnchorRest(".search", ".searchInput", "center");
+@include growOneAnchorRest(".search", ".searchInput");
 
 .auxiliary {
   z-index: $zIndexControlMenu;
@@ -25,37 +25,19 @@
 }
 
 .suggestions {
-  display: flex;
-  align-items: stretch;
   white-space: nowrap;
-  overflow: hidden;
 }
 
 .suggestion {
   @include bareButton();
 
+  color: var(--color-search-suggestion-text);
+  display: block;
   font-size: var(--fontsize-search-suggestion);
   padding: var(--padding-search-suggestion);
+  width: 100%;
 
-  &:hover, &:focus, &.keyboardFocusedSuggestion {
+  &.keyboardFocusedSuggestion {
     background: var(--color-search-suggestion-background);
   }
-
-  &:nth-child(odd) {
-    color: var(--color-search-suggestion-text-odd);
-  }
-
-  &:nth-child(even) {
-    color: var(--color-search-suggestion-text-even);
-  }
-}
-
-.error {
-  // TODO.
-  background: red;
-  color: white;
-}
-
-.suggestion {
-  display: block;
 }

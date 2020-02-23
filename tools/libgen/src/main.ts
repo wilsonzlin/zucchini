@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import {exec} from "child_process";
-import fs from "fs";
-import Path from "path";
-import minimist from "minimist";
+import {exec} from 'child_process';
+import fs from 'fs';
+import Path from 'path';
+import minimist from 'minimist';
 
 /**
  * Take a semicolon-separated string, split by semicolon, trim each part, and filter out any empty parts.
@@ -11,8 +11,8 @@ import minimist from "minimist";
  * @param val semicolon-separated string
  * @return array of non-empty trimmed strings
  */
-const splitDelimited = (val: string = ""): string[] =>
-  val.split(";").map(l => l.trim()).filter(l => l);
+const splitDelimited = (val: string = ''): string[] =>
+  val.split(';').map(l => l.trim()).filter(l => l);
 
 /**
  * If {@param val} is an empty string, `null`, or `undefined`, return null.
@@ -25,8 +25,8 @@ const splitDelimited = (val: string = ""): string[] =>
  * @param producer function to call that takes a non-`undefined` non-`null` non-empty-string {@param val}
  * @return `null` or the return value of {@param producer}
  */
-const computeIfPresent = <T, R> (val: T | null | undefined, producer: (val: T) => R): R | null =>
-  val == null || (val as any) === "" ? null : producer(val);
+const computeIfPresent = <T, R>(val: T | null | undefined, producer: (val: T) => R): R | null =>
+  val == null || (val as any) === '' ? null : producer(val);
 
 export interface FileMetadata {
   file: string;
@@ -40,8 +40,10 @@ export interface FileMetadata {
   decade: string | null;
 }
 
-export const getMetadata = (file: string, path: string, prefix: string): Promise<FileMetadata> =>
+export const getMetadata = (path: string, prefix: string = ''): Promise<FileMetadata> =>
   new Promise((resolve, reject) => {
+    const file = Path.basename(path);
+
     exec(`ffprobe -hide_banner -show_entries format=duration "${path}" 2>&1`, (err, stdout, stderr) => {
       if (err) {
         return reject(err);
@@ -82,7 +84,7 @@ if (require.main === module) {
   const prefix = args.prefix;
 
   const files = fs.readdirSync(dir);
-  Promise.all(files.map(f => getMetadata(f, Path.join(dir, f), prefix)))
+  Promise.all(files.map(f => getMetadata(Path.join(dir, f), prefix)))
     .then(res => {
       console.log(JSON.stringify(res, null, 2));
     });

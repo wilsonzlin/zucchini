@@ -1,0 +1,18 @@
+@import "~common/style";
+
+.bar {
+  height: 100%;
+  width: 100%;
+
+  background: white;
+
+  box-shadow: 0 0 $dropShadowRadius var(--color-playlist-bar-shadow);
+}
+
+@include growOneAnchorRest(".bar", ".playlist");
+
+.playlist {
+  cursor: pointer;
+  font-size: var(--fontsize-dropdown-value);
+  padding: var(--padding-dropdown-value);
+}

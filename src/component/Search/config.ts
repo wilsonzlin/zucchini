@@ -1,16 +1,16 @@
-import {SearchEngine} from "component/Search/state";
-import {getFieldValues, Song, TEXT_SEARCH_FIELDS} from "model/Song";
+import {SearchEngine} from 'component/Search/state';
+import {getFieldValues, ISong, TEXT_SEARCH_FIELDS} from 'model/Song';
 // TODO flexsearch types
-const flexsearch = require("flexsearch");
+const flexsearch = require('flexsearch');
 
-export const createSearchEngine = async (songs: Song[]): Promise<SearchEngine> => {
+export const createSearchEngine = async (songs: ISong[]): Promise<SearchEngine> => {
   const searchEngine = new flexsearch({
     async: true,
   });
   const autocompleteEngine = new flexsearch({
     suggest: true,
   });
-  const songsByFile = new Map<string, Song>();
+  const songsByFile = new Map<string, ISong>();
 
   const seenAutocomplete = new Set<string>();
 
@@ -19,9 +19,9 @@ export const createSearchEngine = async (songs: Song[]): Promise<SearchEngine> =
     searchEngine.add(
       song.file,
       TEXT_SEARCH_FIELDS
-        .map(f => `${song[f] == null ? "" : song[f]}`)
+        .map(f => `${song[f] == null ? '' : song[f]}`)
         .reduce((arr, v) => arr.concat(v), [] as string[])
-        .join(" ")
+        .join(' '),
     );
 
     for (const field of TEXT_SEARCH_FIELDS) {
@@ -45,6 +45,6 @@ export const createSearchEngine = async (songs: Song[]): Promise<SearchEngine> =
     suggestField: (field, query, limit) => {
       // TODO
       throw new Error();
-    }
+    },
   };
 };

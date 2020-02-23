@@ -15,6 +15,12 @@
   --hmargin-player-elements: 0.25rem;
   --hmargin-player-button: 0.25rem;
 
+  --margin-playlist-control: 0.25rem;
+  --fontsize-playlist-entry: 0.875rem;
+  --vpadding-playlist-entry: 0.75rem;
+  --margin-playlist-entry-nonlabel: 0.5rem;
+  --bmargin-playlist-entry-title: 0;
+
   --length-iconbutton: 1.75rem;
 
   --width-player-card: 27.5rem;
@@ -22,6 +28,9 @@
   --vmargin-player-card-field: 0.33rem;
 
   --padding-hovercard: 0.67rem;
+
+  --fontsize-button: 0.875rem;
+  --padding-button: 0.33rem 0.67rem;
 
   --fontsize-input: 0.875rem;
   --padding-input: 0.5rem;
