@@ -1,4 +1,4 @@
-@import "~common/style";
+@import '~common/style';
 
 .container {
   color: var(--color-dropdown-text);
@@ -23,7 +23,7 @@
   padding: var(--padding-dropdown-value);
 }
 
-@include growOneAnchorRest(".value", ".valueText");
+@include growOneAnchorRest('.value', '.valueText');
 
 .arrow {
   // Leave some room between text and arrow.

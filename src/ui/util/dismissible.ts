@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 
 type SetShowing = Dispatch<SetStateAction<boolean>>;
 type OnRelevantClick = () => void;
@@ -7,7 +7,7 @@ type OnRelevantFocus = () => void;
 const showingStateSetters = new Set<SetShowing>();
 const ignoredShowingStateSetters = new Set<SetShowing>();
 
-window.addEventListener("click", () => {
+window.addEventListener('click', () => {
   for (const setShowing of showingStateSetters) {
     if (!ignoredShowingStateSetters.delete(setShowing)) {
       setShowing(false);
@@ -16,7 +16,7 @@ window.addEventListener("click", () => {
 });
 
 let focusCaptureTimeout: any;
-window.addEventListener("focus", () => {
+window.addEventListener('focus', () => {
   clearTimeout(focusCaptureTimeout);
   focusCaptureTimeout = setTimeout(() => {
     for (const setShowing of showingStateSetters) {

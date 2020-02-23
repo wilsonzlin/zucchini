@@ -1,8 +1,8 @@
-import {WorkerClient} from "common/Worker";
-import {ListingWorkerRequests} from "component/Organiser/listing.worker";
-import {computed, observable, toJS} from "mobx";
-import {fromPromise, IPromiseBasedObservable} from "mobx-utils";
-import {Field, FILTERABLE_FIELDS, GROUPABLE_FIELDS, ISong, SUBGROUPABLE_FIELDS} from "model/Song";
+import {WorkerClient} from 'common/Worker';
+import {ListingWorkerRequests} from 'component/Organiser/listing.worker';
+import {computed, observable, toJS} from 'mobx';
+import {fromPromise, IPromiseBasedObservable} from 'mobx-utils';
+import {Field, FILTERABLE_FIELDS, GROUPABLE_FIELDS, ISong, SUBGROUPABLE_FIELDS} from 'model/Song';
 
 export interface ISubgroup {
   field?: Field;
@@ -23,24 +23,24 @@ export type Listing = {
 };
 
 export class OrganiserStore {
+  @observable filter?: { field: Field; match: string };
+  // subgroup to be provided without a group.
+  @observable group?: { field: Field; subgroup?: Field };
+  // This type allows for a group to be provided with or without a
+  // subgroup, or no group or subgroup to be provided, but not a
+
   constructor (
     private readonly listingWorker: WorkerClient<ListingWorkerRequests>,
     private readonly getSongs: () => IPromiseBasedObservable<ISong[]> | undefined,
   ) {
   }
 
-  @observable filter?: { field: Field; match: string };
-  // This type allows for a group to be provided with or without a
-  // subgroup, or no group or subgroup to be provided, but not a
-  // subgroup to be provided without a group.
-  @observable group?: { field: Field; subgroup?: Field };
-
   @computed get filterField () {
     return this.filter && this.filter.field;
   }
 
   @computed get filterMatch () {
-    return this.filter ? this.filter.match : "";
+    return this.filter ? this.filter.match : '';
   }
 
   @computed get groupField () {
@@ -58,14 +58,14 @@ export class OrganiserStore {
   @computed get availableGroupFields () {
     return [
       undefined,
-      ...GROUPABLE_FIELDS.filter(field => field !== this.filterField)
+      ...GROUPABLE_FIELDS.filter(field => field !== this.filterField),
     ];
   }
 
   @computed get availableSubgroupFields () {
     return [
       undefined,
-      ...SUBGROUPABLE_FIELDS.filter(field => field !== this.filterField && field !== this.groupField)
+      ...SUBGROUPABLE_FIELDS.filter(field => field !== this.filterField && field !== this.groupField),
     ];
   }
 
@@ -74,7 +74,7 @@ export class OrganiserStore {
     const group = this.group;
     const songs = this.getSongs();
     return songs && fromPromise(songs.then(
-      songs => this.listingWorker.getListing(toJS({songs, filter, group}, {recurseEverything: true}))
+      songs => this.listingWorker.getListing(toJS({songs, filter, group}, {recurseEverything: true})),
     ));
   }
 }

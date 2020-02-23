@@ -1,15 +1,7 @@
-import {
-  Comparator,
-  compareArrays,
-  compareIntegers,
-  compareNullableLast,
-  compareProperty,
-  compareStrings,
-  compareUsing
-} from "common/Compare";
-import {UnreachableError} from "common/Sanity";
-import {isArrayOfType, isNotDefinedOrOfType} from "common/Type";
-import {mapOptional} from "common/Util";
+import {Comparator, compareArrays, compareIntegers, compareNullableLast, compareProperty, compareStrings, compareUsing} from 'common/Compare';
+import {UnreachableError} from 'common/Sanity';
+import {isArrayOfType, isNotDefinedOrOfType} from 'common/Type';
+import {mapOptional} from 'common/Util';
 
 export type ArtistNames = string[];
 export type Duration = number;
@@ -40,16 +32,16 @@ export interface ISong {
 }
 
 export const isWellFormedSong = (obj: any): obj is ISong => {
-  return obj && typeof obj == "object" &&
-    isArrayOfType(obj.artists, "string") &&
-    isArrayOfType(obj.genres, "string") &&
-    isNotDefinedOrOfType(obj, "album", "string") &&
-    isNotDefinedOrOfType(obj, "decade", "string") &&
-    isNotDefinedOrOfType(obj, "duration", "number") &&
-    isNotDefinedOrOfType(obj, "file", "string") &&
-    isNotDefinedOrOfType(obj, "title", "string") &&
-    isNotDefinedOrOfType(obj, "track", "number") &&
-    isNotDefinedOrOfType(obj, "year", "number");
+  return obj && typeof obj == 'object' &&
+    isArrayOfType(obj.artists, 'string') &&
+    isArrayOfType(obj.genres, 'string') &&
+    isNotDefinedOrOfType(obj, 'album', 'string') &&
+    isNotDefinedOrOfType(obj, 'decade', 'string') &&
+    isNotDefinedOrOfType(obj, 'duration', 'number') &&
+    isNotDefinedOrOfType(obj, 'file', 'string') &&
+    isNotDefinedOrOfType(obj, 'title', 'string') &&
+    isNotDefinedOrOfType(obj, 'track', 'number') &&
+    isNotDefinedOrOfType(obj, 'year', 'number');
 };
 
 export type Field = keyof ISong;
@@ -60,14 +52,14 @@ export type Field = keyof ISong;
  */
 
 // Don't have both year and decade.
-export const TEXT_SEARCH_FIELDS: Field[] = ["album", "artists", "genres", "title", "year"];
+export const TEXT_SEARCH_FIELDS: Field[] = ['album', 'artists', 'genres', 'title', 'year'];
 
-export const FILTERABLE_FIELDS: Field[] = ["album", "artists", "decade", "genres"];
-export const GROUPABLE_FIELDS: Field[] = ["album", "artists", "decade", "genres", "title"];
-export const SUBGROUPABLE_FIELDS: Field[] = ["album", "artists", "decade", "genres", "title"];
+export const FILTERABLE_FIELDS: Field[] = ['album', 'artists', 'decade', 'genres'];
+export const GROUPABLE_FIELDS: Field[] = ['album', 'artists', 'decade', 'genres', 'title'];
+export const SUBGROUPABLE_FIELDS: Field[] = ['album', 'artists', 'decade', 'genres', 'title'];
 
-export const ARRAY_FIELDS: Field[] = ["artists", "genres"];
-export const NUMERIC_FIELDS: Field[] = ["track", "year"];
+export const ARRAY_FIELDS: Field[] = ['artists', 'genres'];
+export const NUMERIC_FIELDS: Field[] = ['track', 'year'];
 /**
  * Return an array of a song's values for a field. If the field is not an array of values,
  * return an array of zero elements if the value is null, or one element representing the value.
@@ -82,16 +74,16 @@ export const getFieldValues = <F extends Field> (song: ISong, field: F): FieldUn
 
 const FIELD_COMPARATORS: { [field in Field]: Comparator<ISong> } = {
   file () {
-    throw new UnreachableError("Attempted to compare song file URLs");
+    throw new UnreachableError('Attempted to compare song file URLs');
   },
-  duration: compareProperty("duration", compareIntegers),
-  album: compareProperty("album", compareNullableLast(compareStrings)),
-  artists: compareProperty("artists", compareArrays(compareStrings)),
-  decade: compareProperty("decade", compareNullableLast(compareStrings)),
-  genres: compareProperty("genres", compareArrays(compareStrings)),
-  title: compareProperty("title", compareNullableLast(compareStrings)),
-  track: compareProperty("track", compareNullableLast(compareIntegers)),
-  year: compareProperty("year", compareNullableLast(compareIntegers))
+  duration: compareProperty('duration', compareIntegers),
+  album: compareProperty('album', compareNullableLast(compareStrings)),
+  artists: compareProperty('artists', compareArrays(compareStrings)),
+  decade: compareProperty('decade', compareNullableLast(compareStrings)),
+  genres: compareProperty('genres', compareArrays(compareStrings)),
+  title: compareProperty('title', compareNullableLast(compareStrings)),
+  track: compareProperty('track', compareNullableLast(compareIntegers)),
+  year: compareProperty('year', compareNullableLast(compareIntegers)),
 };
 
 /*
@@ -111,9 +103,9 @@ const FIELD_COMPARATORS: { [field in Field]: Comparator<ISong> } = {
 const compareUsingFields = (...fields: Field[]) => compareUsing(...fields.map(f => FIELD_COMPARATORS[f]));
 
 export const SONG_COMPARATOR = new Map<Field | undefined, Comparator<ISong>>();
-SONG_COMPARATOR.set("album", compareUsingFields("track", "title"));
-SONG_COMPARATOR.set("artists", compareUsingFields("album", "track", "title"));
-SONG_COMPARATOR.set("decade", compareUsingFields("album", "track", "title"));
-SONG_COMPARATOR.set("genres", compareUsingFields("album", "track", "title"));
-SONG_COMPARATOR.set("title", compareUsingFields("title", "artists", "album"));
-SONG_COMPARATOR.set(undefined, compareUsingFields("album", "track", "title"));
+SONG_COMPARATOR.set('album', compareUsingFields('track', 'title'));
+SONG_COMPARATOR.set('artists', compareUsingFields('album', 'track', 'title'));
+SONG_COMPARATOR.set('decade', compareUsingFields('album', 'track', 'title'));
+SONG_COMPARATOR.set('genres', compareUsingFields('album', 'track', 'title'));
+SONG_COMPARATOR.set('title', compareUsingFields('title', 'artists', 'album'));
+SONG_COMPARATOR.set(undefined, compareUsingFields('album', 'track', 'title'));

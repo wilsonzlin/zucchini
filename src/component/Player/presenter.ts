@@ -9,11 +9,6 @@ export class PlayerPresenter {
   }
 
   @action
-  private setSong = (song: ISong | undefined) => {
-    this.store.song = song;
-  };
-
-  @action
   setPlaying = (playing: boolean) => {
     this.store.playing = playing;
   };
@@ -51,5 +46,10 @@ export class PlayerPresenter {
   @action
   setHoveringSongDetails = (hovering: boolean) => {
     this.store.hoveringSongDetails = hovering;
+  };
+
+  @action
+  private setSong = (song: ISong | undefined) => {
+    this.store.song = song;
   };
 }

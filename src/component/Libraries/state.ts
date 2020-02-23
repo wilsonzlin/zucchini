@@ -1,20 +1,20 @@
-import {JSON_CODEC, LibrariesLSKey} from "common/LocalStorage";
-import {UserError} from "common/UserError";
-import {DefaultLibraries} from "component/Libraries/config";
-import {computed, observable} from "mobx";
-import {fromPromise, IPromiseBasedObservable} from "mobx-utils";
-import {isWellFormedSong, ISong} from "model/Song";
+import {JSON_CODEC, LibrariesLSKey} from 'common/LocalStorage';
+import {UserError} from 'common/UserError';
+import {DefaultLibraries} from 'component/Libraries/config';
+import {computed, observable} from 'mobx';
+import {fromPromise, IPromiseBasedObservable} from 'mobx-utils';
+import {ISong, isWellFormedSong} from 'model/Song';
 
 export interface Library {
   name: string;
   URL: string;
 }
 
-const LIBRARIES = new LibrariesLSKey<Library[]>("LIBRARIES", JSON_CODEC);
+const LIBRARIES = new LibrariesLSKey<Library[]>('LIBRARIES', JSON_CODEC);
 
 const assertWellFormedSongs = (data: any): ISong[] => {
   if (!Array.isArray(data) || !data.every(e => isWellFormedSong(e))) {
-    throw new UserError("Library URL does not point to a list of songs that zucchini understands");
+    throw new UserError('Library URL does not point to a list of songs that zucchini understands');
   }
   return data;
 };
@@ -26,10 +26,10 @@ export class LibrariesStore {
   @computed get songs (): IPromiseBasedObservable<ISong[]> | undefined {
     return fromPromise(
       !this.selectedLibrary ?
-        Promise.reject(new UserError("No library selected")) :
+        Promise.reject(new UserError('No library selected')) :
         fetch(this.selectedLibrary.URL)
           .then(res => res.json())
-          .then(songs => assertWellFormedSongs(songs))
+          .then(songs => assertWellFormedSongs(songs)),
     );
   }
 }

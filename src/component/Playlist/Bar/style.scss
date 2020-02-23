@@ -1,4 +1,4 @@
-@import "~common/style";
+@import '~common/style';
 
 .bar {
   height: 100%;
@@ -9,7 +9,7 @@
   box-shadow: 0 0 $dropShadowRadius var(--color-playlist-bar-shadow);
 }
 
-@include growOneAnchorRest(".bar", ".playlist");
+@include growOneAnchorRest('.bar', '.playlist');
 
 .playlist {
   cursor: pointer;

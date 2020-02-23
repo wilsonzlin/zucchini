@@ -1,6 +1,6 @@
-@import "~common/style";
+@import '~common/style';
 
-@include growOneAnchorRest(".entry", ".label");
+@include growOneAnchorRest('.entry', '.label');
 
 .entry {
   cursor: pointer;

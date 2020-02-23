@@ -1,6 +1,6 @@
-import {computed, observable} from "mobx";
-import {fromPromise, IPromiseBasedObservable} from "mobx-utils";
-import {Field, ISong} from "model/Song";
+import {computed, observable} from 'mobx';
+import {fromPromise, IPromiseBasedObservable} from 'mobx-utils';
+import {Field, ISong} from 'model/Song';
 
 export interface SearchEngine {
   searchAllFields (query: string): Promise<ISong[]>;
@@ -13,23 +13,18 @@ export interface SearchEngine {
 }
 
 export class SearchStore {
+  @observable unconfirmedSearchTerm: string = '';
+  @observable confirmedSearchTerm: string = '';
+
   constructor (
     private readonly searchEngineFactory: (songs: ISong[]) => Promise<SearchEngine>,
     private readonly getSongs: () => IPromiseBasedObservable<ISong[]> | undefined,
   ) {
   }
 
-  @computed
-  private get songs () {
-    return this.getSongs();
-  }
-
-  @observable unconfirmedSearchTerm: string = "";
-  @observable confirmedSearchTerm: string = "";
-
   @computed get searchEngine (): IPromiseBasedObservable<SearchEngine> | undefined {
     return this.songs && fromPromise(
-      this.songs.then<SearchEngine>(songs => this.searchEngineFactory(songs))
+      this.songs.then<SearchEngine>(songs => this.searchEngineFactory(songs)),
     );
   }
 
@@ -46,6 +41,11 @@ export class SearchStore {
     }
 
     return fromPromise(this.searchEngine.then<ISong[]>(engine => engine.searchAllFields(this.confirmedSearchTerm)));
+  }
+
+  @computed
+  private get songs () {
+    return this.getSongs();
   }
 }
 

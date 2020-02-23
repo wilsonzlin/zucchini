@@ -1,4 +1,4 @@
-import {Library} from "component/Libraries/state";
+import {Library} from 'component/Libraries/state';
 
 declare var ZUCCHINI_DEFAULT_LIBRARIES: Library[];
 

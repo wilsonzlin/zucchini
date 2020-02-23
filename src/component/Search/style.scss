@@ -1,4 +1,4 @@
-@import "~common/style";
+@import '~common/style';
 
 .search {
   color: var(--color-search-text);
@@ -7,7 +7,7 @@
   position: relative;
 }
 
-@include growOneAnchorRest(".search", ".searchInput");
+@include growOneAnchorRest('.search', '.searchInput');
 
 .auxiliary {
   z-index: $zIndexControlMenu;

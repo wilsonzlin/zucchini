@@ -1,4 +1,4 @@
-import {LibrariesStore, Library} from "component/Libraries/state";
+import {LibrariesStore, Library} from 'component/Libraries/state';
 
 export class LibrariesPresenter {
   constructor (

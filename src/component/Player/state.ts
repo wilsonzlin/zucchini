@@ -14,6 +14,8 @@ export class PlayerStore {
   // Since these are proxies, they should only be set to from event
   // handlers on the internal audio element. To actually update the
   // element's values, setters are created that modify/call the audio
+  @observable song?: ISong;
+  @observable hoveringSongDetails: boolean = false;
   // element, not these values.
   private readonly audio: HTMLAudioElement;
   // A number between 0 and this.duration (inclusive).
@@ -25,9 +27,26 @@ export class PlayerStore {
   // A number between 0 and 1 (inclusive).
   @observable private proxyVolume: number = DEFAULT_VOLUME;
 
-  @observable song?: ISong;
-
-  @observable hoveringSongDetails: boolean = false;
+  constructor (
+    Audio: new () => HTMLAudioElement,
+  ) {
+    const audio = this.audio = new Audio();
+    audio.volume = VOLUME.getOrDefault(DEFAULT_VOLUME);
+    audio.oncanplay = action(() => this.proxyLoading = false);
+    audio.onended = action(() => {
+      this.proxyEnded = true;
+      this.proxyPlaying = false;
+    });
+    audio.onerror = action(() => this.proxyLoading = this.proxyPlaying = false);
+    audio.onloadstart = action(() => this.proxyLoading = true);
+    audio.onpause = action(() => this.proxyPlaying = false);
+    audio.onplaying = action(() => {
+      this.proxyEnded = false;
+      this.proxyPlaying = true;
+    });
+    audio.ontimeupdate = action(() => this.proxyCurrentTime = audio.currentTime);
+    audio.onvolumechange = action(() => this.proxyVolume = audio.volume);
+  }
 
   @computed get volume (): number {
     return this.proxyVolume;
@@ -53,11 +72,12 @@ export class PlayerStore {
     return this.proxySource;
   }
 
+  // Loading should represent the HTMLAudioElement's state only,
+
   set source (value: string | null) {
     this.audio.src = value || '';
   }
 
-  // Loading should represent the HTMLAudioElement's state only,
   // so should not be modifiable externally.
   @computed get loading (): boolean {
     return this.proxyLoading;
@@ -67,33 +87,12 @@ export class PlayerStore {
     return this.proxyPlaying;
   }
 
-  @computed get ended (): boolean {
-    return this.proxyEnded;
-  }
-
   set playing (value: boolean) {
     value ? this.audio.play() : this.audio.pause();
   }
 
-  constructor (
-    Audio: new () => HTMLAudioElement,
-  ) {
-    const audio = this.audio = new Audio();
-    audio.volume = VOLUME.getOrDefault(DEFAULT_VOLUME);
-    audio.oncanplay = action(() => this.proxyLoading = false);
-    audio.onended = action(() => {
-      this.proxyEnded = true;
-      this.proxyPlaying = false;
-    });
-    audio.onerror = action(() => this.proxyLoading = this.proxyPlaying = false);
-    audio.onloadstart = action(() => this.proxyLoading = true);
-    audio.onpause = action(() => this.proxyPlaying = false);
-    audio.onplaying = action(() => {
-      this.proxyEnded = false;
-      this.proxyPlaying = true;
-    });
-    audio.ontimeupdate = action(() => this.proxyCurrentTime = audio.currentTime);
-    audio.onvolumechange = action(() => this.proxyVolume = audio.volume);
+  @computed get ended (): boolean {
+    return this.proxyEnded;
   }
 }
 

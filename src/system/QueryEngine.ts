@@ -1,12 +1,12 @@
-import {ISong} from "model/Song";
+import {ISong} from 'model/Song';
 import {
   QueryEngineWorkerRequest,
   QueryEngineWorkerRequestType,
   QueryEngineWorkerResponse,
   QueryEngineWorkerResponseError,
-  QueryEngineWorkerResponseType
-} from "./QueryEngineWorkerMessage";
-import Worker from "worker-loader!./QueryEngine.worker";
+  QueryEngineWorkerResponseType,
+} from './QueryEngineWorkerMessage';
+import Worker from 'worker-loader!./QueryEngine.worker';
 
 interface PromiseResultCallbacks<R = any, E = any> {
   resolve: (val: R) => void;
@@ -31,6 +31,19 @@ export const queryEngine = new class {
   private songs: ISong[] = [];
 
   constructor () {
+    this.initNewWorker();
+  }
+
+  async inline (query: string) {
+    return await this.makeAsyncRequest<string[]>(QueryEngineWorkerRequestType.RUN_INLINE_JS_QUERY, query);
+  }
+
+  async filter (query: string) {
+    return await this.makeAsyncRequest<string[]>(QueryEngineWorkerRequestType.RUN_FILTER_JS_QUERY, query);
+  }
+
+  loadData (songs: ISong[]) {
+    this.songs = songs;
     this.initNewWorker();
   }
 
@@ -70,7 +83,7 @@ export const queryEngine = new class {
     const worker = new Worker();
 
     // worker.addEventListener("error", console.error);
-    worker.addEventListener("message", msg => {
+    worker.addEventListener('message', msg => {
       const {type, error, data} = msg.data as QueryEngineWorkerResponse;
 
       switch (type) {
@@ -111,18 +124,5 @@ export const queryEngine = new class {
 
     this.worker = worker;
     this.state = QueryEngineState.LOADING;
-  }
-
-  async inline (query: string) {
-    return await this.makeAsyncRequest<string[]>(QueryEngineWorkerRequestType.RUN_INLINE_JS_QUERY, query);
-  }
-
-  async filter (query: string) {
-    return await this.makeAsyncRequest<string[]>(QueryEngineWorkerRequestType.RUN_FILTER_JS_QUERY, query);
-  }
-
-  loadData (songs: ISong[]) {
-    this.songs = songs;
-    this.initNewWorker();
   }
 };

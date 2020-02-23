@@ -1,4 +1,4 @@
-@import "~common/style";
+@import '~common/style';
 
 .playlist {
   background: var(--color-playlist-background);
@@ -22,7 +22,7 @@
   align-items: center;
 }
 
-@include growOneAnchorRest(".menu", ".playlists")
+@include growOneAnchorRest('.menu', '.playlists')
 
 .queue {
   overflow: auto;

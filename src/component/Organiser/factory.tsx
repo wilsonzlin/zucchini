@@ -1,13 +1,13 @@
-import {workerClient} from "common/Worker";
-import {OrganiserPresenter} from "component/Organiser/presenter";
-import {OrganiserState, OrganiserStore} from "component/Organiser/state";
-import * as mobxReact from "mobx-react";
-import {IPromiseBasedObservable} from "mobx-utils";
-import {ISong} from "model/Song";
-import * as React from "react";
-import ListingWorker from "worker-loader!./listing.worker.ts";
-import * as config from "./config";
-import {Organiser as OrganiserImpl} from "./view";
+import {workerClient} from 'common/Worker';
+import {OrganiserPresenter} from 'component/Organiser/presenter';
+import {OrganiserState, OrganiserStore} from 'component/Organiser/state';
+import * as mobxReact from 'mobx-react';
+import {IPromiseBasedObservable} from 'mobx-utils';
+import {ISong} from 'model/Song';
+import * as React from 'react';
+import ListingWorker from 'worker-loader!./listing.worker.ts';
+import * as config from './config';
+import {Organiser as OrganiserImpl} from './view';
 
 export interface OrganiserDependencies {
   getSongs: () => IPromiseBasedObservable<ISong[]> | undefined;
@@ -16,7 +16,7 @@ export interface OrganiserDependencies {
 export const OrganiserFactory = (
   {
     getSongs,
-  }: OrganiserDependencies
+  }: OrganiserDependencies,
 ) => {
   const listingWorker = new ListingWorker();
   const store = new OrganiserStore(workerClient(listingWorker), getSongs);
@@ -24,7 +24,7 @@ export const OrganiserFactory = (
 
   const Organiser = mobxReact.observer(() =>
     <OrganiserImpl
-      statistics={store.listing && store.listing.state == "fulfilled" ? {
+      statistics={store.listing && store.listing.state == 'fulfilled' ? {
         count: store.listing.value.count,
         duration: store.listing.value.duration,
       } : undefined}
@@ -45,7 +45,7 @@ export const OrganiserFactory = (
       onChangeFilterOn={presenter.changeFilterMatch}
       onChangeGroupBy={presenter.changeGroupField}
       onChangeSubgroupBy={presenter.changeGroupSubgroup}
-    />
+    />,
   );
 
   return {

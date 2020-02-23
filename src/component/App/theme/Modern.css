@@ -7,9 +7,9 @@
   --color-list-highlight: rgba(0, 0, 0, 0.04);
   --color-list-text: black;
   --color-list-heading-background: linear-gradient(
-    to bottom,
-    white 0%,
-    rgba(248, 248, 248, 0.9) 100%
+      to bottom,
+      white 0%,
+      rgba(248, 248, 248, 0.9) 100%
   );
 
   --color-playlist-background: #f4f4f4;

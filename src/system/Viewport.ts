@@ -13,6 +13,12 @@ class Viewport {
   // @ts-ignore
   @observable private proxyMode: ViewportMode;
 
+  constructor () {
+    this.updateMode();
+    window.addEventListener('resize', this.updateMode);
+    window.addEventListener('orientationchange', this.updateMode);
+  }
+
   @computed get mode () {
     return this.proxyMode;
   }
@@ -23,12 +29,6 @@ class Viewport {
     this.proxyMode = mode;
     document.body.setAttribute('vm', mode);
   };
-
-  constructor () {
-    this.updateMode();
-    window.addEventListener('resize', this.updateMode);
-    window.addEventListener('orientationchange', this.updateMode);
-  }
 }
 
 export const viewport = new Viewport();

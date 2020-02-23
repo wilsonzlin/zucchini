@@ -1,8 +1,8 @@
-import {IFulfilledPromise, IPendingPromise, IPromiseBasedObservable, IRejectedPromise} from "mobx-utils";
-import {UnreachableError} from "./Sanity";
+import {IFulfilledPromise, IPendingPromise, IPromiseBasedObservable, IRejectedPromise} from 'mobx-utils';
+import {UnreachableError} from './Sanity';
 
 export interface IUninitialisedPromise {
-  state: "uninitialised";
+  state: 'uninitialised';
   value: undefined;
 }
 
@@ -10,7 +10,7 @@ export type WatchedPromise<V> = IUninitialisedPromise | IPendingPromise | IFulfi
 
 export const watchPromise = <V> (promise?: IPromiseBasedObservable<V>): WatchedPromise<V> =>
   !promise ? {
-    state: "uninitialised",
+    state: 'uninitialised',
     value: undefined,
   } : {
     state: promise.state,
@@ -30,11 +30,11 @@ export const renderPromise = <V> (promise: WatchedPromise<V>, renderers: Promise
     return;
   }
   switch (promise.state) {
-  case "uninitialised":
-  case "pending":
+  case 'uninitialised':
+  case 'pending':
     return renderer();
-  case "fulfilled":
-  case "rejected":
+  case 'fulfilled':
+  case 'rejected':
     return renderer(promise.value);
   default:
     throw new UnreachableError();

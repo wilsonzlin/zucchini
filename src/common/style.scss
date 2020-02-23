@@ -6,7 +6,7 @@
   user-select: none;
 }
 
-@mixin growOneAnchorRest($container, $growable, $alignItems: "center") {
+@mixin growOneAnchorRest($container, $growable, $alignItems: 'center') {
   #{$container} {
     display: flex;
     align-items: unquote($alignItems);
@@ -66,7 +66,8 @@
 @mixin animationIndefiniteLoading($delay) {
   :global {
     animation-name: indefiniteLoading;
-  };
+  }
+;
   animation-duration: 2s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;

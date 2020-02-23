@@ -1,7 +1,7 @@
-import {cls} from "common/Classes";
-import {callHandler, EventHandler} from "common/Event";
-import * as React from "react";
-import style from "./style.scss";
+import {cls} from 'common/Classes';
+import {callHandler, EventHandler} from 'common/Event';
+import * as React from 'react';
+import style from './style.scss';
 
 export const Slider = (
   props: {
@@ -12,7 +12,7 @@ export const Slider = (
     // TODO Indeterminate if undefined
     value?: number;
     onChange?: EventHandler<number>;
-  }
+  },
 ) => (
   <div className={cls(
     style.container,

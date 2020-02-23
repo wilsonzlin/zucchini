@@ -1,10 +1,10 @@
-import {isWellFormedSong, ISong} from "model/Song";
+import {ISong, isWellFormedSong} from 'model/Song';
 import {
   QueryEngineWorkerRequest,
   QueryEngineWorkerRequestType,
   QueryEngineWorkerResponse,
-  QueryEngineWorkerResponseType
-} from "./QueryEngineWorkerMessage";
+  QueryEngineWorkerResponseType,
+} from './QueryEngineWorkerMessage';
 
 let library: ISong[] = [];
 
@@ -41,7 +41,7 @@ const postRawMessage = (msg: QueryEngineWorkerResponse): void => {
   worker.postMessage(msg);
 };
 
-worker.addEventListener("message", (msg) => {
+worker.addEventListener('message', (msg) => {
   const {type, data} = msg.data as QueryEngineWorkerRequest;
 
   switch (type) {

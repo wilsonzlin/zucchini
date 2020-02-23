@@ -1,4 +1,4 @@
-import WebpackWorker from "worker-loader!*";
+import WebpackWorker from 'worker-loader!*';
 
 interface RawWorkerRequest {
   type: string;
@@ -20,13 +20,13 @@ export interface WorkerRequests {
 }
 
 export type WorkerRequestHandlers<R extends WorkerRequests> = {
-  [type in keyof R]: (req: R[type]["request"]) => (R[type]["response"] | Promise<R[type]["response"]>);
+  [type in keyof R]: (req: R[type]['request']) => (R[type]['response'] | Promise<R[type]['response']>);
 }
 
 export type WorkerClient<R extends WorkerRequests> = {
   // TODO
   // [type in keyof R]: (req: R[type]["request"]) => Promise<R[type]["response"]>;
-  [type in keyof R]: (req: R[type]["request"]) => any;
+  [type in keyof R]: (req: R[type]['request']) => any;
 }
 
 export const workerClient = <R extends WorkerRequests> (worker: WebpackWorker): WorkerClient<R> => {
@@ -40,7 +40,7 @@ export const workerClient = <R extends WorkerRequests> (worker: WebpackWorker): 
   let nextId = 0;
 
   // TODO Error handling
-  worker.addEventListener("message", msg => {
+  worker.addEventListener('message', msg => {
     const {id, response, error} = msg.data as RawWorkerResponse;
     const {resolve, reject} = pending[id];
     delete pending[id];
@@ -65,7 +65,7 @@ export const workerClient = <R extends WorkerRequests> (worker: WebpackWorker): 
 
 export const workerServer = <R extends WorkerRequests> (handlers: WorkerRequestHandlers<R>) => {
   const worker: Worker = self as any;
-  worker.addEventListener("message", async (msg) => {
+  worker.addEventListener('message', async (msg) => {
     const {type, id, data} = msg.data as RawWorkerRequest;
     const handler = handlers[type];
     let response, error;

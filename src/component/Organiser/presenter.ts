@@ -1,6 +1,6 @@
-import {OrganiserStore} from "component/Organiser/state";
-import {action} from "mobx";
-import {Field} from "model/Song";
+import {OrganiserStore} from 'component/Organiser/state';
+import {action} from 'mobx';
+import {Field} from 'model/Song';
 
 export class OrganiserPresenter {
   constructor (
@@ -12,7 +12,7 @@ export class OrganiserPresenter {
   changeFilterField = (field: Field | undefined) => {
     this.store.filter = field && {
       field,
-      match: this.store.filterMatch || "",
+      match: this.store.filterMatch || '',
     };
   };
 

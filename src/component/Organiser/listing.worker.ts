@@ -7,11 +7,11 @@ import {
   Field,
   FieldUnitValue,
   GenreNames,
+  ISong,
   NUMERIC_FIELDS,
   OptionalAlbumName,
   OptionalDecadeName,
   OptionalTitleName,
-  ISong,
   SONG_COMPARATOR,
 } from 'model/Song';
 

@@ -1,7 +1,7 @@
-import {cls} from "common/Classes";
-import {callHandler, EventHandler} from "common/Event";
-import React from "react";
-import style from "./style.scss";
+import {cls} from 'common/Classes';
+import {callHandler, EventHandler} from 'common/Event';
+import React from 'react';
+import style from './style.scss';
 
 export const Input = (props: {
   className?: string;

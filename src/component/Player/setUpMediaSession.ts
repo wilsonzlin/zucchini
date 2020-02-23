@@ -3,7 +3,7 @@ import {reaction} from 'mobx';
 import {PlayerPresenter} from './presenter';
 
 declare class MediaMetadata {
-  constructor(metadata: {
+  constructor (metadata: {
     title: string;
     artist: string;
     album: string;
@@ -31,7 +31,7 @@ type MediaSessionActionHandler = (details: MediaSessionActionDetails) => void;
 declare class MediaSession {
   metadata?: MediaMetadata;
 
-  setActionHandler(type: MediaSessionAction, callback: MediaSessionActionHandler): void;
+  setActionHandler (type: MediaSessionAction, callback: MediaSessionActionHandler): void;
 }
 
 declare class Navigator {
@@ -42,7 +42,9 @@ declare var navigator: Navigator;
 
 export const setUpMediaSession = (store: PlayerStore, presenter: PlayerPresenter) => {
   const {mediaSession} = navigator;
-  if (!mediaSession) return;
+  if (!mediaSession) {
+    return;
+  }
 
   const handlePlay = () => presenter.setPlaying(true);
   const handlePause = () => presenter.setPlaying(false);

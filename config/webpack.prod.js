@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
-const StyleExtHtmlWebpackPlugin = require("style-ext-html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const TerserJsPlugin = require("terser-webpack-plugin");
-const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
+const StyleExtHtmlWebpackPlugin = require('style-ext-html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserJsPlugin = require('terser-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const common = require("./common");
+const common = require('./common');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -17,7 +17,7 @@ const publicPath = process.env.ZUCCHINI_BUILD_PATH_PREFIX;
 module.exports = {
   // Don't attempt to continue if there are any errors.
   bail: true,
-  mode: "production",
+  mode: 'production',
   devtool: false,
   entry: common.SRC_INDEX_TSX,
   output: {
@@ -26,15 +26,15 @@ module.exports = {
     // Generated JS file names (with nested folders).
     // There will be one main bundle, and one file per asynchronous chunk.
     // We don't currently advertise code splitting but Webpack supports it.
-    filename: "static/js/[name].js",
-    chunkFilename: "static/js/[name].chunk.js",
+    filename: 'static/js/[name].js',
+    chunkFilename: 'static/js/[name].chunk.js',
     publicPath: publicPath,
   },
   resolve: {
     extensions: [
-      ".ts",
-      ".tsx",
-      ".js",
+      '.ts',
+      '.tsx',
+      '.js',
     ],
     plugins: [new TsconfigPathsPlugin()],
   },
@@ -43,7 +43,7 @@ module.exports = {
     rules: [
       {
         test: /\.worker\.js$/,
-        use: {loader: "worker-loader"},
+        use: {loader: 'worker-loader'},
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -54,13 +54,13 @@ module.exports = {
           // assets smaller than specified size as data URLs to avoid requests.
           {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-            loader: "url-loader",
-            options: {limit: 10000, name: "static/media/[name].[hash:8].[ext]"},
+            loader: 'url-loader',
+            options: {limit: 10000, name: 'static/media/[name].[hash:8].[ext]'},
           },
           {
             test: /\.js$/,
             include: common.SRC,
-            loader: "babel-loader",
+            loader: 'babel-loader',
             options: {compact: true},
           },
           {
@@ -68,7 +68,7 @@ module.exports = {
             include: common.SRC,
             use: [
               {
-                loader: "ts-loader",
+                loader: 'ts-loader',
                 // disable type checker - we will use it in fork plugin
                 options: {transpileOnly: true, configFile: common.TSCONFIG},
               },
@@ -82,7 +82,7 @@ module.exports = {
                 options: {hmr: false},
               },
               {loader: 'css-loader', options: {modules: true}},
-              "sass-loader",
+              'sass-loader',
             ],
           },
           // "file" loader makes sure assets end up in the `build` folder.
@@ -90,13 +90,13 @@ module.exports = {
           // This loader doesn't use a "test" so it will catch all modules
           // that fall through the other loaders.
           {
-            loader: "file-loader",
+            loader: 'file-loader',
             // Exclude `js` files to keep "css" loader working as it injects
             // it's runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
             exclude: [/\.js$/, /\.html$/, /\.json$/],
-            options: {name: "static/media/[name].[hash:8].[ext]"},
+            options: {name: 'static/media/[name].[hash:8].[ext]'},
           },
         ],
       },
@@ -141,7 +141,7 @@ module.exports = {
       inline: ['main.js'],
     }),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
-    new MiniCssExtractPlugin({filename: "static/css/[name].[contenthash].css"}),
+    new MiniCssExtractPlugin({filename: 'static/css/[name].[contenthash].css'}),
     new StyleExtHtmlWebpackPlugin(),
     // Perform type checking and linting in a separate process to speed up compilation
     new ForkTsCheckerWebpackPlugin({
@@ -153,10 +153,10 @@ module.exports = {
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
   node: {
-    dgram: "empty",
-    fs: "empty",
-    net: "empty",
-    tls: "empty",
-    child_process: "empty",
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    child_process: 'empty',
   },
 };

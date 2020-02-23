@@ -1,8 +1,8 @@
-import {cls} from "common/Classes";
-import {callHandler, EventHandler} from "common/Event";
-import * as React from "react";
-import {useState} from "react";
-import style from "./style.scss";
+import {cls} from 'common/Classes';
+import {callHandler, EventHandler} from 'common/Event';
+import * as React from 'react';
+import {useState} from 'react';
+import style from './style.scss';
 
 // Where the card should anchor to. For example, if TOP,
 // then the card will show above the content.
@@ -35,7 +35,7 @@ export const HoverCard = (
     className?: string;
 
     onClick?: EventHandler;
-  }
+  },
 ) => {
   const [hoveringSelf, setHoveringSelf] = useState(false);
 

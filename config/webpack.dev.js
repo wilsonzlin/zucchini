@@ -81,8 +81,8 @@ module.exports = {
             use: [
               {loader: 'style-loader'}, // creates style nodes from JS strings
               {loader: 'css-loader', options: {modules: true}}, // translates CSS into CommonJS
-              {loader: 'sass-loader', options: {includePaths: [common.SRC]}} // compiles Sass to CSS, using Node Sass by default
-            ]
+              {loader: 'sass-loader', options: {includePaths: [common.SRC]}}, // compiles Sass to CSS, using Node Sass by default
+            ],
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.

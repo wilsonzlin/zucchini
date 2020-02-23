@@ -1,4 +1,4 @@
-@import "~common/style";
+@import '~common/style';
 
 .container {
   background: var(--color-list-background);
@@ -74,6 +74,7 @@ $loadingAnimationDelay: 1s;
 
 .loadingCell {
   opacity: 0;
+
   :global {
     animation: $transitionTime linear $loadingAnimationDelay forwards breathingText;
   }

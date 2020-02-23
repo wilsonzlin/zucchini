@@ -1,4 +1,4 @@
-import {assert, assertExists} from "common/Sanity";
+import {assert, assertExists} from 'common/Sanity';
 
 type Codec<T> = {
   encode: (val: T) => string;
@@ -16,7 +16,7 @@ export const INTEGER_CODEC = {
 };
 
 export const BOOLEAN_CODEC = {
-  encode: (val: boolean) => val ? "1" : "",
+  encode: (val: boolean) => val ? '1' : '',
   decode: (raw: string) => !!raw,
 };
 
@@ -62,7 +62,7 @@ const createKeyspace = (prefix: string) => class LSKey<T> {
   }
 };
 
-const ZucchiniLSKey = createKeyspace("zucchini_");
-export const AppLSKey = ZucchiniLSKey.createSubkeyspace("app_");
-export const LibrariesLSKey = ZucchiniLSKey.createSubkeyspace("libraries_");
-export const PlayerLSKey = ZucchiniLSKey.createSubkeyspace("player_");
+const ZucchiniLSKey = createKeyspace('zucchini_');
+export const AppLSKey = ZucchiniLSKey.createSubkeyspace('app_');
+export const LibrariesLSKey = ZucchiniLSKey.createSubkeyspace('libraries_');
+export const PlayerLSKey = ZucchiniLSKey.createSubkeyspace('player_');

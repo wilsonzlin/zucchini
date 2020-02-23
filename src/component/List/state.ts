@@ -1,6 +1,6 @@
-import {Listing} from "component/Organiser/state";
-import {computed} from "mobx";
-import {IPromiseBasedObservable} from "mobx-utils";
+import {Listing} from 'component/Organiser/state';
+import {computed} from 'mobx';
+import {IPromiseBasedObservable} from 'mobx-utils';
 
 export class ListStore {
   constructor (

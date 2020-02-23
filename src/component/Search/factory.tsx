@@ -1,12 +1,12 @@
-import {watchPromise} from "common/Async";
-import {createSearchEngine} from "component/Search/config";
-import {SearchPresenter} from "component/Search/presenter";
-import {SearchState, SearchStore} from "component/Search/state";
-import {Search as SearchImpl} from "component/Search/view";
-import {observer} from "mobx-react";
-import {IPromiseBasedObservable} from "mobx-utils";
-import {ISong} from "model/Song";
-import * as React from "react";
+import {watchPromise} from 'common/Async';
+import {createSearchEngine} from 'component/Search/config';
+import {SearchPresenter} from 'component/Search/presenter';
+import {SearchState, SearchStore} from 'component/Search/state';
+import {Search as SearchImpl} from 'component/Search/view';
+import {observer} from 'mobx-react';
+import {IPromiseBasedObservable} from 'mobx-utils';
+import {ISong} from 'model/Song';
+import * as React from 'react';
 
 export interface SearchDependencies {
   getSongs: () => IPromiseBasedObservable<ISong[]> | undefined;
@@ -15,7 +15,7 @@ export interface SearchDependencies {
 export const SearchFactory = (
   {
     getSongs,
-  }: SearchDependencies
+  }: SearchDependencies,
 ) => {
   const store = new SearchStore(createSearchEngine, getSongs);
   const presenter = new SearchPresenter(store);
@@ -30,7 +30,7 @@ export const SearchFactory = (
       onSearchInput={presenter.updateSearchTerm}
       onSearch={presenter.confirmSearchTerm}
       onSelectSuggestion={presenter.updateAndConfirmSearchTerm}
-    />
+    />,
   );
 
   return {

@@ -33,7 +33,7 @@ export class PlaylistStore {
 
   @observable expanded: boolean = false;
 
-  @computed get currentPlaylistSongs(): ISong[] {
+  @computed get currentPlaylistSongs (): ISong[] {
     return this.currentPlaylist?.songs ?? this.nowPlayingPlaylist;
   }
 }

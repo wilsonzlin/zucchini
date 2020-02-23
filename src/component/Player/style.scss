@@ -1,4 +1,4 @@
-@import "~common/style";
+@import '~common/style';
 
 .player {
   background: var(--color-player-background);
@@ -63,7 +63,7 @@ $titleFontWeight: 700;
   align-items: center;
 }
 
-@include growOneAnchorRest(".cardOthers", ".cardGenres")
+@include growOneAnchorRest('.cardOthers', '.cardGenres')
 
 .cardOthers > * {
   // For default UA <p>.
@@ -101,7 +101,7 @@ body[vm=small] {
     display: grid;
     grid-template-rows: min-content 1fr;
     grid-template-columns: min-content 1fr;
-    grid-template-areas: "progress progress" "playback-controls details";
+    grid-template-areas: 'progress progress' 'playback-controls details';
   }
 
   .progress {
@@ -119,7 +119,7 @@ body[vm=small] {
 }
 
 body[vm=large] {
-  @include growOneAnchorRest(".player", ".progress", "center");
+  @include growOneAnchorRest('.player', '.progress', 'center');
 
   .player > * {
     margin: 0 var(--hmargin-player-elements);
