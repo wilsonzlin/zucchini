@@ -52,7 +52,7 @@ export type Field = keyof ISong;
  */
 
 // Don't have both year and decade.
-export const TEXT_SEARCH_FIELDS: Field[] = ['album', 'artists', 'genres', 'title', 'year'];
+export const TEXT_SEARCH_FIELDS: Field[] = ['album', 'artists', 'genres', 'title', 'decade'];
 
 export const FILTERABLE_FIELDS: Field[] = ['album', 'artists', 'decade', 'genres'];
 export const GROUPABLE_FIELDS: Field[] = ['album', 'artists', 'decade', 'genres', 'title'];
@@ -91,7 +91,7 @@ const FIELD_COMPARATORS: { [field in Field]: Comparator<ISong> } = {
    1. what the subgroup is; or if not available, then
    2. what the group is; or if not available, then
    3. what the filter is.
- The ordering for a SingleListing is the comparator with key `undefined`.
+ The ordering for a plain ungrouped listing is the comparator with key `undefined`.
 
  Reasons:
    - If the user wanted to see artists together, they would group by artist.
