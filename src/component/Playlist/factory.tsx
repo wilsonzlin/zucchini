@@ -1,23 +1,21 @@
-import {PlaylistView, PlaylistViewMode} from './view';
+import {reaction} from 'mobx';
 import {observer} from 'mobx-react';
 import React from 'react';
-import {PlaylistStore} from './state';
-import {PlaylistPresenter, PlayNextMode} from './presenter';
-import {NOW_PLAYING_PLAYLIST_NAME} from './config';
 import {ISong} from '../../model/Song';
-import {reaction} from 'mobx';
 import {viewport, ViewportMode} from '../../system/Viewport';
-
-export type PlaylistDependencies = {
-  playbackHasEnded: () => boolean;
-  playSong: (song: ISong | undefined) => void;
-};
+import {NOW_PLAYING_PLAYLIST_NAME} from './config';
+import {PlaylistPresenter, PlayNextMode} from './presenter';
+import {PlaylistStore} from './state';
+import {PlaylistView, PlaylistViewMode} from './view';
 
 // TODO This entire component (inc. view, state, config) is awkward.
 export const PlaylistFactory = ({
   playbackHasEnded,
   playSong,
-}: PlaylistDependencies) => {
+}: {
+  playbackHasEnded: () => boolean;
+  playSong: (song: ISong | undefined) => void;
+}) => {
   const store = new PlaylistStore();
   const presenter = new PlaylistPresenter(store, playSong);
 

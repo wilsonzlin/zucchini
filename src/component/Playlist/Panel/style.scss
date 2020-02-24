@@ -20,6 +20,7 @@
 .controls {
   display: flex;
   align-items: center;
+  justify-content: space-around;
 }
 
 @include growOneAnchorRest('.menu', '.playlists')

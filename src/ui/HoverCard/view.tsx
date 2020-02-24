@@ -1,7 +1,6 @@
 import {cls} from 'common/Classes';
 import {callHandler, EventHandler} from 'common/Event';
-import * as React from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import style from './style.scss';
 
 // Where the card should anchor to. For example, if TOP,
@@ -20,23 +19,19 @@ const anchorClass: { [a in HoverCardAnchor]: string } = {
   [HoverCardAnchor.RIGHT]: style.anchorRight,
 };
 
-export const HoverCard = (
-  {
-    children,
-    shouldShow,
-    anchor,
-    className,
-
-    onClick,
-  }: {
-    children?: React.ReactNode;
-    shouldShow: boolean;
-    anchor: HoverCardAnchor;
-    className?: string;
-
-    onClick?: EventHandler;
-  },
-) => {
+export const HoverCard = ({
+  children,
+  shouldShow,
+  anchor,
+  className,
+  onClick,
+}: {
+  children?: React.ReactNode;
+  shouldShow: boolean;
+  anchor: HoverCardAnchor;
+  className?: string;
+  onClick?: EventHandler;
+}) => {
   const [hoveringSelf, setHoveringSelf] = useState(false);
 
   return (

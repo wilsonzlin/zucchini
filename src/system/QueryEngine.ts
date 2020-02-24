@@ -1,4 +1,5 @@
 import {ISong} from 'model/Song';
+import Worker from 'worker-loader!./QueryEngine.worker';
 import {
   QueryEngineWorkerRequest,
   QueryEngineWorkerRequestType,
@@ -6,7 +7,6 @@ import {
   QueryEngineWorkerResponseError,
   QueryEngineWorkerResponseType,
 } from './QueryEngineWorkerMessage';
-import Worker from 'worker-loader!./QueryEngine.worker';
 
 interface PromiseResultCallbacks<R = any, E = any> {
   resolve: (val: R) => void;

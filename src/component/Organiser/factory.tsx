@@ -4,20 +4,16 @@ import {OrganiserState, OrganiserStore} from 'component/Organiser/state';
 import * as mobxReact from 'mobx-react';
 import {IPromiseBasedObservable} from 'mobx-utils';
 import {ISong} from 'model/Song';
-import * as React from 'react';
+import React from 'react';
 import ListingWorker from 'worker-loader!./listing.worker.ts';
 import * as config from './config';
 import {Organiser as OrganiserImpl} from './view';
 
-export interface OrganiserDependencies {
+export const OrganiserFactory = ({
+  getSongs,
+}: {
   getSongs: () => IPromiseBasedObservable<ISong[]> | undefined;
-}
-
-export const OrganiserFactory = (
-  {
-    getSongs,
-  }: OrganiserDependencies,
-) => {
+}) => {
   const listingWorker = new ListingWorker();
   const store = new OrganiserStore(workerClient(listingWorker), getSongs);
   const presenter = new OrganiserPresenter(store);

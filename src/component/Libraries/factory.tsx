@@ -1,8 +1,8 @@
 import {LibrariesPresenter} from 'component/Libraries/presenter';
 import {LibrariesState, LibrariesStore} from 'component/Libraries/state';
-import {observer} from 'mobx-react';
-import * as React from 'react';
 import {Libraries as LibrariesImpl} from 'component/Libraries/view';
+import {observer} from 'mobx-react';
+import React from 'react';
 
 export const LibrariesFactory = () => {
   const store = new LibrariesStore();

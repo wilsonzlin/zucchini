@@ -1,8 +1,8 @@
-import Modern from '!!raw-loader!./theme/Modern.css';
-import Monokai from '!!raw-loader!./theme/Monokai.css';
 import Clear from '!!raw-loader!./density/Clear.css';
 import Comfortable from '!!raw-loader!./density/Comfortable.css';
 import Compact from '!!raw-loader!./density/Compact.css';
+import Modern from '!!raw-loader!./theme/Modern.css';
+import Monokai from '!!raw-loader!./theme/Monokai.css';
 
 export const Themes = {
   Modern,

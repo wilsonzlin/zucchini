@@ -1,8 +1,7 @@
 import {cls} from 'common/Classes';
 import {callHandler, EventHandler} from 'common/Event';
 import {Field, ISong} from 'model/Song';
-import * as React from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import commonStyle from '../common/style.scss';
 import style from './style.scss';
 

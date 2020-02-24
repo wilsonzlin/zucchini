@@ -1,6 +1,6 @@
 import {cls} from 'common/Classes';
 import {callHandler, EventHandler} from 'common/Event';
-import * as React from 'react';
+import React from 'react';
 import style from './style.scss';
 
 export interface ButtonProps {

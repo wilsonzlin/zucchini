@@ -4,12 +4,12 @@ import {ListFactory} from 'component/List/factory';
 import {OrganiserFactory} from 'component/Organiser/factory';
 import {PlayerFactory} from 'component/Player/factory';
 import {SearchFactory} from 'component/Search/factory';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import './index.scss';
-import {PlaylistFactory} from './component/Playlist/factory';
-import {createCyclicFunctionDependenciesManager} from './common/Dependencies';
 import {configure} from 'mobx';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {createCyclicFunctionDependenciesManager} from './common/Dependencies';
+import {PlaylistFactory} from './component/Playlist/factory';
+import './index.scss';
 
 configure({enforceActions: 'observed'});
 

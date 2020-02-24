@@ -3,32 +3,32 @@ import {callHandler, EventHandler} from 'common/Event';
 import {assert} from 'common/Sanity';
 import React from 'react';
 import {useDismissible} from 'ui/util/dismissible';
-import style from './style.scss';
 import {BlockArrowDownIcon, BlockArrowUpIcon} from '../../component/Icon/view';
+import style from './style.scss';
 
 export interface DropdownOption<V> {
   value: V;
   label: React.ReactNode;
 }
 
-interface Props<V> {
+export function Dropdown<V> ({
+  className,
+  value,
+  options,
+  onChange,
+}: {
   className?: string;
-
   value: V;
   options: DropdownOption<V>[];
-
   onChange?: EventHandler<V>;
-}
-
-export function Dropdown<V> (props: Props<V>) {
-  assert(props.options.length > 0);
+}) {
+  assert(options.length > 0);
   const [showing, setShowing, onRelevantClick, onRelevantFocus] = useDismissible();
-  const {value, options, onChange} = props;
   const label = (options.find(o => o.value === value) || options[0]).label;
 
   return (
     <div
-      className={cls(style.container, props.className, showing && style.showing)}
+      className={cls(style.container, className, showing && style.showing)}
       onClick={() => onRelevantClick()}
     >
       <button

@@ -3,23 +3,29 @@ import {callHandler, EventHandler} from 'common/Event';
 import React from 'react';
 import style from './style.scss';
 
-export const Input = (props: {
+export const Input = ({
+  className,
+  placeholder,
+  autocomplete,
+  value,
+  onKeyDown,
+  onChange,
+}: {
   className?: string;
   placeholder?: string;
   autocomplete?: string;
   value: string;
-
   onKeyDown?: EventHandler<React.KeyboardEvent<HTMLInputElement>>;
   onChange?: EventHandler<string>;
 }) => {
   return (
     <input
-      className={cls(style.input, props.className)}
-      onKeyDown={props.onKeyDown}
-      onChange={e => callHandler(props.onChange, e.target.value)}
-      autoComplete={props.autocomplete}
-      value={props.value}
-      placeholder={props.placeholder}
+      className={cls(style.input, className)}
+      onKeyDown={onKeyDown}
+      onChange={e => callHandler(onChange, e.target.value)}
+      autoComplete={autocomplete}
+      value={value}
+      placeholder={placeholder}
     />
   );
 };

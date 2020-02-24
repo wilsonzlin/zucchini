@@ -1,7 +1,7 @@
-import {PlaylistStore, RepeatMode, ShuffleMode} from './state';
 import {action} from 'mobx';
-import {ISong} from '../../model/Song';
 import {assert, assertExists} from '../../common/Sanity';
+import {ISong} from '../../model/Song';
+import {PlaylistStore, RepeatMode, ShuffleMode} from './state';
 
 export const enum PlayNextMode {
   IGNORE_REPEAT_ONCE,

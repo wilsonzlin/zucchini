@@ -1,38 +1,43 @@
 import {cls} from 'common/Classes';
 import {callHandler, EventHandler} from 'common/Event';
-import * as React from 'react';
+import React from 'react';
 import style from './style.scss';
 
-export const Slider = (
-  props: {
-    className?: string;
-    min: number;
-    max: number;
-    step?: number;
-    // TODO Indeterminate if undefined
-    value?: number;
-    onChange?: EventHandler<number>;
-  },
-) => (
+export const Slider = ({
+  className,
+  min,
+  max,
+  step,
+  value,
+  onChange,
+}: {
+  className?: string;
+  min: number;
+  max: number;
+  step?: number;
+  // Indeterminate if value is undefined.
+  value?: number;
+  onChange?: EventHandler<number>;
+}) => (
   <div className={cls(
     style.container,
-    props.className,
-    props.value == undefined && style.loading,
+    className,
+    value == undefined && style.loading,
   )}>
     <div className={style.track}/>
     <div
       className={style.value}
-      style={props.value == undefined
-        ? undefined
-        : {width: `${props.value / props.max * 100}%`}}
+      style={value == undefined ? undefined : {width: `${value / max * 100}%`}}
     />
-    <input className={style.input}
-           type="range"
-           min={props.min}
-           max={props.max}
-           step={props.step}
-           value={props.value}
-           onChange={e => callHandler(props.onChange, +e.target.value)}
+    <input
+      className={style.input}
+      type="range"
+      min={min}
+      max={max}
+      step={step}
+      // Make sure to always have a value, otherwise React will complain that it changes between uncontrolled and controlled.
+      value={value ?? min}
+      onChange={e => callHandler(onChange, +e.target.value)}
     />
   </div>
 );

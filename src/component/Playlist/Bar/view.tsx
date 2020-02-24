@@ -1,8 +1,8 @@
 import React from 'react';
-import {RepeatMode, ShuffleMode} from '../state';
 import {callHandler, EventHandler} from '../../../common/Event';
-import style from './style.scss';
 import {renderRepeatButton, renderShuffleButton} from '../common/controls';
+import {RepeatMode, ShuffleMode} from '../state';
+import style from './style.scss';
 
 export const PlaylistBarView = ({
   playlist,

@@ -1,10 +1,9 @@
 import {renderPromise, WatchedPromise} from 'common/Async';
 import {cls} from 'common/Classes';
 import {callHandler, EventHandler} from 'common/Event';
-import * as style from 'component/Search/style.scss';
+import style from 'component/Search/style.scss';
 import {ISong} from 'model/Song';
-import * as React from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {Input} from 'ui/Input/view';
 import {useDismissible} from 'ui/util/dismissible';
 import {IconButton} from '../../ui/Button/view';

@@ -1,15 +1,14 @@
-import {ISong} from '../../../model/Song';
-import {RepeatMode, ShuffleMode} from '../state';
-import {callHandler, EventHandler} from '../../../common/Event';
-import style from './style.scss';
-import {Dropdown} from '../../../ui/Dropdown/view';
-import {renderRepeatButton, renderShuffleButton} from '../common/controls';
-import {FlexSpacer} from '../../../ui/FlexSpacer/view';
-import {IconButton} from '../../../ui/Button/view';
-import {CloseIcon, TrashIcon} from '../../Icon/view';
-import {PlaylistEntry} from '../Entry/view';
-import * as React from 'react';
+import React from 'react';
 import {cls} from '../../../common/Classes';
+import {callHandler, EventHandler} from '../../../common/Event';
+import {ISong} from '../../../model/Song';
+import {IconButton} from '../../../ui/Button/view';
+import {Dropdown} from '../../../ui/Dropdown/view';
+import {CloseIcon} from '../../Icon/view';
+import {renderRepeatButton, renderShuffleButton} from '../common/controls';
+import {PlaylistEntry} from '../Entry/view';
+import {RepeatMode, ShuffleMode} from '../state';
+import style from './style.scss';
 
 export const PlaylistPanelView = ({
   expanded,
@@ -62,10 +61,8 @@ export const PlaylistPanelView = ({
       {expanded && <IconButton onClick={() => callHandler(onRequestCollapse)}>{CloseIcon}</IconButton>}
     </div>
     <div className={style.controls}>
-      {renderRepeatButton(repeatMode, onToggleRepeat)}
-      {renderShuffleButton(shuffleMode, onToggleShuffle)}
-      <FlexSpacer/>
-      <IconButton className={style.control} onClick={() => callHandler(onClear)}>{TrashIcon}</IconButton>
+      {renderRepeatButton(repeatMode, onToggleRepeat, true)}
+      {renderShuffleButton(shuffleMode, onToggleShuffle, true)}
     </div>
     <div className={style.queue}>
       {currentPlaylistSongs.map(s => <PlaylistEntry

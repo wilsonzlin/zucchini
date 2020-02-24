@@ -1,19 +1,17 @@
 import {Player as PlayerImpl} from 'component/Player/view';
 import {observer} from 'mobx-react';
-import * as React from 'react';
+import React from 'react';
 import {PlayerPresenter} from './presenter';
-import {PlayerState, PlayerStore} from './state';
 import {setUpMediaSession} from './setUpMediaSession';
-
-type PlayerDependencies = {
-  playNext: () => void;
-  playPrevious: () => void;
-};
+import {PlayerState, PlayerStore} from './state';
 
 export const PlayerFactory = ({
   playNext,
   playPrevious,
-}: PlayerDependencies) => {
+}: {
+  playNext: () => void;
+  playPrevious: () => void;
+}) => {
   const store = new PlayerStore(Audio);
   const presenter = new PlayerPresenter(store);
 

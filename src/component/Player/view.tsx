@@ -1,32 +1,12 @@
 import {cls} from 'common/Classes';
 import {callHandler, EventHandler} from 'common/Event';
 import {ISong} from 'model/Song';
-import * as React from 'react';
+import React from 'react';
 import {IconButton} from 'ui/Button/view';
 import {HoverCard, HoverCardAnchor} from 'ui/HoverCard/view';
 import {Slider} from 'ui/Slider/view';
-import style from './style.scss';
 import {AlbumIcon, ArtistIcon, ArtistsIcon, NextTrackIcon, PauseIcon, PlayIcon, PreviousTrackIcon, VolumeIcon} from '../Icon/view';
-
-export interface PlayerProps {
-  loading: boolean;
-  playing: boolean;
-  song?: ISong;
-
-  // A number between 0 and $duration.
-  progress: number;
-  // A number between 0 and 1.
-  volume: number;
-
-  shouldShowSongCard: boolean;
-
-  onNext?: EventHandler;
-  onPlaybackChange?: EventHandler<boolean>,
-  onPrevious?: EventHandler;
-  onSeek?: EventHandler<number>;
-  onVolumeChange?: EventHandler<number>;
-  onHoverChangeSongDetails?: EventHandler<boolean>;
-}
+import style from './style.scss';
 
 const formatDuration = (d: number): string => {
   return `${Math.floor(d / 60)}:${Math.floor(d % 60)}`;
@@ -49,25 +29,41 @@ const CardContents = ({song}: { song: ISong }) => (
   </>
 );
 
-export const Player = (
-  {
-    loading,
-    playing,
-    song,
+export const Player = ({
+  loading,
+  playing,
+  song,
 
-    progress,
-    volume,
+  progress,
+  volume,
 
-    shouldShowSongCard,
+  shouldShowSongCard,
 
-    onNext,
-    onPlaybackChange,
-    onPrevious,
-    onSeek,
-    onVolumeChange,
-    onHoverChangeSongDetails,
-  }: PlayerProps,
-) => (
+  onNext,
+  onPlaybackChange,
+  onPrevious,
+  onSeek,
+  onVolumeChange,
+  onHoverChangeSongDetails,
+}: {
+  loading: boolean;
+  playing: boolean;
+  song?: ISong;
+
+  // A number between 0 and $duration.
+  progress: number;
+  // A number between 0 and 1.
+  volume: number;
+
+  shouldShowSongCard: boolean;
+
+  onNext?: EventHandler;
+  onPlaybackChange?: EventHandler<boolean>,
+  onPrevious?: EventHandler;
+  onSeek?: EventHandler<number>;
+  onVolumeChange?: EventHandler<number>;
+  onHoverChangeSongDetails?: EventHandler<boolean>;
+}) => (
   <div className={cls({
     [style.player]: true,
     [style.loading]: loading,

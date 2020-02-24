@@ -1,9 +1,9 @@
 import {EventHandler} from 'common/Event';
-import * as React from 'react';
+import React from 'react';
 import {ISong} from '../../model/Song';
-import {RepeatMode, ShuffleMode} from './state';
 import {PlaylistBarView} from './Bar/view';
 import {PlaylistPanelView} from './Panel/view';
+import {RepeatMode, ShuffleMode} from './state';
 
 export const enum PlaylistViewMode {
   BAR,

@@ -81,11 +81,17 @@ $loadingAnimationDelay: 1s;
 }
 
 .groupTitleCell {
-  text-align: left;
-  padding: 0.25rem 0.5rem;
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  font-size: 1.5rem;
 }
 
-.groupTitleCellContent {
+.subgroupTitleCell {
+  font-weight: bolder;
+  padding: 0 0.75rem;
+}
+
+.groupTitleContent, .subgroupTitleContent {
   display: flex;
   justify-content: space-between;
   align-items: center;

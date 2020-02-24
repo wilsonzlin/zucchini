@@ -1,6 +1,6 @@
-import {PlayerStore} from './state';
 import {reaction} from 'mobx';
 import {PlayerPresenter} from './presenter';
+import {PlayerStore} from './state';
 
 declare class MediaMetadata {
   constructor (metadata: {

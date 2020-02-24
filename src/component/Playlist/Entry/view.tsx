@@ -1,10 +1,10 @@
 import {callHandler, EventHandler} from 'common/Event';
 import 'component/Playlist/style.scss';
 import {ISong} from 'model/Song';
-import * as React from 'react';
-import style from './style.scss';
+import React from 'react';
 import {IconButton} from '../../../ui/Button/view';
 import {PlayIcon, TrashIcon} from '../../Icon/view';
+import style from './style.scss';
 
 export const PlaylistEntry = ({
   song,

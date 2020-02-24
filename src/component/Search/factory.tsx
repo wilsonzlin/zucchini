@@ -6,17 +6,13 @@ import {Search as SearchImpl} from 'component/Search/view';
 import {observer} from 'mobx-react';
 import {IPromiseBasedObservable} from 'mobx-utils';
 import {ISong} from 'model/Song';
-import * as React from 'react';
+import React from 'react';
 
-export interface SearchDependencies {
+export const SearchFactory = ({
+  getSongs,
+}: {
   getSongs: () => IPromiseBasedObservable<ISong[]> | undefined;
-}
-
-export const SearchFactory = (
-  {
-    getSongs,
-  }: SearchDependencies,
-) => {
+}) => {
   const store = new SearchStore(createSearchEngine, getSongs);
   const presenter = new SearchPresenter(store);
 

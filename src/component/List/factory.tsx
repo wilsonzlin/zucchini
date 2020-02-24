@@ -4,21 +4,17 @@ import {Listing} from 'component/Organiser/state';
 import * as mobxReact from 'mobx-react';
 import {IPromiseBasedObservable} from 'mobx-utils';
 import {ISong} from 'model/Song';
-import * as React from 'react';
+import React from 'react';
 import {Columns} from './config';
 import {ListStore} from './state';
 
-export interface ListDependencies {
+export const ListFactory = ({
+  getListing,
+  updateAndPlayNowPlayingPlaylist,
+}: {
   getListing: () => IPromiseBasedObservable<Listing> | undefined;
   updateAndPlayNowPlayingPlaylist: (songs: ISong[]) => void;
-}
-
-export const ListFactory = (
-  {
-    getListing,
-    updateAndPlayNowPlayingPlaylist,
-  }: ListDependencies,
-) => {
+}) => {
   const store = new ListStore(getListing);
 
   const List = mobxReact.observer(() =>

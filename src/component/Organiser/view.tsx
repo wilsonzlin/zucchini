@@ -1,22 +1,41 @@
 import {cls} from 'common/Classes';
 import {callHandler, EventHandler} from 'common/Event';
 import {Field} from 'model/Song';
-import * as moment from 'moment';
-import * as React from 'react';
+import moment from 'moment';
+import React from 'react';
 import {IconButton} from 'ui/Button/view';
 import {Dropdown} from 'ui/Dropdown/view';
 import {HoverCard, HoverCardAnchor} from 'ui/HoverCard/view';
 import {Input} from 'ui/Input/view';
 import {useDismissible} from 'ui/util/dismissible';
-import * as style from './style.scss';
 import {SettingsIcon} from '../Icon/view';
+import style from './style.scss';
 
 const createOptions = (fields: (Field | undefined)[], labels: Map<Field | undefined, string>) => fields.map(f => ({
   value: f,
   label: labels.get(f)!,
 }));
 
-export interface OrganiserProps {
+export const Organiser = ({
+  statistics,
+
+  filterBy,
+  filterOn,
+  groupBy,
+  subgroupBy,
+
+  filterByOptions,
+  filterByOptionLabels,
+  groupByOptions,
+  groupByOptionLabels,
+  subgroupByOptions,
+  subgroupByOptionLabels,
+
+  onChangeFilterBy,
+  onChangeFilterOn,
+  onChangeGroupBy,
+  onChangeSubgroupBy,
+}: {
   // This are optional, as songs may not be loaded.
   statistics?: {
     count: number;
@@ -39,30 +58,7 @@ export interface OrganiserProps {
   onChangeFilterOn?: EventHandler<string>;
   onChangeGroupBy?: EventHandler<Field | undefined>;
   onChangeSubgroupBy?: EventHandler<Field | undefined>;
-}
-
-export const Organiser = (
-  {
-    statistics,
-
-    filterBy,
-    filterOn,
-    groupBy,
-    subgroupBy,
-
-    filterByOptions,
-    filterByOptionLabels,
-    groupByOptions,
-    groupByOptionLabels,
-    subgroupByOptions,
-    subgroupByOptionLabels,
-
-    onChangeFilterBy,
-    onChangeFilterOn,
-    onChangeGroupBy,
-    onChangeSubgroupBy,
-  }: OrganiserProps,
-) => {
+}) => {
   const [showingOptions, setShowingOptions, onRelevantOptionsClick, onRelevantOptionsFocus] = useDismissible();
 
   return (

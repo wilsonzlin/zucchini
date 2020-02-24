@@ -2,16 +2,7 @@ import {Densities, Themes} from 'component/App/config';
 import {AppStore} from 'component/App/state';
 import {App as AppImpl} from 'component/App/view';
 import {observer} from 'mobx-react';
-import * as React from 'react';
-
-export interface AppDependencies {
-  Libraries: () => JSX.Element;
-  List: () => JSX.Element;
-  Organiser: () => JSX.Element;
-  Player: () => JSX.Element;
-  Playlist: () => JSX.Element;
-  Search: () => JSX.Element;
-}
+import React from 'react';
 
 export const AppFactory = ({
   Libraries,
@@ -20,7 +11,14 @@ export const AppFactory = ({
   Player,
   Playlist,
   Search,
-}: AppDependencies) => {
+}: {
+  Libraries: () => JSX.Element;
+  List: () => JSX.Element;
+  Organiser: () => JSX.Element;
+  Player: () => JSX.Element;
+  Playlist: () => JSX.Element;
+  Search: () => JSX.Element;
+}) => {
   const store = new AppStore();
 
   const App = observer(() =>
