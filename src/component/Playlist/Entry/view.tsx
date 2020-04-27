@@ -1,32 +1,33 @@
 import {callHandler, EventHandler} from 'common/Event';
 import 'component/Playlist/style.scss';
-import {ISong} from 'model/Song';
 import React from 'react';
+import {MediaFile} from '../../../model/Media';
 import {IconButton} from '../../../ui/Button/view';
-import {PlayIcon, TrashIcon} from '../../Icon/view';
+import {PlayIcon, TrashIcon} from '../../../ui/Icon/view';
 import style from './style.scss';
 
 export const PlaylistEntry = ({
-  song,
+  file,
   current,
 
   onPlay,
   onRemove,
 }: {
-  song: ISong;
+  file: MediaFile;
   current: boolean;
 
-  onPlay?: EventHandler<ISong>;
-  onRemove?: EventHandler<ISong>;
+  onPlay?: EventHandler<MediaFile>;
+  onRemove?: EventHandler<MediaFile>;
 }) => (
-  <div className={style.entry} onClick={() => callHandler(onPlay, song)}>
+  <div className={style.entry} onClick={() => callHandler(onPlay, file)}>
     <div className={style.current}>{current && PlayIcon}</div>
     <div className={style.label}>
-      <div className={style.title}>{song.title}</div>
-      <div className={style.subtitle}>{song.artists.join('; ')}</div>
+      <div className={style.title}>{file.title}</div>
+      {/* TODO */}
+      {/*<div className={style.subtitle}>{song.artists.join('; ')}</div>*/}
     </div>
     <div className={style.controls}>
-      <IconButton className={style.delete} onClick={() => callHandler(onRemove, song)}>{TrashIcon}</IconButton>
+      <IconButton className={style.delete} onClick={() => callHandler(onRemove, file)}>{TrashIcon}</IconButton>
     </div>
   </div>
 );

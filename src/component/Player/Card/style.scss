@@ -1,0 +1,38 @@
+.card {
+  width: var(--width-player-card);
+}
+
+.card > * {
+  font-size: var(--fontsize-player-card-field);
+  margin: var(--vmargin-player-card-field) 0;
+  // For default UA <ul>.
+  padding: 0;
+}
+
+.cardTitle {
+  font-weight: $titleFontWeight;
+}
+
+.cardAlbum {
+  // For default UA <ul>.
+  font-weight: normal;
+}
+
+.cardArtists {
+  display: flex;
+  align-items: center;
+}
+
+@include growOneAnchorRest('.cardOthers', '.cardGenres')
+
+.cardOthers > * {
+  // For default UA <p>.
+  margin: 0;
+  // This effect is twofold: show the space before the bullet, and don't wrap (and therefore use text-overflow) for genres.
+  white-space: pre;
+}
+
+.cardGenres {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

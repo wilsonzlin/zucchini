@@ -1,0 +1,94 @@
+@import '~common/style';
+
+.player {
+  background: var(--color-player-background);
+  color: var(--color-player-text);
+
+  box-shadow: 0 0 $dropShadowRadius var(--color-player-shadow);
+
+  // Show drop shadow.
+  z-index: $zIndexEnsureShadow;
+}
+
+.playbackControls {
+  grid-area: playback-controls;
+
+  display: flex;
+  align-items: center;
+
+  > button {
+    margin: 0 var(--hmargin-player-button);
+  }
+}
+
+$titleFontWeight: 700;
+
+.details {
+  // For .detailsLabel.
+  display: flex;
+  align-items: center;
+
+  // For HoverCard.
+  position: relative;
+}
+
+.detailsLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title {
+  font-weight: $titleFontWeight;
+}
+
+.progress {
+  grid-area: progress;
+}
+
+.volumeContainer {
+  grid-area: volume;
+
+  display: flex;
+  align-items: center;
+}
+
+.volumeIcon {
+  margin-right: 0.25rem;
+}
+
+body[vm=small] {
+  .player {
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    grid-template-columns: min-content 1fr;
+    grid-template-areas: 'progress progress' 'playback-controls details';
+  }
+
+  .progress {
+    margin: 0 var(--hmargin-player-elements);
+  }
+
+  .volumeContainer {
+    display: none;
+  }
+
+  .details {
+    // To enable text overflow ellipsis behaviour of .detailsLabel.
+    overflow: hidden;
+  }
+}
+
+body[vm=large] {
+  @include growOneAnchorRest('.player', '.progress', 'center');
+
+  .player > * {
+    margin: 0 var(--hmargin-player-elements);
+  }
+
+  .details {
+    min-width: 10rem;
+    width: 20%;
+    max-width: 20rem;
+  }
+}

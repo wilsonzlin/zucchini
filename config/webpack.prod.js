@@ -117,7 +117,6 @@ module.exports = {
     ],
   },
   plugins: [
-    common.DEFINE_PLUGIN,
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,

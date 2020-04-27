@@ -105,7 +105,6 @@ module.exports = {
     ],
   },
   plugins: [
-    common.DEFINE_PLUGIN,
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({inject: true, template: common.SRC_INDEX_HTML}),
     // Add module names to factory functions so they appear in browser profiler.

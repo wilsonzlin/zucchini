@@ -1,9 +1,11 @@
 import {EventHandler} from 'common/Event';
 import React from 'react';
-import {ISong} from '../../model/Song';
+import {WatchedPromise} from '../../common/Async';
+import {MediaFile} from '../../model/Media';
+import {GroupDelimiter} from '../../model/Playlist';
 import {PlaylistBarView} from './Bar/view';
 import {PlaylistPanelView} from './Panel/view';
-import {RepeatMode, ShuffleMode} from './state';
+import {RepeatMode, ShuffleMode, UiPlaylistId} from './state';
 
 export const enum PlaylistViewMode {
   BAR,
@@ -14,11 +16,11 @@ export const PlaylistView = ({
   mode,
   expanded,
 
-  nowPlayingPlaylist,
-  otherPlaylists,
+  playlists,
+  currentPlaylist,
   currentPlaylistName,
-  currentPlaylistSongs,
-  currentSong,
+  currentPlaylistEntries,
+  currentFile,
 
   repeatMode,
   shuffleMode,
@@ -35,11 +37,11 @@ export const PlaylistView = ({
   onRequestExpand?: EventHandler;
   onRequestCollapse?: EventHandler;
 
-  nowPlayingPlaylist: string;
-  otherPlaylists: string[];
+  playlists: WatchedPromise<{ id: UiPlaylistId; name: string; modifiable: boolean; }[]>;
+  currentPlaylist?: UiPlaylistId;
   currentPlaylistName?: string;
-  currentPlaylistSongs: ISong[];
-  currentSong?: ISong;
+  currentPlaylistEntries: WatchedPromise<(GroupDelimiter | MediaFile)[]>;
+  currentFile?: MediaFile;
 
   repeatMode: RepeatMode;
   shuffleMode: ShuffleMode;
@@ -47,33 +49,29 @@ export const PlaylistView = ({
   onToggleRepeat?: EventHandler<RepeatMode>;
   onToggleShuffle?: EventHandler<ShuffleMode>;
   onClear?: EventHandler;
-  onPlay?: EventHandler<ISong>;
+  onPlay?: EventHandler<MediaFile>;
 }) => (
-  <div>
-    {mode == PlaylistViewMode.BAR
-      ? <PlaylistBarView
-        onClick={onRequestExpand}
-        onToggleRepeat={onToggleRepeat}
-        onToggleShuffle={onToggleShuffle}
-        playlist={currentPlaylistName ?? nowPlayingPlaylist}
-        repeatMode={repeatMode}
-        shuffleMode={shuffleMode}
-      />
-      : <PlaylistPanelView
-        currentPlaylistName={currentPlaylistName}
-        currentPlaylistSongs={currentPlaylistSongs}
-        currentSong={currentSong}
-        expanded={expanded}
-        nowPlayingPlaylist={nowPlayingPlaylist}
-        onClear={onClear}
-        onPlay={onPlay}
-        onRequestCollapse={onRequestCollapse}
-        onToggleRepeat={onToggleRepeat}
-        onToggleShuffle={onToggleShuffle}
-        otherPlaylists={otherPlaylists}
-        repeatMode={repeatMode}
-        shuffleMode={shuffleMode}
-      />
-    }
-  </div>
+  mode == PlaylistViewMode.BAR
+    ? <PlaylistBarView
+      onClick={onRequestExpand}
+      onToggleRepeat={onToggleRepeat}
+      onToggleShuffle={onToggleShuffle}
+      playlist={currentPlaylistName}
+      repeatMode={repeatMode}
+      shuffleMode={shuffleMode}
+    />
+    : <PlaylistPanelView
+      currentFile={currentFile}
+      currentPlaylist={currentPlaylist}
+      currentPlaylistEntries={currentPlaylistEntries}
+      expanded={expanded}
+      onClear={onClear}
+      onPlay={onPlay}
+      onRequestCollapse={onRequestCollapse}
+      onToggleRepeat={onToggleRepeat}
+      onToggleShuffle={onToggleShuffle}
+      playlists={playlists}
+      repeatMode={repeatMode}
+      shuffleMode={shuffleMode}
+    />
 );

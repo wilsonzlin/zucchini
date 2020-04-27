@@ -1,4 +1,4 @@
-import {cls} from 'common/Classes';
+import {cls} from 'common/DOM';
 import {callHandler, EventHandler} from 'common/Event';
 import React from 'react';
 import style from './style.scss';

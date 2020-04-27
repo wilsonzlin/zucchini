@@ -1,12 +1,8 @@
 'use strict';
 
-const {DefinePlugin} = require('webpack');
-const path = require('path');
-const fs = require('fs');
+const {join, resolve} = require('path');
 
-function resolveRelativeToProject (relativePath) {
-  return path.resolve(__dirname + '/../', relativePath);
-}
+const resolveRelativeToProject = relativePath => resolve(join(__dirname, '..'), relativePath);
 
 module.exports = {
   BUILD_PROD: resolveRelativeToProject('build/prod'),
@@ -16,10 +12,4 @@ module.exports = {
   PACKAGE_JSON: resolveRelativeToProject('package.json'),
   SRC: resolveRelativeToProject('src'),
   TSCONFIG: resolveRelativeToProject('tsconfig.json'),
-
-  DEFINE_PLUGIN: new DefinePlugin({
-    'ZUCCHINI_DEFAULT_LIBRARIES': process.env.ZUCCHINI_DEFAULT_LIBRARIES_FILE
-      ? fs.readFileSync(process.env.ZUCCHINI_DEFAULT_LIBRARIES_FILE, 'utf8')
-      : '[]',
-  }),
 };

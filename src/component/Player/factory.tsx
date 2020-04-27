@@ -1,44 +1,68 @@
-import {Player as PlayerImpl} from 'component/Player/view';
 import {observer} from 'mobx-react';
 import React from 'react';
+import {EventHandler} from '../../common/Event';
+import {PlayerControl as PlayerControlView} from './Control/view';
+import {MediaDataState} from './Media/MediaData';
 import {PlayerPresenter} from './presenter';
-import {setUpMediaSession} from './setUpMediaSession';
-import {PlayerState, PlayerStore} from './state';
+import {PlayerStore} from './state';
 
 export const PlayerFactory = ({
-  playNext,
-  playPrevious,
+  dependencies: {
+    videoElementFactory,
+    audioElementFactory,
+    imageElementFactory,
+  },
+  eventHandlers: {
+    onRequestPlayPrevious,
+    onRequestPlayNext,
+  },
 }: {
-  playNext: () => void;
-  playPrevious: () => void;
+  dependencies: {
+    videoElementFactory: () => HTMLVideoElement,
+    audioElementFactory: () => HTMLAudioElement,
+    imageElementFactory: () => HTMLImageElement,
+  },
+  universe: {},
+  eventHandlers: {
+    onRequestPlayPrevious: EventHandler,
+    onRequestPlayNext: EventHandler,
+  },
 }) => {
-  const store = new PlayerStore(Audio);
-  const presenter = new PlayerPresenter(store);
+  const store = new PlayerStore(videoElementFactory, audioElementFactory, imageElementFactory);
+  const presenter = new PlayerPresenter(store, onRequestPlayPrevious);
 
-  setUpMediaSession(store, presenter);
-
-  const Player = observer(() =>
-    <PlayerImpl
-      loading={store.loading}
+  // TODO Error
+  const PlayerControl = observer(() =>
+    <PlayerControlView
+      loading={store.dataState === MediaDataState.LOADING}
       playing={store.playing}
-      song={store.song}
-      progress={store.progress}
+      file={store.file}
+      duration={store.duration}
+      progress={store.currentTime}
       volume={store.volume}
-      shouldShowSongCard={store.hoveringSongDetails}
+      shouldShowSongCard={store.showFileDetailsCard}
 
-      onNext={playNext}
-      onPrevious={playPrevious}
+      onPrevious={presenter.restartOrGoToPreviousFile}
+      onNext={onRequestPlayNext}
 
       onVolumeChange={presenter.setVolume}
       onPlaybackChange={presenter.setPlaying}
       onSeek={presenter.setCurrentTime}
-      onHoverChangeSongDetails={presenter.setHoveringSongDetails}
+      onHoverChangeSongDetails={presenter.setShowFileDetailsCard}
     />,
   );
 
   return {
-    Player,
-    playerState: new PlayerState(store),
-    playSong: presenter.play,
+    views: {
+      PlayerControl,
+    },
+    actions: {
+      playFile: presenter.playFile,
+    },
+    state: {
+      currentFile: () => store.file,
+      ended: () => store.ended,
+    },
+    disposers: [],
   };
 };

@@ -14,7 +14,7 @@ export const PlaylistBarView = ({
   onToggleShuffle,
   onClick,
 }: {
-  playlist: string;
+  playlist: string | undefined;
 
   repeatMode: RepeatMode;
   shuffleMode: ShuffleMode;
@@ -24,7 +24,8 @@ export const PlaylistBarView = ({
   onClick?: EventHandler;
 }) => (
   <div className={style.bar}>
-    <div className={style.playlist} onClick={onClick && (() => callHandler(onClick))}>{playlist}</div>
+    {/* TODO Message */}
+    <div className={style.playlist} onClick={onClick && (() => callHandler(onClick))}>{playlist ?? 'No playlist selected'}</div>
     <div>
       {renderRepeatButton(repeatMode, onToggleRepeat)}
       {renderShuffleButton(shuffleMode, onToggleShuffle)}

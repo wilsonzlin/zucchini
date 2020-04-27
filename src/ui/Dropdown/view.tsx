@@ -1,9 +1,9 @@
-import {cls} from 'common/Classes';
+import {cls} from 'common/DOM';
 import {callHandler, EventHandler} from 'common/Event';
 import {assert} from 'common/Sanity';
 import React from 'react';
 import {useDismissible} from 'ui/util/dismissible';
-import {BlockArrowDownIcon, BlockArrowUpIcon} from '../../component/Icon/view';
+import {BlockArrowDownIcon, BlockArrowUpIcon} from '../Icon/view';
 import style from './style.scss';
 
 export interface DropdownOption<V> {

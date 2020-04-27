@@ -1,12 +1,15 @@
 import {action, computed, observable} from 'mobx';
 
-export const getViewportWidth = () => {
-  return document.documentElement.clientWidth;
+export const getViewportDimensions = () => {
+  return {
+    width: document.documentElement.clientWidth,
+    height: document.documentElement.clientHeight,
+  };
 };
 
 export enum ViewportMode {
-  SMALL = 'small',
-  LARGE = 'large',
+  SMALL,
+  LARGE,
 }
 
 class Viewport {
@@ -17,6 +20,7 @@ class Viewport {
     this.updateMode();
     window.addEventListener('resize', this.updateMode);
     window.addEventListener('orientationchange', this.updateMode);
+    window.addEventListener('fullscreenchange', this.updateMode);
   }
 
   @computed get mode () {
@@ -24,10 +28,8 @@ class Viewport {
   }
 
   @action private updateMode = () => {
-    const width = getViewportWidth();
-    const mode = width < 768 ? ViewportMode.SMALL : ViewportMode.LARGE;
-    this.proxyMode = mode;
-    document.body.setAttribute('vm', mode);
+    const {width, height} = getViewportDimensions();
+    this.proxyMode = width < 768 || width < height ? ViewportMode.SMALL : ViewportMode.LARGE;
   };
 }
 

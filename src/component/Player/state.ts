@@ -1,108 +1,163 @@
-import {INTEGER_CODEC, PlayerLSKey} from 'common/LocalStorage';
-import {action, computed, observable} from 'mobx';
-import {ISong} from 'model/Song';
-
-const DEFAULT_VOLUME = 1;
-
-const VOLUME = new PlayerLSKey('PLAYER_VOLUME', INTEGER_CODEC);
+import {computed, observable} from 'mobx';
+import {MediaFile, MediaFileType} from '../../model/Media';
+import {AVElement} from './Media/AVElement';
+import {ImageElement} from './Media/ImageElement';
+import {MediaDataState} from './Media/MediaData';
 
 export class PlayerStore {
-  // The HTMLAudioElement is the source of truth for these values.
-  // However, since it uses events and not observables, these
-  // observables are "proxies" for the real values and are updated
-  // when events occur on the HTMLAudioElement.
-  // Since these are proxies, they should only be set to from event
-  // handlers on the internal audio element. To actually update the
-  // element's values, setters are created that modify/call the audio
-  @observable song?: ISong;
-  @observable hoveringSongDetails: boolean = false;
-  // element, not these values.
-  private readonly audio: HTMLAudioElement;
-  // A number between 0 and this.duration (inclusive).
-  @observable private proxyCurrentTime: number = 0;
-  @observable private proxyEnded: boolean = true;
-  @observable private proxyLoading: boolean = false;
-  @observable private proxyPlaying: boolean = false;
-  @observable private proxySource: string | null = null;
-  // A number between 0 and 1 (inclusive).
-  @observable private proxyVolume: number = DEFAULT_VOLUME;
+  @observable.ref showFileDetailsCard: boolean = false;
+
+  private readonly videoElement: AVElement<HTMLVideoElement>;
+  private readonly audioElement: AVElement<HTMLAudioElement>;
+  private readonly imageElement: ImageElement;
+
+  @observable.ref private _file: MediaFile | undefined = undefined;
 
   constructor (
-    Audio: new () => HTMLAudioElement,
+    videoElementFactory: () => HTMLVideoElement,
+    audioElementFactory: () => HTMLAudioElement,
+    imageElementFactory: () => HTMLImageElement,
   ) {
-    const audio = this.audio = new Audio();
-    audio.volume = VOLUME.getOrDefault(DEFAULT_VOLUME);
-    audio.oncanplay = action(() => this.proxyLoading = false);
-    audio.onended = action(() => {
-      this.proxyEnded = true;
-      this.proxyPlaying = false;
-    });
-    audio.onerror = action(() => this.proxyLoading = this.proxyPlaying = false);
-    audio.onloadstart = action(() => this.proxyLoading = true);
-    audio.onpause = action(() => this.proxyPlaying = false);
-    audio.onplaying = action(() => {
-      this.proxyEnded = false;
-      this.proxyPlaying = true;
-    });
-    audio.ontimeupdate = action(() => this.proxyCurrentTime = audio.currentTime);
-    audio.onvolumechange = action(() => this.proxyVolume = audio.volume);
+    this.videoElement = new AVElement<HTMLVideoElement>(videoElementFactory);
+    this.audioElement = new AVElement<HTMLAudioElement>(audioElementFactory);
+    this.imageElement = new ImageElement(imageElementFactory);
   }
 
-  @computed get volume (): number {
-    return this.proxyVolume;
+  @computed get file (): MediaFile | undefined {
+    return this._file;
   }
 
-  set volume (value: number) {
-    this.audio.volume = value;
+  set file (file: MediaFile | undefined) {
+    this.audioElement.source = file?.type === MediaFileType.AUDIO ? file.url : undefined;
+    this.videoElement.source = file?.type === MediaFileType.VIDEO ? file.url : undefined;
+    this.imageElement.source = file?.type === MediaFileType.PHOTO ? file.url : undefined;
+    this._file = file;
   }
 
-  @computed get currentTime (): number {
-    return this.proxyCurrentTime;
-  }
-
-  set currentTime (value: number) {
-    this.audio.currentTime = value;
-  }
-
-  @computed get progress () {
-    return this.proxyCurrentTime;
-  }
-
-  @computed get source (): string | null {
-    return this.proxySource;
-  }
-
-  // Loading should represent the HTMLAudioElement's state only,
-
-  set source (value: string | null) {
-    this.audio.src = value || '';
-  }
-
-  // so should not be modifiable externally.
-  @computed get loading (): boolean {
-    return this.proxyLoading;
-  }
-
-  @computed get playing (): boolean {
-    return this.proxyPlaying;
-  }
-
-  set playing (value: boolean) {
-    value ? this.audio.play() : this.audio.pause();
+  @computed get dataState (): MediaDataState {
+    switch (this.file?.type) {
+    case MediaFileType.PHOTO:
+      return this.imageElement.dataState;
+    case MediaFileType.VIDEO:
+      return this.videoElement.dataState;
+    case MediaFileType.AUDIO:
+      return this.audioElement.dataState;
+    case undefined:
+      return MediaDataState.CAN_PLAY;
+    }
   }
 
   @computed get ended (): boolean {
-    return this.proxyEnded;
+    switch (this.file?.type) {
+    case MediaFileType.PHOTO:
+      return this.imageElement.ended;
+    case MediaFileType.AUDIO:
+      return this.audioElement.ended;
+    case MediaFileType.VIDEO:
+      return this.videoElement.ended;
+    case undefined:
+      return false;
+    }
   }
-}
 
-export class PlayerState {
-  constructor (
-    private readonly store: PlayerStore,
-  ) {
+  @computed get playing (): boolean {
+    switch (this.file?.type) {
+    case MediaFileType.AUDIO:
+      return this.audioElement.playing;
+    case MediaFileType.VIDEO:
+      return this.videoElement.playing;
+    case MediaFileType.PHOTO:
+      return this.imageElement.playing;
+    case undefined:
+      return false;
+    }
   }
 
-  hasEnded = () => {
-    return this.store.ended;
-  };
+  set playing (play: boolean) {
+    switch (this.file?.type) {
+    case MediaFileType.AUDIO:
+      this.audioElement.playing = play;
+      break;
+    case MediaFileType.VIDEO:
+      this.videoElement.playing = play;
+      break;
+    case MediaFileType.PHOTO:
+      this.imageElement.playing = play;
+      break;
+    }
+  }
+
+  @computed get photoDuration () {
+    return this.imageElement.duration;
+  }
+
+  set photoDuration (duration) {
+    this.imageElement.duration = duration;
+  }
+
+  @computed get duration (): number {
+    switch (this._file?.type) {
+    case MediaFileType.AUDIO:
+    case MediaFileType.VIDEO:
+      return this._file.duration;
+    case MediaFileType.PHOTO:
+      return this.photoDuration;
+    case undefined:
+      return 0;
+    }
+  }
+
+  @computed get volume (): number {
+    // Video element is source of truth.
+    return this.videoElement.volume;
+  }
+
+  set volume (value: number) {
+    this.videoElement.volume = this.audioElement.volume = value;
+  }
+
+  @computed get muted (): boolean {
+    // Video element is source of truth.
+    return this.videoElement.muted;
+  }
+
+  set muted (value: boolean) {
+    this.videoElement.muted = this.audioElement.muted = value;
+  }
+
+  @computed get currentTime (): number {
+    switch (this.file?.type) {
+    case MediaFileType.VIDEO:
+      return this.videoElement.currentTime;
+    case  MediaFileType.AUDIO:
+      return this.audioElement.currentTime;
+    case MediaFileType.PHOTO:
+      return this.imageElement.currentTime;
+    case undefined:
+      return 0;
+    }
+  }
+
+  set currentTime (value: number) {
+    switch (this.file?.type) {
+    case MediaFileType.AUDIO:
+      this.audioElement.currentTime = value;
+      break;
+    case MediaFileType.VIDEO:
+      this.videoElement.currentTime = value;
+      break;
+    case MediaFileType.PHOTO:
+      this.imageElement.currentTime = value;
+      break;
+    }
+  }
+
+  @computed get playbackRate (): number {
+    // Video element is source of truth.
+    return this.videoElement.playbackRate;
+  }
+
+  set playbackRate (value: number) {
+    this.videoElement.playbackRate = this.audioElement.playbackRate = value;
+  }
 }

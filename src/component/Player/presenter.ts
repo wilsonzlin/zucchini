@@ -1,10 +1,12 @@
 import {action} from 'mobx';
-import {ISong} from 'model/Song';
+import {callHandler, EventHandler} from '../../common/Event';
+import {MediaFile} from '../../model/Media';
 import {PlayerStore} from './state';
 
 export class PlayerPresenter {
   constructor (
     private readonly store: PlayerStore,
+    private readonly onRequestPlayPrevious: EventHandler,
   ) {
   }
 
@@ -14,8 +16,8 @@ export class PlayerPresenter {
   };
 
   @action
-  setSource = (source: string | null) => {
-    this.store.source = source;
+  setFile = (file: MediaFile | undefined) => {
+    this.store.file = file;
   };
 
   @action
@@ -29,27 +31,30 @@ export class PlayerPresenter {
   };
 
   @action
-  play = (song: ISong | undefined) => {
-    if (song) {
-      if (this.store.song?.file === song.file) {
+  playFile = (file: MediaFile | undefined) => {
+    if (!file) {
+      this.setFile(undefined);
+    } else {
+      if (this.store.file?.id === file.id) {
         this.store.currentTime = 0;
       } else {
-        this.setSource(song.file);
+        this.setFile(file);
       }
       this.setPlaying(true);
-    } else {
-      this.setSource(null);
     }
-    this.setSong(song);
   };
 
   @action
-  setHoveringSongDetails = (hovering: boolean) => {
-    this.store.hoveringSongDetails = hovering;
+  restartOrGoToPreviousFile = () => {
+    if (this.store.currentTime > 4) {
+      this.store.currentTime = 0;
+    } else {
+      callHandler(this.onRequestPlayPrevious);
+    }
   };
 
   @action
-  private setSong = (song: ISong | undefined) => {
-    this.store.song = song;
+  setShowFileDetailsCard = (show: boolean) => {
+    this.store.showFileDetailsCard = show;
   };
 }

@@ -1,19 +1,24 @@
 import {watchPromise} from 'common/Async';
-import {createSearchEngine} from 'component/Search/config';
 import {SearchPresenter} from 'component/Search/presenter';
-import {SearchState, SearchStore} from 'component/Search/state';
+import {SearchStore} from 'component/Search/state';
 import {Search as SearchImpl} from 'component/Search/view';
 import {observer} from 'mobx-react';
-import {IPromiseBasedObservable} from 'mobx-utils';
-import {ISong} from 'model/Song';
 import React from 'react';
 
 export const SearchFactory = ({
-  getSongs,
+  dependencies: {
+    suggester,
+  },
 }: {
-  getSongs: () => IPromiseBasedObservable<ISong[]> | undefined;
+  dependencies: {
+    suggester: (query: string) => Promise<string[]>;
+  };
+  universe: {
+  };
+  eventHandlers: {
+  };
 }) => {
-  const store = new SearchStore(createSearchEngine, getSongs);
+  const store = new SearchStore(suggester);
   const presenter = new SearchPresenter(store);
 
   const Search = observer(() =>
@@ -21,7 +26,6 @@ export const SearchFactory = ({
       unconfirmedTerm={store.unconfirmedSearchTerm}
       confirmedTerm={store.confirmedSearchTerm}
       suggestions={watchPromise(store.searchSuggestions)}
-      status={watchPromise(store.filteredSongs)}
 
       onSearchInput={presenter.updateSearchTerm}
       onSearch={presenter.confirmSearchTerm}
@@ -30,7 +34,13 @@ export const SearchFactory = ({
   );
 
   return {
-    Search,
-    searchState: new SearchState(store),
+    views: {
+      Search,
+    },
+    state: {
+      query: () => store.confirmedSearchTerm,
+    },
+    actions: {},
+    disposers: [],
   };
 };

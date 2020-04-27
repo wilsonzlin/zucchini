@@ -1,8 +1,8 @@
 import React from 'react';
-import {cls} from '../../../common/Classes';
+import {cls} from '../../../common/DOM';
 import {callHandler, EventHandler} from '../../../common/Event';
 import {Button, IconButton} from '../../../ui/Button/view';
-import {RepeatIcon, RepeatOnceIcon, ShuffleIcon} from '../../Icon/view';
+import {RepeatIcon, RepeatOnceIcon, ShuffleIcon} from '../../../ui/Icon/view';
 import {RepeatMode, ShuffleMode} from '../state';
 import style from './controls.scss';
 

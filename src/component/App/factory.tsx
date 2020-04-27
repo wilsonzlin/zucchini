@@ -5,19 +5,23 @@ import {observer} from 'mobx-react';
 import React from 'react';
 
 export const AppFactory = ({
-  Libraries,
-  List,
-  Organiser,
-  Player,
-  Playlist,
-  Search,
+  dependencies: {
+    List,
+    PlayerControl,
+    Playlist,
+    Search,
+  },
+  universe,
+  eventHandlers,
 }: {
-  Libraries: () => JSX.Element;
-  List: () => JSX.Element;
-  Organiser: () => JSX.Element;
-  Player: () => JSX.Element;
-  Playlist: () => JSX.Element;
-  Search: () => JSX.Element;
+  dependencies: {
+    List: () => JSX.Element;
+    PlayerControl: () => JSX.Element;
+    Playlist: () => JSX.Element;
+    Search: () => JSX.Element;
+  },
+  universe: {},
+  eventHandlers: {},
 }) => {
   const store = new AppStore();
 
@@ -28,16 +32,19 @@ export const AppFactory = ({
       densities={Densities}
       selectedDensity={store.selectedDensity}
 
-      Libraries={Libraries}
       List={List}
-      Organiser={Organiser}
-      Player={Player}
+      PlayerControl={PlayerControl}
       Playlist={Playlist}
       Search={Search}
     />,
   );
 
   return {
-    App,
+    views: {
+      App,
+    },
+    state: {},
+    actions: {},
+    disposers: [],
   };
 };

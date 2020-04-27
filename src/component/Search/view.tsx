@@ -1,18 +1,16 @@
 import {renderPromise, WatchedPromise} from 'common/Async';
-import {cls} from 'common/Classes';
+import {cls} from 'common/DOM';
 import {callHandler, EventHandler} from 'common/Event';
 import style from 'component/Search/style.scss';
-import {ISong} from 'model/Song';
 import React, {useState} from 'react';
 import {Input} from 'ui/Input/view';
 import {useDismissible} from 'ui/util/dismissible';
 import {IconButton} from '../../ui/Button/view';
-import {StemmedArrowRightIcon} from '../Icon/view';
+import {StemmedArrowRightIcon} from '../../ui/Icon/view';
 
 export const Search = ({
   unconfirmedTerm,
   confirmedTerm,
-  status,
   suggestions,
 
   onSearchInput,
@@ -21,7 +19,6 @@ export const Search = ({
 }: {
   unconfirmedTerm: string;
   confirmedTerm: string;
-  status: WatchedPromise<ISong[]>;
   suggestions: WatchedPromise<string[]>;
 
   onSearchInput?: EventHandler<string>;

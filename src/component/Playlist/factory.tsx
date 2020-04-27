@@ -1,25 +1,38 @@
-import {reaction} from 'mobx';
 import {observer} from 'mobx-react';
 import React from 'react';
-import {ISong} from '../../model/Song';
+import {watchPromise} from '../../common/Async';
+import {EventHandler} from '../../common/Event';
+import {MediaFile, MediaFileType} from '../../model/Media';
+import {GroupDelimiter, SpecialPlaylist} from '../../model/Playlist';
 import {viewport, ViewportMode} from '../../system/Viewport';
-import {NOW_PLAYING_PLAYLIST_NAME} from './config';
-import {PlaylistPresenter, PlayNextMode} from './presenter';
+import {PlaylistPresenter} from './presenter';
 import {PlaylistStore} from './state';
 import {PlaylistView, PlaylistViewMode} from './view';
 
-// TODO This entire component (inc. view, state, config) is awkward.
 export const PlaylistFactory = ({
-  playbackHasEnded,
-  playSong,
+  dependencies: {
+    playlistsFetcher,
+    playlistEntriesFetcher,
+  },
+  universe,
+  eventHandlers: {
+    onRequestPlay,
+  },
 }: {
-  playbackHasEnded: () => boolean;
-  playSong: (song: ISong | undefined) => void;
+  universe: {
+    currentFile: () => MediaFile | undefined;
+    localPlaylists: () => { id: symbol, name: string; entries: MediaFile[] }[];
+  };
+  dependencies: {
+    playlistsFetcher: () => Promise<{ id: SpecialPlaylist | string; name: string; modifiable: boolean; }[]>;
+    playlistEntriesFetcher: (req: { playlistId: SpecialPlaylist | string; types: MediaFileType[]; filter?: string; continuation?: string; }) => Promise<{ entries: (GroupDelimiter | MediaFile)[]; }>;
+  };
+  eventHandlers: {
+    onRequestPlay: EventHandler<MediaFile>;
+  };
 }) => {
-  const store = new PlaylistStore();
-  const presenter = new PlaylistPresenter(store, playSong);
-
-  reaction(playbackHasEnded, ended => ended && presenter.playNext(PlayNextMode.NEXT));
+  const store = new PlaylistStore(universe.currentFile);
+  const presenter = new PlaylistPresenter(store, universe.localPlaylists, playlistsFetcher, playlistEntriesFetcher);
 
   const Playlist = observer(() => (
     <PlaylistView
@@ -28,25 +41,30 @@ export const PlaylistFactory = ({
       onRequestExpand={presenter.expand}
       onRequestCollapse={presenter.collapse}
 
-      nowPlayingPlaylist={NOW_PLAYING_PLAYLIST_NAME}
-      otherPlaylists={store.otherPlaylists.map(p => p.name)}
-      currentPlaylistSongs={store.currentPlaylist?.songs ?? store.nowPlayingPlaylist}
-      currentPlaylistName={store.currentPlaylist?.name}
-      currentSong={store.currentSong}
+      playlists={watchPromise(store.playlists)}
+      currentPlaylist={store.currentPlaylist}
+      currentPlaylistName={store.currentPlaylistName}
+      currentPlaylistEntries={watchPromise(store.currentPlaylistEntries)}
+      currentFile={universe.currentFile()}
 
       repeatMode={store.repeatMode}
       shuffleMode={store.shuffleMode}
 
       onToggleRepeat={presenter.updateRepeatMode}
       onToggleShuffle={presenter.updateShuffleMode}
-      onPlay={presenter.playSpecific}
+      onPlay={onRequestPlay}
     />
   ));
 
   return {
-    Playlist,
-    playPrevious: () => presenter.playNext(PlayNextMode.PREVIOUS),
-    playNext: () => presenter.playNext(PlayNextMode.IGNORE_REPEAT_ONCE),
-    updateAndPlayNowPlayingPlaylist: presenter.updateAndPlayNowPlayingPlaylist,
+    views: {
+      Playlist,
+    },
+    actions: {},
+    state: {
+      previousFile: () => store.previousFile,
+      nextFile: () => store.nextFile,
+    },
+    disposers: [],
   };
 };

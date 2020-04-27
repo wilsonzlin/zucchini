@@ -7,10 +7,8 @@ export interface AppProps {
   densities: { [name: string]: string };
   selectedDensity: string;
 
-  Libraries: () => JSX.Element;
   List: () => JSX.Element;
-  Organiser: () => JSX.Element;
-  Player: () => JSX.Element;
+  PlayerControl: () => JSX.Element;
   Playlist: () => JSX.Element;
   Search: () => JSX.Element;
 }
@@ -21,10 +19,8 @@ export const App = ({
   densities,
   selectedDensity,
 
-  Libraries,
   List,
-  Organiser,
-  Player,
+  PlayerControl,
   Playlist,
   Search,
 }: AppProps) => (
@@ -35,12 +31,10 @@ export const App = ({
     </style>
 
     <div className={style.toolbar}>
-      <div className={style.libraries}><Libraries/></div>
-      <div className={style.organiser}><Organiser/></div>
       <div className={style.search}><Search/></div>
     </div>
     <div className={style.songs}><List/></div>
     <div className={style.playlist}><Playlist/></div>
-    <div className={style.player}><Player/></div>
+    <div className={style.player}><PlayerControl/></div>
   </div>
 );
