@@ -6,7 +6,7 @@
     "allowJs": false,
     "alwaysStrict": true,
     "baseUrl": "./src",
-    "declaration": true,
+    "declaration": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
@@ -28,7 +28,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "outDir": "dist",
+    "outDir": "dist/ts",
     "rootDir": "src",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -37,6 +37,6 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "es2020"
+    "target": "es6"
   }
 }

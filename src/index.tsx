@@ -10,6 +10,8 @@ import {MediaFile} from './model/Media';
 import {SpecialPlaylist} from './model/Playlist';
 import {ICollectionService} from './service/CollectionService';
 
+export {ICollectionService} from './service/CollectionService';
+
 export const createZucchini = ({
   collectionService,
 }: {
