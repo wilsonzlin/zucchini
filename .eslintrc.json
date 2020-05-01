@@ -22,15 +22,13 @@
   },
   "plugins": [
     "react",
-    "@typescript-eslint",
-    "import"
+    "@typescript-eslint"
   ],
   "rules": {
     "indent": [
       "error",
       2
     ],
-    "import/no-relative-parent-imports": "error",
     "linebreak-style": [
       "error",
       "unix"

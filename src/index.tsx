@@ -11,6 +11,8 @@ import {SpecialPlaylist} from './model/Playlist';
 import {ICollectionService} from './service/CollectionService';
 
 export {ICollectionService} from './service/CollectionService';
+export * from './model/Media';
+export * from './model/Playlist';
 
 export const createZucchini = ({
   collectionService,
