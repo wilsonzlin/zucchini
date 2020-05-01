@@ -19,7 +19,7 @@ module.exports = {
     path: DIST,
     filename: 'index.js',
     library: 'Zucchini',
-    libraryTarget: 'commonjs2',
+    libraryTarget: 'umd',
   },
   resolve: {
     extensions: [
@@ -77,7 +77,10 @@ module.exports = {
     ],
   },
   externals: {
-    'react': 'commonjs react',
+    'react': {
+      commonjs: 'react',
+      root: 'React',
+    },
   },
   node: {
     dgram: 'empty',
