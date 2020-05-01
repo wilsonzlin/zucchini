@@ -79,6 +79,7 @@ module.exports = {
   externals: {
     'react': {
       commonjs: 'react',
+      commonjs2: 'react',
       root: 'React',
     },
   },
