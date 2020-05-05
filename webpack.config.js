@@ -37,13 +37,6 @@ module.exports = {
         include: SRC,
         use: {loader: 'worker-loader', options: {inline: true, fallback: false}},
       },
-
-      {
-        test: /\.js$/,
-        include: SRC,
-        loader: 'babel-loader',
-        options: {compact: true},
-      },
       {
         test: /\.tsx?$/,
         include: SRC,

@@ -23,8 +23,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "eslint 'src/**/*'",
-    "dev": "webpack --mode=development --watch",
-    "build": "npm run clean && NODE_ENV=production BABEL_ENV=production webpack --mode=production",
+    "dev": "webpack --mode development --watch",
+    "build": "npm run clean && webpack --mode production",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -41,8 +41,6 @@
     "@types/react-dom": "^16.9.4",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
-    "babel-loader": "^8.0.6",
-    "babel-preset-react-app": "^9.0.2",
     "css-loader": "^3.2.0",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.19.0",
@@ -60,10 +58,5 @@
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "worker-loader": "^2.0.0"
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
   }
 }

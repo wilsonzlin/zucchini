@@ -11,8 +11,6 @@
 }
 
 .playbackControls {
-  grid-area: playback-controls;
-
   display: flex;
   align-items: center;
 
@@ -42,13 +40,7 @@ $titleFontWeight: 700;
   font-weight: $titleFontWeight;
 }
 
-.progress {
-  grid-area: progress;
-}
-
 .volumeContainer {
-  grid-area: volume;
-
   display: flex;
   align-items: center;
 }
