@@ -45,6 +45,11 @@ module.exports = {
         ],
       },
       {
+        test: /\.js$/,
+        use: ['source-map-loader'],
+        enforce: 'pre',
+      },
+      {
         test: /\.scss$/,
         include: SRC,
         use: [
