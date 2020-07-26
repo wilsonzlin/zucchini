@@ -1,11 +1,12 @@
+import {callHandler, EventHandler} from 'common/Event';
+import {cls} from 'extlib/js/dom/classname';
+import {File} from 'model/Listing';
 import React from 'react';
-import {cls} from '../../../common/DOM';
-import {callHandler, EventHandler} from '../../../common/Event';
-import {MediaFile} from '../../../model/Media';
-import {IconButton} from '../../../ui/Button/view';
-import {HoverCard, HoverCardAnchor} from '../../../ui/HoverCard/view';
-import {NextTrackIcon, PauseIcon, PlayIcon, PreviousTrackIcon, VolumeIcon} from '../../../ui/Icon/view';
-import {Slider} from '../../../ui/Slider/view';
+import {viewport, ViewportMode} from 'system/Viewport';
+import {IconButton} from 'ui/Button/view';
+import {HoverCard, HoverCardAnchor} from 'ui/HoverCard/view';
+import {NextTrackIcon, PauseIcon, PlayIcon, PreviousTrackIcon, VolumeIcon} from 'ui/Icon/view';
+import {Slider} from 'ui/Slider/view';
 import style from './style.scss';
 
 export const PlayerControl = ({
@@ -17,7 +18,9 @@ export const PlayerControl = ({
   progress,
   volume,
 
-  shouldShowSongCard,
+  showFile,
+  showFileDetailsCard,
+  showPlaybackControls,
 
   onNext,
   onPlaybackChange,
@@ -28,7 +31,7 @@ export const PlayerControl = ({
 }: {
   loading: boolean;
   playing: boolean;
-  file?: MediaFile;
+  file?: File;
   duration: number;
 
   // A number between 0 and $duration.
@@ -36,7 +39,9 @@ export const PlayerControl = ({
   // A number between 0 and 1.
   volume: number;
 
-  shouldShowSongCard: boolean;
+  showFile: boolean;
+  showFileDetailsCard: boolean;
+  showPlaybackControls: boolean;
 
   onNext?: EventHandler;
   onPlaybackChange?: EventHandler<boolean>;
@@ -48,56 +53,62 @@ export const PlayerControl = ({
   <div className={cls({
     [style.player]: true,
     [style.loading]: loading,
+    [style.smallPlayer]: viewport.mode == ViewportMode.SMALL,
+    [style.largePlayer]: viewport.mode == ViewportMode.LARGE,
   })}>
-    <div className={style.playbackControls}>
-      <IconButton
-        className={style.previousButton}
-        onClick={() => callHandler(onPrevious)}
-      >{PreviousTrackIcon}</IconButton>
-      {playing ?
+    {showPlaybackControls && (
+      <div className={style.playbackControls}>
         <IconButton
-          onClick={() => callHandler(onPlaybackChange, false)}
-        >{PauseIcon}</IconButton> :
+          className={style.previousButton}
+          onClick={() => callHandler(onPrevious)}
+        >{PreviousTrackIcon}</IconButton>
+        {playing ?
+          <IconButton
+            onClick={() => callHandler(onPlaybackChange, false)}
+          >{PauseIcon}</IconButton> :
+          <IconButton
+            onClick={() => callHandler(onPlaybackChange, true)}
+          >{PlayIcon}</IconButton>
+        }
         <IconButton
-          onClick={() => callHandler(onPlaybackChange, true)}
-        >{PlayIcon}</IconButton>
-      }
-      <IconButton
-        className={style.nextButton}
-        onClick={() => callHandler(onNext)}
-      >{NextTrackIcon}</IconButton>
-    </div>
+          className={style.nextButton}
+          onClick={() => callHandler(onNext)}
+        >{NextTrackIcon}</IconButton>
+      </div>
+    )}
 
-    <div
-      className={style.details}
-      onMouseEnter={() => callHandler(onHoverChangeSongDetails, true)}
-      onMouseLeave={() => callHandler(onHoverChangeSongDetails, false)}
-    >
-      {file ? (
-        <>
-          <div className={style.detailsLabel}>
-            <strong className={style.title}>{file.title}</strong>
-            {' '}
-            {/* Only show em dash if both fields exist. */}
-            {/* TODO */}
-            {/*{song.artists.length && song.album != null ?*/}
-            {/*  `${song.artists[0]}—${song.album}` :*/}
-            {/*  `${song.artists[0]}${song.album}`*/}
-            {/*}*/}
-          </div>
-          <HoverCard
-            shouldShow={shouldShowSongCard}
-            anchor={HoverCardAnchor.TOP}
-            className={style.card}
-          >
-            {/* TODO */}
-            {/*<CardContents song={song}/>*/}
-          </HoverCard>
-        </>
-      ) : (
-        <div className={style.detailsLabel}>No media</div>
-      )}
-    </div>
+    {showFile && (
+      <div
+        className={style.details}
+        onMouseEnter={() => callHandler(onHoverChangeSongDetails, true)}
+        onMouseLeave={() => callHandler(onHoverChangeSongDetails, false)}
+      >
+        {file ? (
+          <>
+            <div className={style.detailsLabel}>
+              <strong className={style.title}>{file.title}</strong>
+              {' '}
+              {/* Only show em dash if both fields exist. */}
+              {/* TODO */}
+              {/*{song.artists.length && song.album != null ?*/}
+              {/*  `${song.artists[0]}—${song.album}` :*/}
+              {/*  `${song.artists[0]}${song.album}`*/}
+              {/*}*/}
+            </div>
+            <HoverCard
+              anchor={HoverCardAnchor.TOP}
+              className={style.card}
+              visible={showFileDetailsCard}
+            >
+              {/* TODO */}
+              {/*<CardContents song={song}/>*/}
+            </HoverCard>
+          </>
+        ) : (
+          <div className={style.detailsLabel}>No media</div>
+        )}
+      </div>
+    )}
 
     <Slider
       className={style.progress}

@@ -1,10 +1,10 @@
 import {action, computed, observable} from 'mobx';
 import {MediaDataState} from './MediaData';
 
-const PLAYBACK_TICK_RATE_MS = 250;
+const PLAYBACK_TICK_RATE_S = 0.25;
 
 export class ImageElement {
-  private readonly element: HTMLImageElement;
+  readonly element: HTMLImageElement;
 
   // This should match up with HTMLMediaElement, namely:
   // - Be false when CAN_PLAY and paused or ended, and otherwise true.
@@ -22,14 +22,14 @@ export class ImageElement {
   // This function intentionally does not clear any existing timeout or check `_playing`/`_dataState`.
   @action
   private tickPlayback () {
-    this.playbackTicker = window.setTimeout(() => {
-      if ((this._currentTime += PLAYBACK_TICK_RATE_MS) < this.duration) {
+    this.playbackTicker = window.setTimeout(action(() => {
+      if ((this._currentTime += PLAYBACK_TICK_RATE_S) < this.duration) {
         this.tickPlayback();
       } else {
         this._currentTime = this.duration;
         this._playing = false;
       }
-    }, PLAYBACK_TICK_RATE_MS);
+    }), PLAYBACK_TICK_RATE_S * 1000);
   }
 
   // This should be called when any of `_playing`, `_dataState`, or `_currentTime` are set outside this function or `tickPlayback`.
@@ -66,6 +66,7 @@ export class ImageElement {
   set source (src) {
     this.element.src = src || '';
     this._dataState = MediaDataState.LOADING;
+    this._currentTime = 0;
     this.reactPlayback();
   }
 

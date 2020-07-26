@@ -33,11 +33,6 @@ module.exports = {
     strictExportPresence: true,
     rules: [
       {
-        test: /\.worker\.js$/,
-        include: SRC,
-        use: {loader: 'worker-loader', options: {inline: true, fallback: false}},
-      },
-      {
         test: /\.tsx?$/,
         include: SRC,
         use: [
@@ -54,7 +49,7 @@ module.exports = {
         include: SRC,
         use: [
           {loader: 'style-loader'},
-          {loader: 'css-loader', options: {modules: true}},
+          {loader: 'css-loader', options: {modules: {localIdentName: '[path]-[local]'}}},
           {loader: 'sass-loader', options: {includePaths: [SRC]}},
         ],
       },

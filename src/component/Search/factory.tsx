@@ -4,6 +4,7 @@ import {SearchStore} from 'component/Search/state';
 import {Search as SearchImpl} from 'component/Search/view';
 import {observer} from 'mobx-react';
 import React from 'react';
+import {SearchAutocompleteApi} from 'service/CollectionService';
 
 export const SearchFactory = ({
   dependencies: {
@@ -11,7 +12,7 @@ export const SearchFactory = ({
   },
 }: {
   dependencies: {
-    suggester: (query: string) => Promise<string[]>;
+    suggester: SearchAutocompleteApi;
   };
   universe: {
   };

@@ -1,6 +1,7 @@
+import {UnreachableError} from 'extlib/js/assert/assert';
 import {runInAction} from 'mobx';
 import {IFulfilledPromise, IPendingPromise, IPromiseBasedObservable, IRejectedPromise} from 'mobx-utils';
-import {UnreachableError} from './Sanity';
+import {ReactNode} from 'react';
 
 export interface IUninitialisedPromise {
   state: 'uninitialised';
@@ -57,10 +58,10 @@ export const createAtMostOneAsyncFlow = <T> (
 };
 
 export interface PromiseRenderers<V> {
-  uninitialised?: () => JSX.Element;
-  pending?: () => JSX.Element;
-  fulfilled?: (value: V) => JSX.Element;
-  rejected?: (error: any) => JSX.Element;
+  uninitialised?: () => ReactNode;
+  pending?: () => ReactNode;
+  fulfilled?: (value: V) => ReactNode;
+  rejected?: (error: any) => ReactNode;
 }
 
 export const renderPromise = <V> (promise: WatchedPromise<V>, renderers: PromiseRenderers<V>): JSX.Element | undefined => {

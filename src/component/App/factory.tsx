@@ -6,19 +6,19 @@ import React from 'react';
 
 export const AppFactory = ({
   dependencies: {
-    List,
+    Browser,
     PlayerControl,
     Playlist,
-    Search,
+    Viewer,
   },
   universe,
   eventHandlers,
 }: {
   dependencies: {
-    List: () => JSX.Element;
+    Browser: () => JSX.Element;
     PlayerControl: () => JSX.Element;
     Playlist: () => JSX.Element;
-    Search: () => JSX.Element;
+    Viewer: () => JSX.Element;
   },
   universe: {},
   eventHandlers: {},
@@ -32,10 +32,10 @@ export const AppFactory = ({
       densities={Densities}
       selectedDensity={store.selectedDensity}
 
-      List={List}
+      Browser={Browser}
       PlayerControl={PlayerControl}
       Playlist={Playlist}
-      Search={Search}
+      Viewer={Viewer}
     />,
   );
 

@@ -1,8 +1,7 @@
+import {WatchedPromise} from 'common/Async';
 import {EventHandler} from 'common/Event';
+import {File, Listing} from 'model/Listing';
 import React from 'react';
-import {WatchedPromise} from '../../common/Async';
-import {MediaFile} from '../../model/Media';
-import {GroupDelimiter} from '../../model/Playlist';
 import {PlaylistBarView} from './Bar/view';
 import {PlaylistPanelView} from './Panel/view';
 import {RepeatMode, ShuffleMode, UiPlaylistId} from './state';
@@ -17,14 +16,17 @@ export const PlaylistView = ({
   expanded,
 
   playlists,
-  currentPlaylist,
-  currentPlaylistName,
-  currentPlaylistEntries,
+  id,
+  name,
+  loading,
+  error,
+  entries,
   currentFile,
 
   repeatMode,
   shuffleMode,
 
+  onChangePlaylist,
   onToggleRepeat,
   onToggleShuffle,
   onClear,
@@ -37,34 +39,42 @@ export const PlaylistView = ({
   onRequestExpand?: EventHandler;
   onRequestCollapse?: EventHandler;
 
-  playlists: WatchedPromise<{ id: UiPlaylistId; name: string; modifiable: boolean; }[]>;
-  currentPlaylist?: UiPlaylistId;
-  currentPlaylistName?: string;
-  currentPlaylistEntries: WatchedPromise<(GroupDelimiter | MediaFile)[]>;
-  currentFile?: MediaFile;
+  playlists: { id: UiPlaylistId; name: string; modifiable: boolean; }[];
+  id?: UiPlaylistId;
+  name?: string;
+  loading: boolean;
+  error: string;
+  entries: Listing[];
+  currentFile?: File;
 
   repeatMode: RepeatMode;
   shuffleMode: ShuffleMode;
 
+  onChangePlaylist?: EventHandler<UiPlaylistId | undefined>;
   onToggleRepeat?: EventHandler<RepeatMode>;
   onToggleShuffle?: EventHandler<ShuffleMode>;
   onClear?: EventHandler;
-  onPlay?: EventHandler<MediaFile>;
+  onPlay?: EventHandler<File>;
 }) => (
-  mode == PlaylistViewMode.BAR
-    ? <PlaylistBarView
+  mode == PlaylistViewMode.BAR ? (
+    <PlaylistBarView
+      name={name}
       onClick={onRequestExpand}
       onToggleRepeat={onToggleRepeat}
       onToggleShuffle={onToggleShuffle}
-      playlist={currentPlaylistName}
       repeatMode={repeatMode}
       shuffleMode={shuffleMode}
     />
-    : <PlaylistPanelView
+  ) : (
+    <PlaylistPanelView
       currentFile={currentFile}
-      currentPlaylist={currentPlaylist}
-      currentPlaylistEntries={currentPlaylistEntries}
+      entries={entries}
+      error={error}
       expanded={expanded}
+      id={id}
+      loading={loading}
+      name={name}
+      onChangePlaylist={onChangePlaylist}
       onClear={onClear}
       onPlay={onPlay}
       onRequestCollapse={onRequestCollapse}
@@ -74,4 +84,5 @@ export const PlaylistView = ({
       repeatMode={repeatMode}
       shuffleMode={shuffleMode}
     />
+  )
 );

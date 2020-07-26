@@ -1,9 +1,8 @@
 import {callHandler, EventHandler} from 'common/Event';
-import 'component/Playlist/style.scss';
+import {File} from 'model/Listing';
 import React from 'react';
-import {MediaFile} from '../../../model/Media';
-import {IconButton} from '../../../ui/Button/view';
-import {PlayIcon, TrashIcon} from '../../../ui/Icon/view';
+import {IconButton} from 'ui/Button/view';
+import {PlayIcon, TrashIcon} from 'ui/Icon/view';
 import style from './style.scss';
 
 export const PlaylistEntry = ({
@@ -13,11 +12,11 @@ export const PlaylistEntry = ({
   onPlay,
   onRemove,
 }: {
-  file: MediaFile;
+  file: File;
   current: boolean;
 
-  onPlay?: EventHandler<MediaFile>;
-  onRemove?: EventHandler<MediaFile>;
+  onPlay?: EventHandler<File>;
+  onRemove?: EventHandler<File>;
 }) => (
   <div className={style.entry} onClick={() => callHandler(onPlay, file)}>
     <div className={style.current}>{current && PlayIcon}</div>

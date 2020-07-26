@@ -1,9 +1,9 @@
-import {cls} from 'common/DOM';
 import {callHandler, EventHandler} from 'common/Event';
+import {cls} from 'extlib/js/dom/classname';
+import {File} from 'model/Listing';
 import React, {useState} from 'react';
-import {MediaFile} from '../../../model/Media';
 import commonStyle from '../common/style.scss';
-import {ListViewColumnDefinition} from '../state';
+import {ListViewColumnDefinition} from '../config';
 import style from './style.scss';
 
 export const ListEntry = ({
@@ -11,7 +11,7 @@ export const ListEntry = ({
   columns,
   onRequestPlayFile,
 }: {
-  file: MediaFile;
+  file: File;
   columns: ListViewColumnDefinition[];
 
   onRequestPlayFile?: EventHandler;

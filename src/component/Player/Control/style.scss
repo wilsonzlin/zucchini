@@ -1,13 +1,8 @@
 @import '~common/style';
 
 .player {
-  background: var(--color-player-background);
-  color: var(--color-player-text);
-
-  box-shadow: 0 0 $dropShadowRadius var(--color-player-shadow);
-
-  // Show drop shadow.
-  z-index: $zIndexEnsureShadow;
+  height: 100%;
+  width: 100%;
 }
 
 .playbackControls {
@@ -49,13 +44,11 @@ $titleFontWeight: 700;
   margin-right: 0.25rem;
 }
 
-body[vm=small] {
-  .player {
-    display: grid;
-    grid-template-rows: min-content 1fr;
-    grid-template-columns: min-content 1fr;
-    grid-template-areas: 'progress progress' 'playback-controls details';
-  }
+.smallPlayer {
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  grid-template-columns: min-content 1fr;
+  grid-template-areas: 'progress progress' 'playback-controls details';
 
   .progress {
     margin: 0 var(--hmargin-player-elements);
@@ -71,9 +64,9 @@ body[vm=small] {
   }
 }
 
-body[vm=large] {
-  @include growOneAnchorRest('.player', '.progress', 'center');
+@include growOneAnchorRest('.largePlayer', '.progress', 'center');
 
+.largePlayer {
   .player > * {
     margin: 0 var(--hmargin-player-elements);
   }

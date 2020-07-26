@@ -1,0 +1,112 @@
+@import '~common/style';
+
+.viewer {
+  background: black;
+  color: white;
+  text-shadow: 0 0 0.5rem black;
+
+  position: fixed;
+
+  display: flex;
+  align-items: flex-start;
+}
+
+.modalMode {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.miniMode {
+
+}
+
+.content {
+  height: 100%;
+  width: 100%;
+
+  // For .overlay.
+  position: relative;
+}
+
+.playlist {
+  flex: 0 0 auto;
+
+  background: rgba(0, 0, 0, 0.67);
+  height: calc(100% - var(--height-player));
+  width: var(--width-playlist);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background: rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  flex-direction: column;
+
+  opacity: 1;
+  cursor: auto;
+  transition: $transitionTime;
+}
+
+.overlayHidden {
+  cursor: none !important;
+  opacity: 0;
+}
+
+.overlayHidden > * {
+  pointer-events: none;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: normal;
+  margin: 0;
+  padding: 0 0.75rem;
+}
+
+.middle {
+  flex-grow: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.navButton, .playbackButton {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 100%;
+  border: 0;
+  cursor: pointer;
+  display: block;
+  padding: 0;
+}
+
+.navButton {
+  font-size: 1.25rem;
+  width: 4rem;
+  height: 4rem;
+}
+
+.playbackButton {
+  font-size: 2rem;
+  padding: 0;
+  width: 6rem;
+  height: 6rem;
+}
+
+.controls {
+  height: var(--height-player);
+}

@@ -1,4 +1,9 @@
-import {ListViewColumnDefinition} from './state';
+export type ListViewColumnDefinition = {
+  field: string;
+  label: string;
+  width: number;
+  align?: 'left' | 'center' | 'right';
+};
 
 export const Columns: ListViewColumnDefinition[] = [
   {field: 'track', label: '#', width: 5, align: 'right'},

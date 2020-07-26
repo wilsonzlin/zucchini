@@ -1,5 +1,5 @@
 import {renderPromise, WatchedPromise} from 'common/Async';
-import {cls} from 'common/DOM';
+import {cls} from 'extlib/js/dom/classname';
 import {callHandler, EventHandler} from 'common/Event';
 import style from 'component/Search/style.scss';
 import React, {useState} from 'react';

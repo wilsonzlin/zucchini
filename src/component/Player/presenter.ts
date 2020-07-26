@@ -1,6 +1,6 @@
 import {action} from 'mobx';
-import {callHandler, EventHandler} from '../../common/Event';
-import {MediaFile} from '../../model/Media';
+import {File} from 'model/Listing';
+import {callHandler, EventHandler} from 'common/Event';
 import {PlayerStore} from './state';
 
 export class PlayerPresenter {
@@ -12,11 +12,18 @@ export class PlayerPresenter {
 
   @action
   setPlaying = (playing: boolean) => {
+    if (playing && this.store.ended) {
+      this.store.currentTime = 0;
+    }
     this.store.playing = playing;
   };
 
+  togglePlayback = () => {
+    this.setPlaying(!this.store.playing);
+  };
+
   @action
-  setFile = (file: MediaFile | undefined) => {
+  setFile = (file: File | undefined) => {
     this.store.file = file;
   };
 
@@ -31,7 +38,7 @@ export class PlayerPresenter {
   };
 
   @action
-  playFile = (file: MediaFile | undefined) => {
+  playFile = (file: File | undefined) => {
     if (!file) {
       this.setFile(undefined);
     } else {

@@ -1,16 +1,16 @@
+import {EventHandler} from 'common/Event';
 import {observer} from 'mobx-react';
+import {File, Listing} from 'model/Listing';
 import React from 'react';
-import {watchPromise} from '../../common/Async';
-import {EventHandler} from '../../common/Event';
-import {MediaFile, MediaFileType} from '../../model/Media';
-import {GroupDelimiter, SpecialPlaylist} from '../../model/Playlist';
-import {viewport, ViewportMode} from '../../system/Viewport';
+import {GetCustomPlaylistsApi, ListApi} from 'service/CollectionService';
+import {viewport, ViewportMode} from 'system/Viewport';
 import {PlaylistPresenter} from './presenter';
-import {PlaylistStore} from './state';
+import {PlaylistStore, UiPlaylistId} from './state';
 import {PlaylistView, PlaylistViewMode} from './view';
 
 export const PlaylistFactory = ({
   dependencies: {
+    initialPlaylist,
     playlistsFetcher,
     playlistEntriesFetcher,
   },
@@ -20,36 +20,42 @@ export const PlaylistFactory = ({
   },
 }: {
   universe: {
-    currentFile: () => MediaFile | undefined;
-    localPlaylists: () => { id: symbol, name: string; entries: MediaFile[] }[];
+    currentFile: () => File | undefined;
+    localPlaylists: () => { id: symbol, name: string; entries: Listing[] }[];
   };
   dependencies: {
-    playlistsFetcher: () => Promise<{ id: SpecialPlaylist | string; name: string; modifiable: boolean; }[]>;
-    playlistEntriesFetcher: (req: { playlistId: SpecialPlaylist | string; types: MediaFileType[]; filter?: string; continuation?: string; }) => Promise<{ entries: (GroupDelimiter | MediaFile)[]; }>;
+    initialPlaylist: UiPlaylistId;
+    playlistsFetcher: GetCustomPlaylistsApi;
+    playlistEntriesFetcher: ListApi;
   };
   eventHandlers: {
-    onRequestPlay: EventHandler<MediaFile>;
+    onRequestPlay: EventHandler<File>;
   };
 }) => {
-  const store = new PlaylistStore(universe.currentFile);
+  const store = new PlaylistStore(universe.currentFile, universe.localPlaylists);
   const presenter = new PlaylistPresenter(store, universe.localPlaylists, playlistsFetcher, playlistEntriesFetcher);
+  presenter.fetchCustomPlaylists();
+  presenter.switchPlaylist(initialPlaylist);
 
   const Playlist = observer(() => (
     <PlaylistView
-      mode={viewport.mode != ViewportMode.LARGE && !store.expanded ? PlaylistViewMode.BAR : PlaylistViewMode.PANEL}
-      expanded={viewport.mode != ViewportMode.LARGE && store.expanded}
+      mode={viewport.mode == ViewportMode.SMALL && !store.expanded ? PlaylistViewMode.BAR : PlaylistViewMode.PANEL}
+      expanded={viewport.mode == ViewportMode.SMALL && store.expanded}
       onRequestExpand={presenter.expand}
       onRequestCollapse={presenter.collapse}
 
-      playlists={watchPromise(store.playlists)}
-      currentPlaylist={store.currentPlaylist}
-      currentPlaylistName={store.currentPlaylistName}
-      currentPlaylistEntries={watchPromise(store.currentPlaylistEntries)}
+      playlists={store.playlists}
+      id={store.id}
+      name={store.name}
+      loading={store.loading}
+      error={store.error}
+      entries={store.entries.slice()}
       currentFile={universe.currentFile()}
 
       repeatMode={store.repeatMode}
       shuffleMode={store.shuffleMode}
 
+      onChangePlaylist={presenter.switchPlaylist}
       onToggleRepeat={presenter.updateRepeatMode}
       onToggleShuffle={presenter.updateShuffleMode}
       onPlay={onRequestPlay}
@@ -62,8 +68,11 @@ export const PlaylistFactory = ({
     },
     actions: {},
     state: {
-      previousFile: () => store.previousFile,
       nextFile: () => store.nextFile,
+      nextFileWrapped: () => store.nextFileWrapped,
+      previousFile: () => store.previousFile,
+      previousFileWrapped: () => store.previousFileWrapped,
+      repeatMode: () => store.repeatMode,
     },
     disposers: [],
   };

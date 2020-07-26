@@ -1,14 +1,14 @@
-import {cls} from 'common/DOM';
 import {callHandler, EventHandler} from 'common/Event';
-import {assert} from 'common/Sanity';
-import React from 'react';
+import {assertState} from 'extlib/js/assert/assert';
+import {cls} from 'extlib/js/dom/classname';
+import React, {ReactNode} from 'react';
 import {useDismissible} from 'ui/util/dismissible';
 import {BlockArrowDownIcon, BlockArrowUpIcon} from '../Icon/view';
 import style from './style.scss';
 
 export interface DropdownOption<V> {
   value: V;
-  label: React.ReactNode;
+  label: ReactNode;
 }
 
 export function Dropdown<V> ({
@@ -22,7 +22,7 @@ export function Dropdown<V> ({
   options: DropdownOption<V>[];
   onChange?: EventHandler<V>;
 }) {
-  assert(options.length > 0);
+  assertState(options.length > 0);
   const [showing, setShowing, onRelevantClick, onRelevantFocus] = useDismissible();
   const label = (options.find(o => o.value === value) || options[0]).label;
 

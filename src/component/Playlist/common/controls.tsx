@@ -1,5 +1,5 @@
+import {cls} from 'extlib/js/dom/classname';
 import React from 'react';
-import {cls} from '../../../common/DOM';
 import {callHandler, EventHandler} from '../../../common/Event';
 import {Button, IconButton} from '../../../ui/Button/view';
 import {RepeatIcon, RepeatOnceIcon, ShuffleIcon} from '../../../ui/Icon/view';

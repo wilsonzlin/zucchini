@@ -2,7 +2,7 @@ import {action, computed, observable} from 'mobx';
 import {MediaDataState} from './MediaData';
 
 export class AVElement<T extends HTMLMediaElement> {
-  private readonly element: T;
+  readonly element: T;
 
   // For video and audio files, the HTMLMediaElement is the source of truth for these values.
   // However, since it uses events and not observables, these observables are "proxies" for the real values and are updated when events occur on the HTMLAudioElement.

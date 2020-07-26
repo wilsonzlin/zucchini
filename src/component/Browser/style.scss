@@ -1,0 +1,56 @@
+@import '~common/style';
+
+.container {
+  background: var(--color-list-background);
+  color: var(--color-list-text);
+}
+
+$loadingAnimationDelay: 1s;
+
+.loadingContainer {
+  height: 0;
+
+  overflow: hidden;
+
+  transition-property: height;
+  transition-duration: $transitionTime;
+}
+
+.loadingContainer.isLoading {
+  height: 0.33rem;
+
+  // Same as .loadingBar animation delay.
+  // This is done to prevent animations toggling very quickly
+  // when doing many actions or actions completing very quickly.
+  // NOTE: We don't want to delay hiding the progress bar,
+  // only showing it, which is why it's in this block.
+  transition-delay: $loadingAnimationDelay;
+}
+
+.loadingBar {
+  @include animationIndefiniteLoading($loadingAnimationDelay);
+
+  background: var(--color-list-loading-background);
+  height: 100%;
+}
+
+.toolbar {
+  height: var(--height-toolbar);
+
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 3fr 1.5fr;
+  grid-template-areas: 'path search stats';
+}
+
+.path {
+  grid-area: path;
+}
+
+.search {
+  grid-area: search;
+}
+
+.stats {
+  grid-area: stats;
+}

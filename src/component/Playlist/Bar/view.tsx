@@ -5,7 +5,7 @@ import {RepeatMode, ShuffleMode} from '../state';
 import style from './style.scss';
 
 export const PlaylistBarView = ({
-  playlist,
+  name,
 
   repeatMode,
   shuffleMode,
@@ -14,7 +14,7 @@ export const PlaylistBarView = ({
   onToggleShuffle,
   onClick,
 }: {
-  playlist: string | undefined;
+  name: string | undefined;
 
   repeatMode: RepeatMode;
   shuffleMode: ShuffleMode;
@@ -25,7 +25,7 @@ export const PlaylistBarView = ({
 }) => (
   <div className={style.bar}>
     {/* TODO Message */}
-    <div className={style.playlist} onClick={onClick && (() => callHandler(onClick))}>{playlist ?? 'No playlist selected'}</div>
+    <div className={style.playlist} onClick={onClick && (() => callHandler(onClick))}>{name ?? 'No playlist selected'}</div>
     <div>
       {renderRepeatButton(repeatMode, onToggleRepeat)}
       {renderShuffleButton(shuffleMode, onToggleShuffle)}

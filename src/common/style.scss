@@ -67,7 +67,7 @@
   :global {
     animation-name: indefiniteLoading;
   }
-;
+
   animation-duration: 2s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
@@ -75,7 +75,6 @@
 }
 
 // TODO Use these.
-$zIndexEnsureShadow: 1;
 $zIndexControlMenu: 2;
 $transitionTime: 0.3s;
 $borderWidth: 1px;

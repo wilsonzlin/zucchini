@@ -1,29 +1,16 @@
-import {createAtMostOnceAsyncFlowLock, createAtMostOneAsyncFlow} from '../../common/Async';
-import {assertExists} from '../../common/Sanity';
-import {MediaFile, MediaFileType} from '../../model/Media';
-import {GroupDelimiter} from '../../model/Playlist';
-import {ListViewStore} from './state';
+import {createAtMostOnceAsyncFlowLock, createAtMostOneAsyncFlow} from 'common/Async';
+import {assertExists} from 'extlib/js/optional/assert';
+import {action} from 'mobx';
+import {ListApi} from 'service/CollectionService';
+import {BrowserStore} from './state';
 
-export class ListViewPresenter {
+export class BrowserPresenter {
   private listFetchLock = createAtMostOnceAsyncFlowLock();
 
   constructor (
-    private readonly store: ListViewStore,
+    private readonly store: BrowserStore,
     private readonly searchQuery: () => string | undefined,
-    private readonly listFetcher: (req: {
-      source: { path: string[]; subdirectories: boolean; };
-      filter?: string;
-      groupBy?: string[]
-      sortBy?: string[],
-      types: MediaFileType[];
-      continuation?: string;
-    }) => Promise<{
-      results: (GroupDelimiter | MediaFile)[];
-      approximateSize?: number;
-      approximateDuration?: number;
-      approximateCount?: number;
-      continuation?: string;
-    }>,
+    private readonly listFetcher: ListApi,
   ) {
   }
 
@@ -72,4 +59,16 @@ export class ListViewPresenter {
     () => this.store.loading = false,
     this.listFetchLock,
   );
+
+  @action
+  setCurrentPath = (path: string[]) => {
+    this.store.currentPath = path;
+    this.newListFetch();
+  };
+
+  @action
+  goToSubfolder = (folder: string) => {
+    this.store.currentPath = this.store.currentPath.concat(folder);
+    this.newListFetch();
+  };
 }

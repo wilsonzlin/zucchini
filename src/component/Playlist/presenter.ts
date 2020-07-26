@@ -1,52 +1,52 @@
+import {createAtMostOneAsyncFlow} from 'common/Async';
+import {assertExists} from 'extlib/js/optional/assert';
 import {action} from 'mobx';
 import {fromPromise} from 'mobx-utils';
-import {assertExists} from '../../common/Sanity';
-import {MediaFile, MediaFileType} from '../../model/Media';
-import {GroupDelimiter, SpecialPlaylist} from '../../model/Playlist';
+import {Listing} from 'model/Listing';
+import {GetCustomPlaylistsApi, ListApi} from 'service/CollectionService';
 import {PlaylistStore, RepeatMode, ShuffleMode, UiPlaylistId} from './state';
 
 export class PlaylistPresenter {
   constructor (
     private readonly store: PlaylistStore,
-    private readonly localPlaylists: () => { id: symbol, name: string; entries: MediaFile[] }[],
-    private readonly playlistsFetcher: () => Promise<{ id: SpecialPlaylist | string; name: string; modifiable: boolean; }[]>,
-    private readonly playlistEntriesFetcher: (req: { playlistId: SpecialPlaylist | string; types: MediaFileType[]; filter?: string; continuation?: string; }) => Promise<{ entries: (GroupDelimiter | MediaFile)[]; }>,
+    private readonly localPlaylists: () => { id: symbol, name: string; entries: Listing[] }[],
+    private readonly playlistsFetcher: GetCustomPlaylistsApi,
+    private readonly playlistEntriesFetcher: ListApi,
   ) {
   }
 
   @action
-  fetchPlaylists = () => {
-    this.store.playlists = fromPromise((async () => {
-      return [
-        ...this.localPlaylists().map(playlist => ({
-          id: playlist.id,
-          name: playlist.name,
-          // TODO
-          modifiable: false,
-        })),
-        ...await this.playlistsFetcher(),
-      ];
-    })());
+  fetchCustomPlaylists = () => {
+    this.store.customPlaylists = fromPromise(
+      this.playlistsFetcher({}).then(r => r.playlists),
+    );
   };
 
   @action
-  setCurrentPlaylist = (id: UiPlaylistId | undefined) => {
-    this.store.currentPlaylist = id;
-    if (typeof id == 'symbol') {
-      // Local playlist.
-      const playlist = assertExists(this.localPlaylists().find(p => p.id === id));
-      this.store.currentPlaylistEntries = fromPromise(Promise.resolve(playlist.entries));
-    } else if (id != undefined) {
-      // Remote playlist.
-      this.store.currentPlaylistEntries = fromPromise((async () => {
-        return (await this.playlistEntriesFetcher({
-          playlistId: id,
-          // TODO
-          types: [],
-        })).entries;
-      })());
+  switchPlaylist = (id: UiPlaylistId | undefined) => {
+    this.store.id = id;
+    if (id !== undefined) {
+      this.fetchCurrentPlaylist();
     }
   };
+
+  private fetchCurrentPlaylist = createAtMostOneAsyncFlow(
+    () => {
+      this.store.loading = true;
+      this.store.error = '';
+    },
+    async () => typeof this.store.id == 'symbol'
+      // Local playlist.
+      ? assertExists(this.localPlaylists().find(p => p.id === this.store.id)).entries
+      // Remote playlist.
+      : (await this.playlistEntriesFetcher({
+        source: {playlist: assertExists(this.store.id)},
+        types: [],
+      })).results,
+    val => this.store.entries = val,
+    err => this.store.error = err.message,
+    () => this.store.loading = false,
+  );
 
   @action
   updateRepeatMode = (mode: RepeatMode) => {

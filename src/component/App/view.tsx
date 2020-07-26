@@ -1,17 +1,7 @@
+import {cls} from 'extlib/js/dom/classname';
 import React from 'react';
+import {viewport, ViewportMode} from 'system/Viewport';
 import style from './style.scss';
-
-export interface AppProps {
-  themes: { [name: string]: string };
-  selectedTheme: string;
-  densities: { [name: string]: string };
-  selectedDensity: string;
-
-  List: () => JSX.Element;
-  PlayerControl: () => JSX.Element;
-  Playlist: () => JSX.Element;
-  Search: () => JSX.Element;
-}
 
 export const App = ({
   themes,
@@ -19,22 +9,36 @@ export const App = ({
   densities,
   selectedDensity,
 
-  List,
+  Browser,
+  Viewer,
   PlayerControl,
   Playlist,
-  Search,
-}: AppProps) => (
-  <div className={style.app}>
+}: {
+  themes: { [name: string]: string };
+  selectedTheme: string;
+  densities: { [name: string]: string };
+  selectedDensity: string;
+
+  Browser: () => JSX.Element;
+  PlayerControl: () => JSX.Element;
+  Playlist: () => JSX.Element;
+  Viewer: () => JSX.Element;
+}) => (
+  <div className={cls(style.app, viewport.mode == ViewportMode.SMALL ? style.smallApp : style.largeApp)}>
     <style>
       {themes[selectedTheme]}
       {densities[selectedDensity]}
     </style>
 
-    <div className={style.toolbar}>
-      <div className={style.search}><Search/></div>
+    <div className={style.browserArea}>
+      <Browser/>
     </div>
-    <div className={style.songs}><List/></div>
-    <div className={style.playlist}><Playlist/></div>
-    <div className={style.player}><PlayerControl/></div>
+    <div className={style.playlistArea}>
+      <Playlist/>
+    </div>
+    <div className={style.playerArea}>
+      <PlayerControl/>
+    </div>
+    <Viewer/>
   </div>
 );

@@ -4,84 +4,68 @@
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue, Ubuntu, Cantarell, Oxygen, Fira Sans, sans-serif;
   font-size: var(--fontsize-content);
   line-height: var(--lineheight-content);
-
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
 }
 
-$areas: 'toolbar', 'libraries', 'organiser', 'search', 'songs', 'playlist', 'player';
-
-@each $area in $areas {
-  .#{$area} {
-    grid-area: #{$area};
-
-    > * {
-      height: 100%;
-      width: 100%;
-    }
-  }
-}
-
-.songs {
+.browserArea {
   overflow: auto;
 }
 
-body[vm=small] {
-  .app {
-    overflow: auto;
-  }
-
-  .toolbar {
-    display: grid;
-
-    grid-template-rows: auto auto;
-    grid-template-columns: 1fr 2fr;
-    grid-template-areas: 'search search' 'libraries organiser';
-  }
+.smallApp {
+  overflow: auto;
 
   $playlistHeight: 2.5rem;
   $playerHeight: 3.5rem;
 
-  .songs {
+  .browserArea {
     padding-bottom: $playlistHeight + $playerHeight;
   }
 
-  .playlist, .player {
+  .playlistArea, .playerArea {
     position: fixed;
     left: 0;
     right: 0;
   }
 
-  .playlist {
+  .playlistArea {
     height: $playlistHeight;
     bottom: $playerHeight;
   }
 
-  .player {
+  .playerArea {
     bottom: 0;
     height: $playerHeight;
   }
 }
 
-body[vm=large] {
-  .app {
-    display: grid;
-
-    grid-template-rows: var(--height-toolbar) 1fr var(--height-player);
-    grid-template-columns: 1fr 16rem;
-    grid-template-areas: 'toolbar playlist' 'songs playlist' 'player player';
+.largeApp {
+  .browserArea {
+    position: fixed;
+    top: 0;
+    bottom: var(--height-player);
+    left: 0;
+    right: var(--width-playlist);
   }
 
-  .toolbar {
-    display: grid;
+  .playlistArea {
+    background: var(--color-playlist-background);
 
-    grid-area: toolbar;
+    position: fixed;
+    top: 0;
+    bottom: var(--height-player);
+    right: 0;
+    width: var(--width-playlist);
+  }
 
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr 3fr 1.5fr;
-    grid-template-areas: 'libraries search organiser';
+  .playerArea {
+    background: var(--color-player-background);
+    color: var(--color-player-text);
+
+    box-shadow: 0 0 $dropShadowRadius var(--color-player-shadow);
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--height-player);
   }
 }

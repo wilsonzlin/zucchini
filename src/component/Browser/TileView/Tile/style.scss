@@ -1,0 +1,35 @@
+@import '~common/style';
+
+.tile {
+  flex: 0 0 auto;
+
+  border: 1px solid #d0d0d0;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+
+  cursor: pointer;
+
+  // For :hover and dimensions change during resize.
+  transition: $transitionTime;
+
+  display: flex;
+  align-items: flex-end;
+}
+
+.tile:hover {
+  border-color: skyblue;
+}
+
+.name {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 0.25rem;
+  box-shadow: 0 0 1rem gray;
+  color: #1e1f1c;
+  font-size: 0.875rem;
+  margin: 0.5rem;
+  max-width: calc(100% - 1rem);
+  padding: 0.125rem 0.375rem;
+  word-wrap: break-word;
+}

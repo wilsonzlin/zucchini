@@ -1,18 +1,20 @@
 import {AppFactory} from 'component/App/factory';
-import {ListViewFactory} from 'component/ListView/factory';
+import {BrowserFactory} from 'component/Browser/factory';
 import {PlayerFactory} from 'component/Player/factory';
+import {PlaylistFactory} from 'component/Playlist/factory';
+import {RepeatMode} from 'component/Playlist/state';
 import {SearchFactory} from 'component/Search/factory';
-import {configure, observable} from 'mobx';
+import {ViewerFactory} from 'component/Viewer/factory';
+import {UnreachableError} from 'extlib/js/assert/assert';
+import {mapDefined} from 'extlib/js/optional/map';
+import {action, configure, observable, reaction} from 'mobx';
+import {File} from 'model/Listing';
 import React from 'react';
-import {PlaylistFactory} from './component/Playlist/factory';
+import {ICollectionService} from 'service/CollectionService';
 import './index.scss';
-import {MediaFile} from './model/Media';
-import {SpecialPlaylist} from './model/Playlist';
-import {ICollectionService} from './service/CollectionService';
 
-export {ICollectionService} from './service/CollectionService';
-export * from './model/Media';
-export * from './model/Playlist';
+export * as CollectionService from './service/CollectionService';
+export * as Listing from './model/Listing';
 
 export const createZucchini = ({
   collectionService,
@@ -22,80 +24,160 @@ export const createZucchini = ({
   // TODO
   configure({enforceActions: 'observed'});
 
-  const {views: {PlayerControl}, state: {currentFile, ended}, actions: {playFile}} = PlayerFactory({
+  const playPrevious = () => playFile(previousFileWrapped());
+  const playNext = () => playFile(nextFileWrapped());
+
+  const {
+    views: {
+      PlayerControl,
+      PlayerViewport,
+    },
+    state: {
+      currentFile,
+      ended,
+      playing,
+    },
+    actions: {
+      playFile,
+      togglePlayback,
+    },
+  } = PlayerFactory({
     dependencies: {
       imageElementFactory: () => new Image(),
       audioElementFactory: () => new Audio(),
       videoElementFactory: () => document.createElement('video'),
     },
     eventHandlers: {
-      onRequestPlayPrevious: () => playFile(previousFile()),
-      onRequestPlayNext: () => playFile(nextFile()),
+      onRequestPlayPrevious: playPrevious,
+      onRequestPlayNext: playNext,
     },
     universe: {},
   });
 
-  const {views: {Search}, state: {query: searchQuery}} = SearchFactory({
+  const {
+    views: {
+      Search,
+    },
+    state: {
+      query: searchQuery,
+    },
+  } = SearchFactory({
     dependencies: {
-      suggester: async (query) => (await collectionService.searchAutocomplete({query})).expansions,
+      suggester: collectionService.searchAutocomplete,
     },
     universe: {},
     eventHandlers: {},
   });
 
-  const NOW_PLAYING_PLAYLIST_ID = Symbol();
-  const nowPlaylistPlaylist = observable.array<MediaFile>([]);
+  const nowPlayingId = Symbol();
+  const nowPlayingEntries = observable.array<File>([]);
 
-  const {views: {Playlist}, state: {previousFile, nextFile}} = PlaylistFactory({
+  const {
+    views: {
+      Playlist,
+    }, state: {
+      nextFile,
+      nextFileWrapped,
+      previousFile,
+      previousFileWrapped,
+      repeatMode,
+    },
+  } = PlaylistFactory({
     dependencies: {
-      playlistsFetcher: async () => [
-        ...(await collectionService.getCustomPlaylists({})).playlists,
-        // TODO Names
-        {id: SpecialPlaylist.LIKES, name: 'Likes', modifiable: false},
-        {id: SpecialPlaylist.DISLIKES, name: 'Dislikes', modifiable: false},
-      ],
-      playlistEntriesFetcher: async ({playlistId, types, filter, continuation}) => {
-        // TODO
-        const listing = await collectionService.list({
-          source: {playlist: playlistId},
-          types,
-          filter,
-          continuation,
-        });
-        return {
-          // TODO Stats
-          entries: listing.results,
-        };
-      },
+      initialPlaylist: nowPlayingId,
+      playlistsFetcher: collectionService.getCustomPlaylists,
+      playlistEntriesFetcher: collectionService.list,
     },
     universe: {
       currentFile,
-      // TODO Name
-      localPlaylists: () => [{id: NOW_PLAYING_PLAYLIST_ID, name: 'Now playing', entries: nowPlaylistPlaylist}],
+      localPlaylists: () => [
+        {id: nowPlayingId, name: 'Now playing', entries: nowPlayingEntries},
+      ],
     },
     eventHandlers: {
       onRequestPlay: playFile,
     },
   });
 
-  const {views: {List}, disposers: listViewDisposers} = ListViewFactory({
+  const autoplayDisposer = reaction(
+    () => ended(),
+    ended => {
+      if (ended) {
+        switch (repeatMode()) {
+        case RepeatMode.OFF:
+          // Leave viewer open at end.
+          mapDefined(nextFile(), playFile);
+          break;
+        case RepeatMode.ONE:
+          playFile(currentFile());
+          break;
+        case RepeatMode.ALL:
+          playFile(nextFileWrapped());
+          break;
+        default:
+          throw new UnreachableError();
+        }
+      }
+    },
+  );
+
+  const {
+    views: {
+      Browser,
+    },
+    disposers: listViewDisposers,
+  } = BrowserFactory({
     dependencies: {
-      listFetcher: (req) => collectionService.list(req),
+      listFetcher: collectionService.list,
+      Search,
     },
     eventHandlers: {
-      onRequestPlayFiles: files => nowPlaylistPlaylist.replace(files),
+      onRequestPlayFiles: action(([files, initial]) => {
+        nowPlayingEntries.replace(files);
+        playFile(initial);
+      }),
     },
     universe: {
       searchQuery,
     },
   });
 
-  const {views: {App}} = AppFactory({
+  const {
+    views: {
+      Viewer,
+    },
+  } = ViewerFactory({
     dependencies: {
-      PlayerControl,
+      PlayerControl: () => (
+        <PlayerControl showFile={false} showPlaybackControls={false}/>
+      ),
+      PlayerViewport,
+      playFile,
       Playlist,
-      Search,
-      List,
+    },
+    universe: {
+      currentFile,
+      playing,
+    },
+    eventHandlers: {
+      onNext: playNext,
+      onPrevious: playPrevious,
+      onTogglePlayback: togglePlayback,
+    },
+  });
+
+  const {
+    views: {
+      App,
+    },
+  } = AppFactory({
+    dependencies: {
+      Browser,
+      PlayerControl: () => (
+        <PlayerControl showFile={true} showPlaybackControls={true}/>
+      ),
+      Playlist,
+      Viewer,
     },
     eventHandlers: {},
     universe: {},
@@ -106,6 +188,7 @@ export const createZucchini = ({
       App,
     },
     disposers: [
+      autoplayDisposer,
       ...listViewDisposers,
     ],
   };

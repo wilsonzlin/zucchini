@@ -1,5 +1,5 @@
-import {cls} from 'common/DOM';
 import {callHandler, EventHandler} from 'common/Event';
+import {cls} from 'extlib/js/dom/classname';
 import React, {useState} from 'react';
 import style from './style.scss';
 
@@ -20,23 +20,23 @@ const anchorClass: { [a in HoverCardAnchor]: string } = {
 };
 
 export const HoverCard = ({
-  children,
-  shouldShow,
   anchor,
+  children,
   className,
   onClick,
+  visible,
 }: {
-  children?: React.ReactNode;
-  shouldShow: boolean;
   anchor: HoverCardAnchor;
+  children?: React.ReactNode;
   className?: string;
   onClick?: EventHandler;
+  visible: boolean;
 }) => {
   const [hoveringSelf, setHoveringSelf] = useState(false);
 
   return (
     <div
-      hidden={!hoveringSelf && !shouldShow}
+      hidden={!hoveringSelf && !visible}
       className={cls(style.card, className, anchorClass[anchor])}
       onMouseEnter={() => setHoveringSelf(true)}
       onMouseLeave={() => setHoveringSelf(false)}

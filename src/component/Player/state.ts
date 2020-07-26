@@ -1,5 +1,5 @@
 import {computed, observable} from 'mobx';
-import {MediaFile, MediaFileType} from '../../model/Media';
+import {File} from 'model/Listing';
 import {AVElement} from './Media/AVElement';
 import {ImageElement} from './Media/ImageElement';
 import {MediaDataState} from './Media/MediaData';
@@ -11,7 +11,7 @@ export class PlayerStore {
   private readonly audioElement: AVElement<HTMLAudioElement>;
   private readonly imageElement: ImageElement;
 
-  @observable.ref private _file: MediaFile | undefined = undefined;
+  @observable.ref private _file: File | undefined = undefined;
 
   constructor (
     videoElementFactory: () => HTMLVideoElement,
@@ -23,24 +23,37 @@ export class PlayerStore {
     this.imageElement = new ImageElement(imageElementFactory);
   }
 
-  @computed get file (): MediaFile | undefined {
+  @computed get file (): File | undefined {
     return this._file;
   }
 
-  set file (file: MediaFile | undefined) {
-    this.audioElement.source = file?.type === MediaFileType.AUDIO ? file.url : undefined;
-    this.videoElement.source = file?.type === MediaFileType.VIDEO ? file.url : undefined;
-    this.imageElement.source = file?.type === MediaFileType.PHOTO ? file.url : undefined;
+  set file (file: File | undefined) {
+    this.audioElement.source = file?.type === 'audio' ? file.url : undefined;
+    this.videoElement.source = file?.type === 'video' ? file.url : undefined;
+    this.imageElement.source = file?.type === 'photo' ? file.url : undefined;
     this._file = file;
+  }
+
+  @computed get viewElement (): HTMLElement | undefined {
+    switch (this.file?.type) {
+    case 'photo':
+      return this.imageElement.element;
+    case 'video':
+      return this.videoElement.element;
+    case 'audio':
+      return this.audioElement.element;
+    case undefined:
+      return undefined;
+    }
   }
 
   @computed get dataState (): MediaDataState {
     switch (this.file?.type) {
-    case MediaFileType.PHOTO:
+    case 'photo':
       return this.imageElement.dataState;
-    case MediaFileType.VIDEO:
+    case 'video':
       return this.videoElement.dataState;
-    case MediaFileType.AUDIO:
+    case 'audio':
       return this.audioElement.dataState;
     case undefined:
       return MediaDataState.CAN_PLAY;
@@ -49,11 +62,11 @@ export class PlayerStore {
 
   @computed get ended (): boolean {
     switch (this.file?.type) {
-    case MediaFileType.PHOTO:
+    case 'photo':
       return this.imageElement.ended;
-    case MediaFileType.AUDIO:
+    case 'audio':
       return this.audioElement.ended;
-    case MediaFileType.VIDEO:
+    case 'video':
       return this.videoElement.ended;
     case undefined:
       return false;
@@ -62,11 +75,11 @@ export class PlayerStore {
 
   @computed get playing (): boolean {
     switch (this.file?.type) {
-    case MediaFileType.AUDIO:
+    case 'audio':
       return this.audioElement.playing;
-    case MediaFileType.VIDEO:
+    case 'video':
       return this.videoElement.playing;
-    case MediaFileType.PHOTO:
+    case 'photo':
       return this.imageElement.playing;
     case undefined:
       return false;
@@ -75,13 +88,13 @@ export class PlayerStore {
 
   set playing (play: boolean) {
     switch (this.file?.type) {
-    case MediaFileType.AUDIO:
+    case 'audio':
       this.audioElement.playing = play;
       break;
-    case MediaFileType.VIDEO:
+    case 'video':
       this.videoElement.playing = play;
       break;
-    case MediaFileType.PHOTO:
+    case 'photo':
       this.imageElement.playing = play;
       break;
     }
@@ -97,10 +110,10 @@ export class PlayerStore {
 
   @computed get duration (): number {
     switch (this._file?.type) {
-    case MediaFileType.AUDIO:
-    case MediaFileType.VIDEO:
+    case 'audio':
+    case 'video':
       return this._file.duration;
-    case MediaFileType.PHOTO:
+    case 'photo':
       return this.photoDuration;
     case undefined:
       return 0;
@@ -127,11 +140,11 @@ export class PlayerStore {
 
   @computed get currentTime (): number {
     switch (this.file?.type) {
-    case MediaFileType.VIDEO:
+    case 'video':
       return this.videoElement.currentTime;
-    case  MediaFileType.AUDIO:
+    case  'audio':
       return this.audioElement.currentTime;
-    case MediaFileType.PHOTO:
+    case 'photo':
       return this.imageElement.currentTime;
     case undefined:
       return 0;
@@ -140,13 +153,13 @@ export class PlayerStore {
 
   set currentTime (value: number) {
     switch (this.file?.type) {
-    case MediaFileType.AUDIO:
+    case 'audio':
       this.audioElement.currentTime = value;
       break;
-    case MediaFileType.VIDEO:
+    case 'video':
       this.videoElement.currentTime = value;
       break;
-    case MediaFileType.PHOTO:
+    case 'photo':
       this.imageElement.currentTime = value;
       break;
     }
